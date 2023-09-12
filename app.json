@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "Practice_10k_Music_App",
+    "slug": "Practice_10k_Music_App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
