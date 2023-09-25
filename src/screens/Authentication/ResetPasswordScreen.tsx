@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import {View, Image, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 
-export default function LoginScreen({ navigation })
+export default function ResetPasswordScreen()
 {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     
-    const handleLogin = async () => {
-        // TODO : when firebase is set up, login logic goes here
+    const handlePasswordReset = async () => {
+        // TODO : logic will be implemented here later
     };
     
     return (
@@ -18,7 +17,7 @@ export default function LoginScreen({ navigation })
                     style={styles.logo}
                 />
             </View>
-            <Text style={styles.headerText}>Hello.</Text>
+            <Text style={styles.headerText}>Reset your password.</Text>
             <TextInput
                 placeholder="Email"
                 placeholderTextColor="#F5F5F5"
@@ -26,25 +25,9 @@ export default function LoginScreen({ navigation })
                 value={email}
                 style={styles.input}
             />
-            <TextInput
-                placeholder="Password"
-                placeholderTextColor="#F5F5F5"
-                onChangeText={(text) => setPassword(text)}
-                value={password}
-                secureTextEntry
-                style={styles.input}
-            />
-            <View style={styles.forgotContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate('ResetPasswordScreen')}>
-                    <Text style={styles.forgotText}>Forgot your password?</Text>
-                </TouchableOpacity>
-            </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                    <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')} style={styles.footerContainer}>
-                    <Text style={styles.footerText}>Not registered? Click here.</Text>
+                <TouchableOpacity onPress={handlePasswordReset} style={styles.button}>
+                    <Text style={styles.buttonText}>Continue</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -68,7 +51,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         color: 'white',
-        fontSize: 30,
+        fontSize: 25,
         fontWeight: 'bold',
         marginBottom: 30,
     },
@@ -78,17 +61,6 @@ const styles = StyleSheet.create({
         padding: 15,
         marginVertical: 10,
         borderRadius: 10,
-    },
-    forgotContainer: {
-        width: '80%',
-        alignItems: 'flex-end',
-        marginBottom: 10,
-    },
-    forgotText: {
-        color: 'white',
-        fontSize: 14,
-        fontStyle: "italic",
-        alignItems: 'center',
     },
     buttonContainer: {
         width: '80%',
@@ -104,14 +76,5 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    footerContainer: {
-        alignItems: 'center',
-    },
-    footerText: {
-        color: 'white',
-        fontSize: 14,
-        textDecorationLine: 'underline',
-        alignItems: 'center',
     },
 });
