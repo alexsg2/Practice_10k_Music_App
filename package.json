@@ -20,8 +20,11 @@
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.12",
     "@react-navigation/stack": "^6.3.17",
+<<<<<<< HEAD
     "@types/jest": "^29.5.5",
     "@types/react-test-renderer": "^18.0.2",
+=======
+>>>>>>> origin/main
     "expo": "^49.0.11",
     "expo-status-bar": "~1.6.0",
     "jest": "^29.2.1",
