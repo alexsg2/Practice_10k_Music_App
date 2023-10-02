@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+
+const auth = getAuth();
 
 const LoginScreen = () =>
 {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigation = useNavigation();
     
-    const handleLogin = () => {
-        // TODO: after firebase is setup, login logic goes here
+    async function handleLogin() {
+        if (email === '' || password === '') {
+            setError('Email and password are mandatory.')
+            return;
+          }
+      
+          try {
+            await signInWithEmailAndPassword(auth, email, password);
+          } catch (signError) {
+            setError('Incorrect username or password.')
+          }
     }
     
     return (
@@ -26,6 +39,7 @@ const LoginScreen = () =>
                         <Image source={require('../../assets/images/white-logo.png')} style={styles.logo}/>
                         <Text style={styles.headerText}>Hello.</Text>
                     </View>
+                    {!!error && <View style={styles.error}><Text>{error}</Text></View>}
                     <View style={styles.inputContainer}>
                         <TextInput
                             placeholder='Email'
@@ -137,5 +151,11 @@ const styles = StyleSheet.create(
         fontSize: 14,
         color: 'white',
         textDecorationLine: 'underline',
+    },
+    error: {
+        marginTop: 10,
+        padding: 10,
+        color: 'white',
+        fontWeight: 'bold'
     },
 });

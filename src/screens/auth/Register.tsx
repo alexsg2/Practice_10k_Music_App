@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+
+const auth = getAuth();
 
 const RegisterScreen = () =>
 {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
 
     const navigation = useNavigation();
     
-    const handleRegistering = () => {
-        // TODO: after firebase is setup, register logic goes here
+    async function handleRegistering() {
+        if (email === '' || password === '') {
+            setError('Email and password are mandatory.')
+            return;
+        }
+      
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            navigation.navigate('Login');
+          } catch (error) {
+            setError('')
+          }
     }
     
     return (
@@ -27,6 +41,7 @@ const RegisterScreen = () =>
                         <Image source={require('../../assets/images/white-logo.png')} style={styles.logo}/>
                         <Text style={styles.headerText}>Hello.</Text>
                     </View>
+                    {!!error && <View style={styles.error}><Text>{error}</Text></View>}
                     <View style={styles.inputContainer}>
                         <TextInput
                             placeholder='Name'
@@ -146,5 +161,11 @@ const styles = StyleSheet.create(
         color: 'white',
         textDecorationLine: 'underline',
     },
+    error: {
+        marginTop: 10,
+        padding: 10,
+        color: 'white',
+        fontWeight: 'bold'
+      }
 });
     
