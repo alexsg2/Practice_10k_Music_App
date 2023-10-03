@@ -5,6 +5,7 @@
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
     },
     "jsx": "react-native",
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true
   }
 }
