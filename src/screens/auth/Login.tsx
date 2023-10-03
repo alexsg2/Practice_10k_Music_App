@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 const auth = getAuth();
+
+
+import authStyles from './authStyles';
 
 const LoginScreen = () =>
 {
@@ -27,26 +30,26 @@ const LoginScreen = () =>
     }
     
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <KeyboardAvoidingView style={authStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.backContainer}>
+                <View style={authStyles.innerContainer}>
+                    <View style={authStyles.backContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('Start')}>
-                            <Image style={styles.back} source={require('../../assets/images/back-arrow.png')}/>
+                            <Image style={authStyles.back} source={require('../../assets/images/back-arrow.png')}/>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.logoContainer}>
-                        <Image source={require('../../assets/images/white-logo.png')} style={styles.logo}/>
-                        <Text style={styles.headerText}>Hello.</Text>
+                    <View style={authStyles.logoContainer}>
+                        <Image source={require('../../assets/images/white-logo.png')} style={authStyles.logo}/>
+                        <Text style={authStyles.headerText}>Hello.</Text>
                     </View>
-                    {!!error && <View style={styles.error}><Text>{error}</Text></View>}
-                    <View style={styles.inputContainer}>
+                   {/* {!!error && <View style={styles.error}><Text>{error}</Text></View>} */}
+                    <View style={authStyles.inputContainer}>
                         <TextInput
                             placeholder='Email'
                             placeholderTextColor='white'
                             onChangeText={(text) => setEmail(text)}
                             value={email}
-                            style={styles.input}
+                            style={authStyles.input}
                         />
                         <TextInput
                             placeholder='Password'
@@ -54,108 +57,21 @@ const LoginScreen = () =>
                             onChangeText={(text) => setPassword(text)}
                             value={password}
                             secureTextEntry
-                            style={styles.input}
+                            style={authStyles.input}
                         />
                     </View>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={handleLogin} style={styles.button}>
-                            <Text style={styles.buttonText}>Login</Text>
+                    <View style={authStyles.buttonContainer}>
+                        <TouchableOpacity onPress={handleLogin} style={authStyles.button}>
+                            <Text style={authStyles.buttonText}>Login</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                            <Text style={styles.footerText}>Not registered? Click here.</Text>
+                            <Text style={authStyles.footerText}>Not registered? Click here.</Text>
                         </TouchableOpacity>
                     </View>
                 </View> 
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
-
     );
 }
 
 export default LoginScreen;
-
-const styles = StyleSheet.create(
-{
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#5982C2',
-    },
-    innerContainer: {
-        flexGrow: 1,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-    backContainer: {
-        top: '10%',
-        left: '-40%',
-        position: 'relative',
-    },
-    back: {
-        width: 30,
-        height: 27,
-        tintColor: 'white',
-    },
-    logoContainer: {
-        width: '80%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    logo: {
-        aspectRatio: 1,
-        marginTop: '30%',
-    },
-    headerText: {
-        fontSize: 30,
-        color: 'white',
-        textAlign: 'center',
-        marginVertical: '10%',
-        // TODO: get a cursive font style
-    },
-    inputContainer: {
-        width: '80%',
-        marginBottom: '5%',
-    },
-    input: {
-        width: '100%',
-        padding: '7%',
-        borderRadius: 10,
-        alignItems: 'center',
-        marginVertical: '5%',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-    buttonContainer: {
-        width: '80%',
-        marginBottom: '20%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button: {
-        width: '100%',
-        padding: '7%',
-        borderRadius: 10,
-        marginVertical: '5%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-    buttonText: {
-        fontSize: 18,
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    footerText: {
-        fontSize: 14,
-        color: 'white',
-        textDecorationLine: 'underline',
-    },
-    error: {
-        marginTop: 10,
-        padding: 10,
-        color: 'white',
-        fontWeight: 'bold'
-    },
-});
