@@ -6,10 +6,11 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create(
 {
     scrollContainer: {
-        flex: 1,
+        // TODO: fix leftover space at bottom
+        flexGrow: 1,
     },
     container: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#5982C2',

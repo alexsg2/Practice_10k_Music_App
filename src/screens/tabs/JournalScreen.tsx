@@ -63,6 +63,7 @@ const JournalScreen: React.FC = () => {
     
     
     return (
+      // TODO : Cannot exit calendar view when it's been pulled down.
       <SafeAreaView style={styles.calendar}>
         <Agenda
             items={agendaItems}

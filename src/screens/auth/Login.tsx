@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
 const auth = getAuth();
 import authStyles from './authStyles';
+import { AuthStackParamList } from './authNavigation';
 import { validateLoginFormat } from '../../utils/helpers/AuthValidation';
+
+type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
 const Login = () =>
 {
@@ -14,7 +18,7 @@ const Login = () =>
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<loginScreenProp>();
     
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);

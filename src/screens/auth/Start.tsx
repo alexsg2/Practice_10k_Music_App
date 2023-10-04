@@ -1,13 +1,16 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { ScrollView, View, Image, TouchableOpacity, Text } from 'react-native';
 
-
+import { AuthStackParamList } from './authNavigation';
 import authStyles from './authStyles';
+
+type startScreenProp = StackNavigationProp<AuthStackParamList, 'Start'>;
 
 const Start = () =>
 {
-    const navigation = useNavigation();
+    const navigation = useNavigation<startScreenProp>();
     
     return (
         <ScrollView contentContainerStyle={authStyles.scrollContainer}>

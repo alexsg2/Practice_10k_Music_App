@@ -1,32 +1,38 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
 const auth = getAuth();
 import authStyles from './authStyles';
+import { AuthStackParamList } from './authNavigation';
 import { validateRegistrationFormat } from '../../utils/helpers/AuthValidation';
+
+type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
 const Register = () =>
 {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confPassword, setConfPassword] = useState('');
     const [error, setError] = useState('');
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<registerScreenProp>();
     
     async function handleRegistering() {
-        const registerError = validateRegistrationFormat(name, email, password);
+        const registerError = validateRegistrationFormat(name, email, newPassword, confPassword);
         if (registerError) {
             setError(registerError);
         }
         else {
             try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                navigation.navigate('ProfileSetup');
+                await createUserWithEmailAndPassword(auth, email, newPassword);
+                // navigation.navigate('ProfileSetup');
             }
             catch (e) {
+                // TODO : display more detailed explanations of why registration was not possible
                 setError('Could not register user.');
             }
         }
@@ -65,10 +71,18 @@ const Register = () =>
                                 style={authStyles.input}
                             />
                             <TextInput
-                                placeholder='Password'
+                                placeholder='New Password'
                                 placeholderTextColor='white'
-                                onChangeText={(text) => setPassword(text)}
-                                value={password}
+                                onChangeText={(text) => setNewPassword(text)}
+                                value={newPassword}
+                                secureTextEntry
+                                style={authStyles.input}
+                            />
+                            <TextInput
+                                placeholder='Confirm Password'
+                                placeholderTextColor='white'
+                                onChangeText={(text) => setConfPassword(text)}
+                                value={confPassword}
                                 secureTextEntry
                                 style={authStyles.input}
                             />

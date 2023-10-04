@@ -4,10 +4,10 @@
  */
 
 
-export function validateRegistrationFormat(name: string, email: string, password: string): string | null
+export function validateRegistrationFormat(name: string, email: string, newPassword: string, confPassword: string): string | null
 {
-    if (!name || !email || !password) {
-        return 'Name, email and password are required.';
+    if (!name || !email || !newPassword || !confPassword) {
+        return 'All fields are required.';
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,8 +15,12 @@ export function validateRegistrationFormat(name: string, email: string, password
         return 'Email format is invalid.';
     }
   
-    if (password.length < 8) {
+    if (newPassword.length < 8) {
       return 'Password should be at least 8 characters long.';
+    }
+    
+    if (newPassword !== confPassword) {
+        return 'Passwords do not match.';
     }
   
     return null; // No validation errors
@@ -25,7 +29,7 @@ export function validateRegistrationFormat(name: string, email: string, password
 export function validateLoginFormat(email: string, password: string): string | null
 {
     if (!email || !password) {
-        return 'Email and password are required.';
+        return 'All fields are required.';
     }
   
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
