@@ -26,7 +26,7 @@ const Login = () =>
                 await signInWithEmailAndPassword(auth, email, password);
             }
             catch (signError) {
-                setError('Incorrect username or password.')
+                setError('Incorrect email or password.')
             }
         }
     }
