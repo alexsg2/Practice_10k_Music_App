@@ -1,7 +1,13 @@
 import { StyleSheet } from 'react-native';
 
+
+// TODO: use library font and color themes
+
 export default StyleSheet.create(
 {
+    scrollContainer: {
+        flex: 1,
+    },
     container: {
         flex: 1,
         alignItems: 'center',
@@ -37,8 +43,19 @@ export default StyleSheet.create(
         fontSize: 30,
         color: 'white',
         textAlign: 'center',
-        marginVertical: '10%',
-        // TODO: get a cursive font style
+        marginVertical: '5%',
+    },
+    errorContainer: {
+        width: '90%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: '2.5%',
+    },
+    errorText: {
+        fontSize: 14,
+        color: 'yellow',
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     inputContainer: {
         width: '80%',
@@ -47,6 +64,7 @@ export default StyleSheet.create(
     input: {
         width: '100%',
         padding: '7%',
+        color: 'white',
         borderRadius: 10,
         alignItems: 'center',
         marginVertical: '5%',
