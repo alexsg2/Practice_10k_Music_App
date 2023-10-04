@@ -4,6 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Login from './Login';
 
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(),
+  signInWithEmailAndPassword: jest.fn(),
+}));
+
 describe('<Login />', () => {
   it('renders correctly', async () => {
     // Creates a snapshot located here: Practice_10k_Music_App/src/screens/auth/__snapshots__
