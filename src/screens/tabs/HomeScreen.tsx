@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useAuthentication } from '../utils/hooks/useAuthentication';
+import { useAuthentication } from '../../utils/hooks/useAuthentication';
 import { getAuth, signOut } from 'firebase/auth';
 
 const auth = getAuth()

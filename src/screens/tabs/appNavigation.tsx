@@ -1,12 +1,12 @@
 import React from 'react';
+import { Ionicons } from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'
+
 
 // Import our custom screens here
-import JournalScreen from './screens/JournalScreen';
-import HomeScreen from './screens/HomeScreen';
+import HomeScreen from './HomeScreen';
+import JournalScreen from './JournalScreen';
 
 const Tab = createBottomTabNavigator();
 
