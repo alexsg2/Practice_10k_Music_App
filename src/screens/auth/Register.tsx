@@ -5,7 +5,7 @@ import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, P
 
 const auth = getAuth();
 import authStyles from './authStyles';
-import { validateRegistrationFormat } from '../../../utils/helpers/AuthValidation';
+import { validateRegistrationFormat } from '../../utils/helpers/AuthValidation';
 
 const Register = () =>
 {
