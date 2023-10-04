@@ -4,6 +4,11 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Register from './Register';
 
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(),
+  signInWithEmailAndPassword: jest.fn(),
+}));
+
 describe('<Register />', () => {
   it('renders correctly', async () => {
     const tree = render(
