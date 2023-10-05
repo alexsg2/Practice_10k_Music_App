@@ -16,7 +16,7 @@ const Start = () =>
         <ScrollView contentContainerStyle={authStyles.scrollContainer}>
             <View style={authStyles.container}>
                 <View style={authStyles.logoContainer}>
-                    <Image source={require('../../assets/images/white-logo.png')} style={authStyles.logo}/>
+                    <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
                     <Text style={authStyles.headerText}>All-in-One Practice Hub.</Text>
                 </View>
                 <View style={authStyles.buttonContainer}>

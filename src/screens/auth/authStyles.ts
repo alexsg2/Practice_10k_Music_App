@@ -22,14 +22,9 @@ export default StyleSheet.create(
         justifyContent: 'flex-start',
     },
     backContainer: {
-        top: '10%',
+        top: '7%',
         left: '-40%',
         position: 'relative',
-    },
-    back: {
-        width: 30,
-        height: 27,
-        tintColor: 'white',
     },
     logoContainer: {
         width: '80%',

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
@@ -8,7 +9,7 @@ import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, P
 const auth = getAuth();
 import authStyles from './authStyles';
 import { AuthStackParamList } from './authNavigation';
-import { validateLoginFormat } from '../../utils/helpers/AuthValidation';
+import { validateLoginFormat } from '../../utils/helpers/authValidation';
 
 type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -42,11 +43,11 @@ const Login = () =>
                     <View style={authStyles.innerContainer}>
                         <View style={authStyles.backContainer}>
                             <TouchableOpacity onPress={() => navigation.navigate('Start')}>
-                                <Image style={authStyles.back} source={require('../../assets/images/back-arrow.png')}/>
+                                <Ionicons name="arrow-back" size={40} color='white'/>
                             </TouchableOpacity>
                         </View>
                         <View style={authStyles.logoContainer}>
-                            <Image source={require('../../assets/images/white-logo.png')} style={authStyles.logo}/>
+                            <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
                             <Text style={authStyles.headerText}>Hello.</Text>
                         </View>
                         <View style={authStyles.errorContainer}>

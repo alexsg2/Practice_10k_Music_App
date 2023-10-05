@@ -3,7 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-na
 import {Calendar, Agenda, ExpandableCalendar, CalendarProvider, AgendaList} from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
 
-const JournalScreen: React.FC = () => {
+const Journal: React.FC = () => {
 
     const [selected, setSelected] = useState('');
 
@@ -124,4 +124,4 @@ const JournalScreen: React.FC = () => {
     },
   });
   
-  export default JournalScreen;
+  export default Journal;
