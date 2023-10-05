@@ -55,6 +55,6 @@ export default AppNavigation;
 const styles = StyleSheet.create(
 {
     header: {
-        height: 100,
+        height: 115,
     },
 });

@@ -8,7 +8,7 @@ import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, P
 const auth = getAuth();
 import authStyles from './authStyles';
 import { AuthStackParamList } from './authNavigation';
-import { validateRegistrationFormat } from '../../utils/helpers/authValidation';
+import { validateRegistrationFormat } from '../../helpers/AuthValidation';
 
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
