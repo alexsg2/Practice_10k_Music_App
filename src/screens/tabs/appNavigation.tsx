@@ -25,12 +25,12 @@ function AppNavigation()
                               headerTitle: () => <TabHeader title="Home"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="Practice" component={Home} 
+                <Tab.Screen name="Practice" component={Practice} 
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
                               headerTitle: () => <TabHeader title="Practice"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="Progress" component={Home} 
+                <Tab.Screen name="Progress" component={Progress} 
                     options={{tabBarIcon: (tabInfo) => (<AntDesign name="barschart" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
                               headerTitle: () => <TabHeader title="Progress"/>, 
                               headerStyle: styles.header,
