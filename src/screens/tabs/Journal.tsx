@@ -64,25 +64,26 @@ const Journal: React.FC = () => {
     
     return (
       // TODO : Cannot exit calendar view when it's been pulled down.
-      <SafeAreaView style={styles.calendar}>
-        <Agenda
-            items={agendaItems}
-            renderItem={(item, isFirst) => (
-                <TouchableOpacity style={styles.item}>
-                  <Ionicons name='musical-note' size={30}></Ionicons>
-                  <Text style={styles.itemText}>{item.name}</Text>
-                </TouchableOpacity>
-            )}
-            onDayPress={day => {
-              setSelected(day.dateString);
-          }}
-            renderEmptyDate={renderEmptyDate}
-            renderEmptyData={renderEmptyDate}
-            theme={{
-              dotColor: 'red'
-            }}
-            />
-      </SafeAreaView>
+      // <SafeAreaView style={styles.calendar}>
+      //   <Agenda
+      //       items={agendaItems}
+      //       renderItem={(item, isFirst) => (
+      //           <TouchableOpacity style={styles.item}>
+      //             <Ionicons name='musical-note' size={30}></Ionicons>
+      //             <Text style={styles.itemText}>{item.name}</Text>
+      //           </TouchableOpacity>
+      //       )}
+      //       onDayPress={day => {
+      //         setSelected(day.dateString);
+      //     }}
+      //       renderEmptyDate={renderEmptyDate}
+      //       renderEmptyData={renderEmptyDate}
+      //       theme={{
+      //         dotColor: 'red'
+      //       }}
+      //       />
+      // </SafeAreaView>
+      null
     );
   };
 

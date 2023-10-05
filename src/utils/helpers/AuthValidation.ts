@@ -2,7 +2,6 @@
  * Helper functions to validate user information (i.e., Name, Email,
  * Password) format during login and registration.
  */
-// Test comment
 
 export function validateRegistrationFormat(name: string, email: string, newPassword: string, confPassword: string): string | null
 {
