@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-
+import { DesignLibrary } from '../../assets/DesignLibrary';
 
 // TODO: use library font and color themes
 
@@ -13,7 +13,7 @@ export default StyleSheet.create(
         flexGrow: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#5982C2',
+        backgroundColor: DesignLibrary.color_pallete.login_blue["default"],
     },
     innerContainer: {
         flexGrow: 1,
@@ -36,8 +36,8 @@ export default StyleSheet.create(
         marginTop: '30%',
     },
     headerText: {
-        fontSize: 30,
-        color: 'white',
+        fontSize: DesignLibrary.fontSizes.header,
+        color: DesignLibrary.color_pallete.white_gradiant["default"],
         textAlign: 'center',
         marginVertical: '5%',
     },
@@ -48,8 +48,8 @@ export default StyleSheet.create(
         marginVertical: '2.5%',
     },
     errorText: {
-        fontSize: 14,
-        color: 'yellow',
+        fontSize: DesignLibrary.fontSizes.errorText,
+        color: DesignLibrary.color_pallete.yellow_gradiant["default"],
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -60,12 +60,12 @@ export default StyleSheet.create(
     input: {
         width: '100%',
         padding: '7%',
-        color: 'white',
+        color: DesignLibrary.color_pallete.white_gradiant["default"],
         borderRadius: 10,
         alignItems: 'center',
         marginVertical: '5%',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+        backgroundColor: DesignLibrary.color_pallete.white_gradiant["20%"],
     },
     buttonContainer: {
         width: '80%',
@@ -80,16 +80,16 @@ export default StyleSheet.create(
         marginVertical: '5%',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: DesignLibrary.color_pallete.white_gradiant["70%"],
     },
     buttonText: {
-        fontSize: 18,
-        color: 'white',
+        fontSize: DesignLibrary.fontSizes.buttonText,
+        color: DesignLibrary.color_pallete.white_gradiant["default"],
         fontWeight: 'bold',
     },
     footerText: {
-        fontSize: 14,
-        color: 'white',
+        fontSize: DesignLibrary.fontSizes.footerText,
+        color: DesignLibrary.color_pallete.white_gradiant["default"],
         textDecorationLine: 'underline',
     },
 });
