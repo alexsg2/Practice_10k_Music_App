@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { increment } from '../../redux/actions';
 import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
@@ -20,6 +22,8 @@ const Login = () =>
     const [error, setError] = useState('');
 
     const navigation = useNavigation<loginScreenProp>();
+    const dispatch = useDispatch();
+    const { count } = useSelector((state: any) => state.counter);
     
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);
@@ -71,8 +75,8 @@ const Login = () =>
                             />
                         </View>
                         <View style={authStyles.buttonContainer}>
-                            <TouchableOpacity onPress={handleLogin} style={authStyles.button}>
-                                <Text style={authStyles.buttonText}>Login</Text>
+                            <TouchableOpacity onPress={() => dispatch(increment())} style={authStyles.button}>
+                                <Text style={authStyles.buttonText}>Login {count}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                                 <Text style={authStyles.footerText}>Not registered? Click here.</Text>
