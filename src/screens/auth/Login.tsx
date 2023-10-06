@@ -3,7 +3,9 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
+import { increment } from '../../redux/actions';
 
 import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
@@ -20,6 +22,8 @@ const Login = () =>
     const [password, setPassword] = useState('');
 
     const navigation = useNavigation<loginScreenProp>();
+    const dispatch = useDispatch();
+    const { count } = useSelector((state: any) => state.counter);
     
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);

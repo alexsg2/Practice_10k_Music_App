@@ -9,6 +9,9 @@ import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
+import { decrement } from '../../redux/actions';
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_nav';
@@ -30,8 +33,13 @@ const Register = () =>
 
     const navigation = useNavigation<registerScreenProp>();
 
-    async function handleRegister() {
-        const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);
+    // async function handleRegister() {
+    //     const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);
+    // const dispatch = useDispatch();
+    // const { count } = useSelector((state: any) => state.counter);
+    
+    async function handleRegistering() {
+        const registerError = validateRegistrationFormat(name, email, newPassword, confPassword);
         if (registerError) {
             Alert.alert('Invalid Registration', registerError, [ {text: 'OK'} ]);
         }
