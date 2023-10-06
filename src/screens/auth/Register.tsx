@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { decrement } from '../../redux/actions';
 import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
 const auth = getAuth();
@@ -23,8 +21,6 @@ const Register = () =>
     const [error, setError] = useState('');
 
     const navigation = useNavigation<registerScreenProp>();
-    const dispatch = useDispatch();
-    const { count } = useSelector((state: any) => state.counter);
     
     async function handleRegistering() {
         const registerError = validateRegistrationFormat(name, email, newPassword, confPassword);
@@ -93,8 +89,8 @@ const Register = () =>
                             />
                         </View>
                         <View style={authStyles.buttonContainer}>
-                            <TouchableOpacity onPress={() => dispatch(decrement())} style={authStyles.button}>
-                                <Text style={authStyles.buttonText}>Register {count}</Text>
+                            <TouchableOpacity onPress={handleRegistering} style={authStyles.button}>
+                                <Text style={authStyles.buttonText}>Register</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                                 <Text style={authStyles.footerText}>Already a user? Click here.</Text>
