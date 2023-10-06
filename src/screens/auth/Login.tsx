@@ -22,8 +22,6 @@ const Login = () =>
     const [password, setPassword] = useState('');
 
     const navigation = useNavigation<loginScreenProp>();
-    const dispatch = useDispatch();
-    const { count } = useSelector((state: any) => state.counter);
     
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);
