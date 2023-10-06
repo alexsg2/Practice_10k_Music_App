@@ -1,10 +1,13 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import './config/firebase';
 import RootNavigation from './navigation';
-import AuthNavigator from './src/screens/auth/AuthNavigator';
+import store from './src/redux/store';
 
 export default function App() {
   return (
-    <RootNavigation/>
+    <Provider store={store}>
+      <RootNavigation />
+    </Provider>
   );
 }
