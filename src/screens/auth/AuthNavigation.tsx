@@ -1,6 +1,11 @@
 import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+
+import { DesignLibrary } from '../../assets/DesignLibrary';
 
 
 import Start from './Start';
@@ -14,32 +19,54 @@ export type AuthStackParamList = {
     Register: undefined;
     ProfileSetup: undefined;
 };
-  
 const Stack = createStackNavigator<AuthStackParamList>();
-  
-export const AuthNavigation = () => {
+
+
+const AuthNavigation = () =>
+{
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Start">
                 <Stack.Screen
-                    options={{ headerShown: false }}
+                    options={{ 
+                        headerStyle: { backgroundColor: DesignLibrary.color_pallete.login_blue["default"] },
+                        headerShadowVisible: false,
+                        headerTitle: "" }}
                     name="Start"
-                    component={Start}
+                    component={ Start }
                 />
                 <Stack.Screen
-                    options={{ headerShown: false }}
+                    options={({ navigation }) => ({
+                        headerStyle: { backgroundColor: DesignLibrary.color_pallete.login_blue["default"] },
+                        headerShadowVisible: false,
+                        headerLeft: () => (
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <Ionicons name="arrow-back" size={40} color='white' left="7%"/>
+                            </TouchableOpacity>
+                        ),
+                        headerTitle: "" })}
                     name="Login"
-                    component={Login}
+                    component={ Login }
                 />
                 <Stack.Screen
-                    options={{ headerShown: false }}
+                    options={({ navigation }) => ({
+                        headerStyle: { backgroundColor: DesignLibrary.color_pallete.login_blue["default"] },
+                        headerShadowVisible: false,
+                        headerLeft: () => (
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <Ionicons name="arrow-back" size={40} color='white' left="7%"/>
+                            </TouchableOpacity>
+                        ),
+                        headerTitle: "" })}
                     name="Register"
-                    component={Register}
+                    component={ Register }
                 />
                 <Stack.Screen
-                    options={{ headerShown: false }}
+                    options={{ 
+                        headerStyle: { backgroundColor: DesignLibrary.color_pallete.login_blue["default"] },
+                        headerTitle: "Setup Profile" }}
                     name="ProfileSetup"
-                    component={ProfileSetup}
+                    component={ ProfileSetup }
                 />
             </Stack.Navigator>
         </NavigationContainer>

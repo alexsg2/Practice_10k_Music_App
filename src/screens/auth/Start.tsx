@@ -1,34 +1,38 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ScrollView, View, Image, TouchableOpacity, Text } from 'react-native';
+import { SafeAreaView, ScrollView, View, Image, TouchableOpacity, Text } from 'react-native';
 
-import { AuthStackParamList } from './authNavigation';
+
 import authStyles from './authStyles';
 
+import { AuthStackParamList } from './AuthNavigation';
 type startScreenProp = StackNavigationProp<AuthStackParamList, 'Start'>;
+
 
 const Start = () =>
 {
     const navigation = useNavigation<startScreenProp>();
     
     return (
-        <ScrollView contentContainerStyle={authStyles.scrollContainer}>
-            <View style={authStyles.container}>
-                <View style={authStyles.logoContainer}>
-                    <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
-                    <Text style={authStyles.headerText}>All-in-One Practice Hub.</Text>
+        <SafeAreaView style={authStyles.safeContainer}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={authStyles.innerContainer}>
+                    <View style={authStyles.logoContainer}>
+                        <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
+                        <Text style={authStyles.titleText}>All-in-One Practice Hub.</Text>
+                    </View>
+                    <View style={authStyles.buttonContainer}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={authStyles.button}>
+                            <Text style={authStyles.buttonText}>Login</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Register')} style={authStyles.button}>
+                            <Text style={authStyles.buttonText}>Register</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={authStyles.buttonContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={authStyles.button}>
-                        <Text style={authStyles.buttonText}>Login</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Register')} style={authStyles.button}>
-                        <Text style={authStyles.buttonText}>Register</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 

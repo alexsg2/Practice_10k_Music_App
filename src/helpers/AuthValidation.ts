@@ -1,12 +1,11 @@
 /*
- * Helper functions to validate user information (i.e., Name, Email,
+ * Helper functions to validate user information (i.e., Email and
  * Password) format during login and registration.
  */
 
-
-export function validateRegistrationFormat(name: string, email: string, newPassword: string, confPassword: string): string | null
+export function validateRegistrationFormat(email: string, newPassword: string, confPassword: string): string | null
 {
-    if (!name || !email || !newPassword || !confPassword) {
+    if (!email || !newPassword || !confPassword) {
         return 'All fields are required.';
     }
 
