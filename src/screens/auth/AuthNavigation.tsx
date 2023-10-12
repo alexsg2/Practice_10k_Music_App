@@ -10,12 +10,14 @@ import { DesignLibrary } from '../../assets/DesignLibrary';
 
 import Start from './Start';
 import Login from './Login';
+import ResetPassword from './ResetPassword';
 import Register from './Register';
 import ProfileSetup from './ProfileSetup';
 
 export type AuthStackParamList = {
     Start: undefined;
     Login: undefined;
+    ResetPassword: undefined;
     Register: undefined;
     ProfileSetup: undefined;
 };
@@ -47,6 +49,19 @@ const AuthNavigation = () =>
                         headerTitle: "" })}
                     name="Login"
                     component={ Login }
+                />
+                <Stack.Screen
+                    options={({ navigation }) => ({
+                        headerStyle: { backgroundColor: DesignLibrary.color_pallete.login_blue["default"] },
+                        headerShadowVisible: false,
+                        headerLeft: () => (
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <Ionicons name="arrow-back" size={40} color='white' left="7%"/>
+                            </TouchableOpacity>
+                        ),
+                        headerTitle: "" })}
+                    name="ResetPassword"
+                    component={ ResetPassword }
                 />
                 <Stack.Screen
                     options={({ navigation }) => ({

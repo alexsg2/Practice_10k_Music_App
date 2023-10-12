@@ -79,6 +79,24 @@ export default StyleSheet.create(
         marginVertical: '5%',
         backgroundColor: DesignLibrary.color_pallete.white_gradiant["20%"],
     },
+    dropdownContainer: {
+        width: '100%',
+        padding: '7%',
+        borderRadius: 10,
+        marginVertical: '5%',
+        justifyContent: 'center',
+        backgroundColor: DesignLibrary.color_pallete.white_gradiant["20%"],
+    },
+    dropdownText: {
+        fontSize: 14,
+        color: DesignLibrary.color_pallete.white_gradiant["default"],
+    },
+    dropdown: {
+        width: '100%',
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 5,
+      },
     instrumentContainer: {
         width: '100%',
         padding: '7%',
@@ -86,7 +104,6 @@ export default StyleSheet.create(
         marginVertical: '5%',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        color: DesignLibrary.color_pallete.white_gradiant["default"],
         backgroundColor: DesignLibrary.color_pallete.white_gradiant["20%"],
     },
     instrumentInput: {
@@ -107,13 +124,12 @@ export default StyleSheet.create(
         paddingHorizontal: '7%',
         borderRadius: 10,
         marginVertical: '5%',
-        color: DesignLibrary.color_pallete.white_gradiant["default"],
         backgroundColor: DesignLibrary.color_pallete.white_gradiant["50%"],
     },
     selectedInstrument: {
+        marginVertical: '7%',
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: '7%',
         justifyContent: 'space-between',
     },
     selectedInstrumentText: {

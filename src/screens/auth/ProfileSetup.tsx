@@ -11,12 +11,13 @@ const ProfileSetup = () =>
 {
     const [profilePicture, setProfilePicture] = useState(null);
     const [name, setName] = useState('');
-    const [age, setAge] = useState('');
-    // const allAges = ["Select Your Age", "Under 12", "12-17", "18-24", "25-40", "41-65", "Above 65"];
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
+
     const [instrument, setInstrument] = useState('');
     const [instruments, setInstruments] = useState<string[]>([]);
     const [level, setLevel] = useState('');
-    // const allLevels = ["Select Your Level", "Beginner/Amateur", "Intermediate", "Pre-collegiate", "University/Conservatory", "Professional"];
+    const allLevels = ["Select Your Level", "Beginner/Amateur", "Intermediate", "Pre-collegiate", "University/Conservatory", "Professional"];
     
 
     async function handleSaveProfile() {
@@ -35,6 +36,16 @@ const ProfileSetup = () =>
         updatedInstruments.splice(index, 1);
         setInstruments(updatedInstruments);
     };
+
+    const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShowDatePicker(Platform.OS === 'ios'); // Hide the date picker on iOS
+        setDate(currentDate);
+      };
+    
+      const showDatepicker = () => {
+        setShowDatePicker(true);
+      };
 
     return (
         <SafeAreaView style={authStyles.safeContainer}>
@@ -56,7 +67,41 @@ const ProfileSetup = () =>
                                     value={name}
                                     style={authStyles.input}
                                 />
-                                {/* TODO: add age */}
+                                <TouchableOpacity onPress={showDatepicker}>
+                                    <Text>Show Date Picker</Text>
+                                </TouchableOpacity>
+                                {showDatePicker && (
+                                    <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode="date"
+                                    display="default"
+                                    onChange={onChange}
+                                    />
+                                )}
+                                <View style={authStyles.dobContainer}>
+                                    <TextInput
+                                        placeholder="Date of Birth"
+                                        placeholderTextColor="white"
+                                        onChangeText={(text) => setDob(text)}
+                                        value={dob}
+                                        style={authStyles.input}
+                                        onSubmitEditing={addInstrument}
+                                    />
+                                    <TouchableOpacity onPress={addInstrument}>
+                                        <Ionicons name="calendar-sharp" size={30} color="white"/>
+                                    </TouchableOpacity>
+                                </View>
+                                {/* TODO: dropdown not working */}
+                                <View style={authStyles.dropdownContainer}>
+                                    <ModalDropdown
+                                        options={allAges}
+                                        defaultValue="Select Your Age"
+                                        textStyle={authStyles.dropdownText}
+                                        dropdownStyle={authStyles.dropdown}
+                                        onSelect={(idx, value) => setAge(value)}
+                                    />
+                                </View>
                                 <View style={authStyles.instrumentContainer}>
                                     <TextInput
                                         placeholder="Add Instrument"
@@ -86,25 +131,15 @@ const ProfileSetup = () =>
                                     </View>
                                 )}
                                 {/* TODO: add level */}
-                                
-                                {/* <ModalDropdown
-                                    options={allAges}
-                                    renderButtonText={(option) => option}
-                                    defaultValue="Select Your Age"
-                                    onSelect={(index, value) => setAge(value)}
-                                    style={authStyles.dropdownContainer}
-                                    textStyle={authStyles.dropdownText}
-                                    ref={(ref) => (dropdownRef = ref)}
-                                >
-                                    {dropdownButton}
-                                </ModalDropdown>
-                                <ModalDropdown
-                                    options={allLevels}
-                                    defaultValue="Select Your Level"
-                                    onSelect={(index, value) => setLevel(value)}
-                                    style={authStyles.dropdownContainer}
-                                    textStyle={authStyles.dropdownText}
-                                /> */}
+                                <View style={authStyles.dropdownContainer}>
+                                    <ModalDropdown
+                                        options={allLevels}
+                                        defaultValue="Select Your Level"
+                                        textStyle={authStyles.dropdownText}
+                                        dropdownStyle={authStyles.dropdown}
+                                        onSelect={(idx, value) => setLevel(value)}
+                                    />
+                                </View>
                             </View>
                             <View style={authStyles.buttonContainer}>
                                 <TouchableOpacity onPress={handleSaveProfile} style={authStyles.button}>
