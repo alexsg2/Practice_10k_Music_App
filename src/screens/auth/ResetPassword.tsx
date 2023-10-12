@@ -1,18 +1,45 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, View, Image, TouchableOpacity, Text, TextInput } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
+import PopupMessage from '../../components/PopupMessage';
 
 import authStyles from './authStyles';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { AuthStackParamList } from './AuthNavigation';
+import { RouteProp } from '@react-navigation/native';
+type resetScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
 
-
+interface ResetPasswordProps {
+    navigation: StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
+    route: RouteProp<AuthStackParamList, 'ResetPassword'>;
+    showPopup: (message: string) => void;
+}
 const ResetPassword = () =>
 {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
 
+    const navigation = useNavigation<resetScreenProp>();
 
     async function handleResetPassword() {
         // TODO: write the logic
+        const auth = getAuth();
+        // the email takes the user to firebase to reset password
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+            console.log("email sent");
+            navigation.navigate('Login');
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // ..
+        });
+        // navigation.navigate('Login');
+
+        
     };
 
     return (
