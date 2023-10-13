@@ -12,15 +12,14 @@ import Start from './Start';
 import Login from './Login';
 import ResetPassword from './ResetPassword';
 import Register from './Register';
-import ProfileSetup from './ProfileSetup';
 
 export type AuthStackParamList = {
     Start: undefined;
     Login: undefined;
     ResetPassword: undefined;
     Register: undefined;
-    ProfileSetup: undefined;
 };
+
 const Stack = createStackNavigator<AuthStackParamList>();
 
 interface ResetPasswordProps {
@@ -80,13 +79,6 @@ const AuthNavigation = () =>
                         headerTitle: "" })}
                     name="Register"
                     component={ Register }
-                />
-                <Stack.Screen
-                    options={{ 
-                        headerStyle: { backgroundColor: DesignLibrary.color_pallete.login_blue["default"] },
-                        headerTitle: "Setup Profile" }}
-                    name="ProfileSetup"
-                    component={ ProfileSetup }
                 />
             </Stack.Navigator>
         </NavigationContainer>

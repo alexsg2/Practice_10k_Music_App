@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { SafeAreaView, ScrollView, View, Image, TouchableOpacity, Text } from 'react-native';
+import { SafeAreaView, ScrollView, View, TouchableOpacity, Text } from 'react-native';
 
 
-import authStyles from './authStyles';
+import { ProfileLogoSection } from '../../components';
+import { containerStyles, bottomStyles } from "./auth_style";
 
-import { AuthStackParamList } from './AuthNavigation';
+import { AuthStackParamList } from './auth_nav';
 type startScreenProp = StackNavigationProp<AuthStackParamList, 'Start'>;
 
 
@@ -15,19 +16,16 @@ const Start = () =>
     const navigation = useNavigation<startScreenProp>();
     
     return (
-        <SafeAreaView style={authStyles.safeContainer}>
+        <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={authStyles.innerContainer}>
-                    <View style={authStyles.logoContainer}>
-                        <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
-                        <Text style={authStyles.titleText}>All-in-One Practice Hub.</Text>
-                    </View>
-                    <View style={authStyles.buttonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={authStyles.button}>
-                            <Text style={authStyles.buttonText}>Login</Text>
+                <View style={containerStyles.innerContainer}>
+                    <ProfileLogoSection profile={false}/>
+                    <View style={containerStyles.buttonContainer}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={bottomStyles.button}>
+                            <Text style={bottomStyles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('Register')} style={authStyles.button}>
-                            <Text style={authStyles.buttonText}>Register</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Register')} style={bottomStyles.button}>
+                            <Text style={bottomStyles.buttonText}>Register</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -4,10 +4,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import PopupMessage from '../../components/PopupMessage';
 
-import authStyles from './authStyles';
+import { ProfileLogoSection } from '../../components';
+import { containerStyles, inputStyles, bottomStyles } from "./auth_style";
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
-import { AuthStackParamList } from './AuthNavigation';
+import { AuthStackParamList } from './auth_nav';
 import { RouteProp } from '@react-navigation/native';
 type resetScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
 
@@ -43,28 +44,25 @@ const ResetPassword = () =>
     };
 
     return (
-        <SafeAreaView style={authStyles.safeContainer}>
+        <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={authStyles.innerContainer}>
-                    <View style={authStyles.logoContainer}>
-                        <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
-                        <Text style={authStyles.titleText}>Reset Your Password.</Text>
-                    </View>
-                    <View style={authStyles.inputContainer}>
+                <View style={containerStyles.innerContainer}>
+                    <ProfileLogoSection profile={false}/>
+                    <View style={containerStyles.inputContainer}>
                         <TextInput
+                            style={inputStyles.inputBox}
                             placeholder='Email'
                             placeholderTextColor='white'
                             onChangeText={(text) => setEmail(text)}
                             value={email}
-                            style={authStyles.input}
                         />
                     </View>
-                    <View style={authStyles.errorContainer}>
-                            <Text style={authStyles.errorText}>{error}</Text>
+                    <View style={containerStyles.errorContainer}>
+                        <Text style={inputStyles.errorText}>{error}</Text>
                     </View>
-                    <View style={authStyles.buttonContainer}>
-                        <TouchableOpacity onPress={handleResetPassword} style={authStyles.button}>
-                            <Text style={authStyles.buttonText}>Reset Password</Text>
+                    <View style={containerStyles.buttonContainer}>
+                        <TouchableOpacity onPress={handleResetPassword} style={bottomStyles.button}>
+                            <Text style={bottomStyles.buttonText}>Reset Password</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

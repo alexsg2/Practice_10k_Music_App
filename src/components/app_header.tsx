@@ -1,24 +1,23 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 
 export type TabHeaderStackParamList = {
     Home: undefined;
     Profile: undefined;
 };
- 
 type HeaderNavigationProp = NavigationProp<TabHeaderStackParamList, 'Home' | 'Profile'>;
+
 
 interface HeaderProp {
     title: string;
 }
 
-const TabHeader: React.FC<HeaderProp> = ({ title }) =>
+const AppHeader: React.FC<HeaderProp> = ({ title }) =>
 {
     const navigation = useNavigation<HeaderNavigationProp>();
-    // TODO : home navigation isn't working
+
     return (
         <View style={styles.container}>
             <View style={styles.logoContainer}>
@@ -30,6 +29,7 @@ const TabHeader: React.FC<HeaderProp> = ({ title }) =>
                 <Text style={styles.titleText}>{title}</Text>
             </View>
             <View style={styles.profileContainer}>
+                {/* TODO : get user profile picture */}
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                     <Image source={require('../assets/images/temp-profile.avif')} style={styles.profile} />
                 </TouchableOpacity>
@@ -38,11 +38,7 @@ const TabHeader: React.FC<HeaderProp> = ({ title }) =>
   );
 };
 
-TabHeader.propTypes = {
-    title: PropTypes.string.isRequired,
-};
-
-export default TabHeader;
+export default AppHeader;
 
 const styles = StyleSheet.create(
 {

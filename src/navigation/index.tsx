@@ -3,7 +3,7 @@ import { useAuthentication } from '../utils/hooks/useAuthentication';
 
 
 import UserStack from './userStack';
-import AuthStack from './authStack';
+import AuthStack from './auth_stack';
 
 export default function RootNavigation()
 {

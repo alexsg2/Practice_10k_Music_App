@@ -5,89 +5,117 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
+import { containerStyles, inputStyles, bottomStyles } from "./auth_style";
+import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
+import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
+
 const auth = getAuth();
-import authStyles from './authStyles';
-import { AuthStackParamList } from './AuthNavigation';
-import { validateRegistrationFormat } from '../../helpers/AuthValidation';
+import { AuthStackParamList } from './auth_nav';
+import { validateRegistrationFormat } from '../../helpers/validate_auth';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
 
 const Register = () =>
 {
+    const [name, setName] = useState('');
+    // TODO : note that profile picture is being saved in componet/profile_logo_section
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [instruments, setInstruments] = useState<string[]>([]);
+    const [level, setLevel] = useState<string[]>([]);          
     const [email, setEmail] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
     const [error, setError] = useState('');
+    // TODO : should error disapear after awhile ??
 
     const navigation = useNavigation<registerScreenProp>();
-    
+
     async function handleRegistering() {
-        const registerError = validateRegistrationFormat(email, newPassword, confPassword);
+        const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);
         if (registerError) {
             setError(registerError);
         }
         else {
             try {
                 await createUserWithEmailAndPassword(auth, email, newPassword);
-                // TODO : navigate to profile setup screen
             }
-            catch (e) {
-                // TODO : explain failure (i.e., does user already exist? Or another reason)
-                setError('Could not register user.');
+            catch (error: any) {
+                // TODO : fix this
+                // if (error.code === 'user-not-found') {
+                //     setError('No account with the given email exists.');
+                // }
+                // else if (error.code === 'wrong-password') {
+                //     setError('Password is incorrect.');
+                // }
+                // else {
+                //     setError(error.code);
+                // }
             }
         }
     }
     
     return (
-        // TODO : make screen automatically scroll up when keyboard is enabled for 
-        //        input fields at the bottom.
-        <SafeAreaView style={authStyles.safeContainer}>
+        <SafeAreaView style={containerStyles.safeContainer}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={authStyles.innerContainer}>
-                            <View style={authStyles.logoContainer}>
-                                <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
-                                <Text style={authStyles.titleText}>Hello.</Text>
-                            </View>
-                            <View style={authStyles.errorContainer}>
-                                <Text style={authStyles.errorText}>{error}</Text>
-                            </View>
-                            <View style={authStyles.inputContainer}>
+                        <View style={containerStyles.innerContainer}>
+                            <ProfileLogoSection profile={true}/>
+                            <View style={containerStyles.inputContainer}>
+                                <Text style={inputStyles.labelText}>Name</Text>
                                 <TextInput
-                                    placeholder='Email'
-                                    placeholderTextColor='white'
+                                    style={inputStyles.inputBox}
+                                    placeholder='First Last'
+                                    placeholderTextColor='#CCCCCC'
+                                    onChangeText={(text) => setName(text)}
+                                    value={name}
+                                />
+                                <Text style={inputStyles.labelText}>Date of Birth</Text>
+                                <DropdownCalendar selectedDate={dateOfBirth} setDate={setDateOfBirth}/>
+                                <Text style={inputStyles.labelText}>Email</Text>
+                                <TextInput
+                                    style={inputStyles.inputBox}
+                                    placeholder='you@example.com'
+                                    placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setEmail(text)}
                                     value={email}
-                                    style={authStyles.input}
                                 />
+                                <Text style={inputStyles.labelText}>Instrument(s)</Text>
+                                <DropdownSelector dataList={INSTRUMENTS} multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}/>
+                                <Text style={inputStyles.labelText}>Musical Level</Text>
+                                <DropdownSelector dataList={LEVELS} multiselect={false} selectedItems={level} setSelectedItems={setLevel}/>
+                                <Text style={inputStyles.labelText}>New Password</Text>
                                 <TextInput
-                                    placeholder='New Password'
-                                    placeholderTextColor='white'
+                                    style={inputStyles.inputBox}
+                                    placeholder='Enter a password'
+                                    placeholderTextColor='#CCCCCC'
+                                    secureTextEntry
                                     onChangeText={(text) => setNewPassword(text)}
                                     value={newPassword}
-                                    secureTextEntry
-                                    style={authStyles.input}
                                 />
+                                <Text style={inputStyles.labelText}>Confirm Password</Text>
                                 <TextInput
-                                    placeholder='Confirm Password'
-                                    placeholderTextColor='white'
+                                    style={inputStyles.inputBox}
+                                    placeholder="Re-enter password above"
+                                    placeholderTextColor='#CCCCCC'
+                                    secureTextEntry
                                     onChangeText={(text) => setConfPassword(text)}
                                     value={confPassword}
-                                    secureTextEntry
-                                    style={authStyles.input}
                                 />
                             </View>
-                            <View style={authStyles.buttonContainer}>
-                                <TouchableOpacity onPress={handleRegistering} style={authStyles.button}>
-                                    <Text style={authStyles.buttonText}>Register</Text>
+                            <View style={containerStyles.errorContainer}>
+                                <Text style={inputStyles.errorText}>{error}</Text>
+                            </View>
+                            <View style={containerStyles.buttonContainer}>
+                                <TouchableOpacity onPress={handleRegistering} style={bottomStyles.button}>
+                                    <Text style={bottomStyles.buttonText}>Register</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                                    <Text style={authStyles.footerText}>Already a user? Click here.</Text>
+                                    <Text style={bottomStyles.footerText}>Already a user? Click here.</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                    </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>   
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>

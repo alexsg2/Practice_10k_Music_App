@@ -13,7 +13,7 @@ import Journal from './Journal';
 import Profile from './Profile';
 
 const Tab = createBottomTabNavigator();
-import TabHeader from '../../components/tabHeader';
+import AppHeader from '../../components';
 
 function AppNavigation()
 {
@@ -22,27 +22,27 @@ function AppNavigation()
             <Tab.Navigator>
                 <Tab.Screen name="Home" component={Home} 
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="home-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
-                              headerTitle: () => <TabHeader title="Home"/>, 
+                              headerTitle: () => <AppHeader title="Home"/>, 
                               headerStyle: styles.header,
                             }}/>
                 <Tab.Screen name="Practice" component={Practice} 
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
-                              headerTitle: () => <TabHeader title="Practice"/>, 
+                              headerTitle: () => <AppHeader title="Practice"/>, 
                               headerStyle: styles.header,
                             }}/>
                 <Tab.Screen name="Progress" component={Progress} 
                     options={{tabBarIcon: (tabInfo) => (<AntDesign name="barschart" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
-                              headerTitle: () => <TabHeader title="Progress"/>, 
+                              headerTitle: () => <AppHeader title="Progress"/>, 
                               headerStyle: styles.header,
                             }}/>
                 <Tab.Screen name="Journal" component={Journal}
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
-                              headerTitle: () => <TabHeader title="Journal"/>, 
+                              headerTitle: () => <AppHeader title="Journal"/>, 
                               headerStyle: styles.header,
                             }}/>
                 <Tab.Screen name="Profile" component={Profile}
                     options={{tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
-                              headerTitle: () => <TabHeader title="Profile"/>, 
+                              headerTitle: () => <AppHeader title="Profile"/>, 
                               headerStyle: styles.header,
                             }}/>
               </Tab.Navigator>
