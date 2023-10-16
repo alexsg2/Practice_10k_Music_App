@@ -5,9 +5,10 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
-import { containerStyles, inputStyles, bottomStyles } from "./auth_styles";
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
+import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
+
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_nav';
@@ -53,42 +54,50 @@ const Register = () =>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection title={''} profile={true}/>
+                            <ProfileLogoSection title={''} profile={true} altStyle={[componentStyles.authTitleText, componentStyles.authChangePictureButton, componentStyles.authChangeText]}/>
                             <View style={containerStyles.inputContainer}>
-                                <Text style={inputStyles.labelText}>Name</Text>
+                                <Text style={inputStyles.authLabelText}>Name</Text>
                                 <TextInput
-                                    style={inputStyles.inputBox}
+                                    style={inputStyles.authInputBox}
                                     placeholder='Enter your name'
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setName(text)}
                                     value={name}
                                 />
-                                <Text style={inputStyles.labelText}>Date of Birth</Text>
-                                <DropdownCalendar title={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}/>
-                                <Text style={inputStyles.labelText}>Email</Text>
+                                <Text style={inputStyles.authLabelText}>Date of Birth</Text>
+                                <DropdownCalendar title={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authCalendarBox]}
+                                />
+                                <Text style={inputStyles.authLabelText}>Email</Text>
                                 <TextInput
-                                    style={inputStyles.inputBox}
+                                    style={inputStyles.authInputBox}
                                     placeholder='Enter email address'
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setEmail(text)}
                                     value={email}
                                 />
-                                <Text style={inputStyles.labelText}>Instrument(s)</Text>
-                                <DropdownSelector title={'Select your instrument(s)'} dataList={INSTRUMENTS} multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}/>
-                                <Text style={inputStyles.labelText}>Musical Level</Text>
-                                <DropdownSelector title={'Select your level'} dataList={LEVELS} multiselect={false} selectedItems={level} setSelectedItems={setLevel}/>
-                                <Text style={inputStyles.labelText}>New Password</Text>
+                                <Text style={inputStyles.authLabelText}>Instrument(s)</Text>
+                                <DropdownSelector title={'Select your instrument(s)'} dataList={INSTRUMENTS}
+                                                  multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
+                                />
+                                <Text style={inputStyles.authLabelText}>Musical Level</Text>
+                                <DropdownSelector title={'Select your level'} dataList={LEVELS}
+                                                  multiselect={false} selectedItems={level} setSelectedItems={setLevel}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
+                                />
+                                <Text style={inputStyles.authLabelText}>New Password</Text>
                                 <TextInput
-                                    style={inputStyles.inputBox}
+                                    style={inputStyles.authInputBox}
                                     placeholder='Enter a password'
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
                                     onChangeText={(text) => setNewPassword(text)}
                                     value={newPassword}
                                 />
-                                <Text style={inputStyles.labelText}>Confirm Password</Text>
+                                <Text style={inputStyles.authLabelText}>Confirm Password</Text>
                                 <TextInput
-                                    style={inputStyles.inputBox}
+                                    style={inputStyles.authInputBox}
                                     placeholder="Re-enter password above"
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
@@ -97,7 +106,7 @@ const Register = () =>
                                 />
                             </View>
                             <View style={containerStyles.buttonContainer}>
-                                <TouchableOpacity onPress={handleRegister} style={bottomStyles.button}>
+                                <TouchableOpacity onPress={handleRegister} style={bottomStyles.blackButton}>
                                     <Text style={bottomStyles.buttonText}>Register</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>

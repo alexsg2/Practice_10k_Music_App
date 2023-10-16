@@ -10,7 +10,7 @@ import Home from './Home';
 import Practice from './Practice';
 import Progress from './Progress';
 import Journal from './Journal';
-import Profile from './ProfileSection/Profile';
+import Profile from './Profile';
 
 const Tab = createBottomTabNavigator();
 import { AppHeader } from '../../components';

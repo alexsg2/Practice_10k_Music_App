@@ -11,9 +11,10 @@ interface DropDownProp {
     multiselect: boolean,
     selectedItems: string[];
     setSelectedItems: (items: string[]) => void;
-    altStyle?: StyleProp<ViewStyle>;
+    altStyle: StyleProp<ViewStyle>[];
 }
   
+// TODO : Issue with scrolling when we reach the bottom of the flatlist
 const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect, selectedItems, setSelectedItems, altStyle }) =>
 {
     const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
@@ -35,9 +36,9 @@ const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect
     }
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={[styles.dropdownButton, altStyle]} onPress={() => setDropdownIsOpen(!dropdownIsOpen)}>
-                <Text style={selectedItems.length > 0 ? styles.selectedText : styles.defaultText}>
+        <View>
+            <TouchableOpacity onPress={() => setDropdownIsOpen(!dropdownIsOpen)} style={[altStyle[0]]}>
+                <Text style={selectedItems.length > 0 ? altStyle[1] : altStyle[2]}>
                     {selectedItems.length > 0 ? selectedItems.join(', ') : title}
                 </Text>
                 {dropdownIsOpen ? (
@@ -47,14 +48,24 @@ const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect
                 )}
             </TouchableOpacity>
             {dropdownIsOpen ? (
-                <View style ={styles.dropdownArea}>
-                    <Text style={styles.optionsText}>Options:</Text>
+                <View style={altStyle[3]}>
+                    <Text style={{ marginVertical: '2%', fontSize: fontSizes.label, color: colorPallete.black_gradiant["default"] }}>
+                        Options:
+                    </Text>
                     <FlatList
                         data={dataList}
                         keyExtractor={(index) => index.toString()}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={[styles.dropdownItem, selectedItems.includes(item) ? styles.selectedDropdownItem : null]} onPress={() => handleItemSelect(item)}>
-                                <Text style={styles.itemText}>{item}</Text>
+                            <TouchableOpacity onPress={() => handleItemSelect(item)}
+                                              style={[{ padding: '7%', marginBottom: '2.5%', borderBottomWidth: 1, borderBottomColor: colorPallete.white_gradiant["60%"] },
+                                                        selectedItems.includes(item) ?
+                                                            { borderRadius: 10, backgroundColor: colorPallete.login_blue["default"] }
+                                                            : null
+                                                    ]} 
+                            >
+                                <Text style={{ fontSize: fontSizes.normal, color: colorPallete.black_gradiant["default"] }}>
+                                    {item}
+                                </Text>
                             </TouchableOpacity>
                         )}
                     />
@@ -65,58 +76,3 @@ const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect
 };
 
 export default DropdownSelector;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: '100%',
-    },
-    dropdownButton: {
-        width: '100%',
-        padding: '7%',
-        borderRadius: 10,
-        marginVertical: '5%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: colorPallete.white_gradiant["20%"],
-    },
-    selectedText: {
-        alignSelf: 'center',
-        fontSize: fontSizes.normal,
-        color: colorPallete.white_gradiant["default"],
-    },
-    defaultText: {
-        alignSelf: 'center',
-        fontSize: fontSizes.normal,
-        color: colorPallete.grey_gradiant["50%"],
-    },
-    dropdownArea: {
-        height: 250,
-        width: '100%',
-        paddingVertical: '5%',
-        borderRadius: 10,
-        marginBottom: '10%',
-        alignItems: 'center',
-        backgroundColor: colorPallete.white_gradiant["60%"],
-    },
-    optionsText: {
-        marginVertical: '2%',
-        fontSize: fontSizes.label,
-        color: colorPallete.black_gradiant["default"],
-    },
-    dropdownItem: {
-        padding: '7%',
-        borderBottomWidth: 1,
-        marginBottom: '2.5%',
-        borderBottomColor: colorPallete.white_gradiant["60%"],
-    },
-    selectedDropdownItem: {
-        borderRadius: 10,
-        backgroundColor: colorPallete.login_blue["default"],
-    },
-    itemText: {
-        fontSize: fontSizes.normal,
-        color: colorPallete.black_gradiant["default"],
-    },
-});

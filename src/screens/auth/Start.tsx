@@ -5,7 +5,7 @@ import { SafeAreaView, ScrollView, View, TouchableOpacity, Text } from 'react-na
 
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, bottomStyles } from "./auth_styles";
+import { containerStyles, componentStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 import { AuthStackParamList } from './auth_nav';
 type startScreenProp = StackNavigationProp<AuthStackParamList, 'Start'>;
@@ -19,12 +19,12 @@ const Start = () =>
         <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={containerStyles.innerContainer}>
-                    <ProfileLogoSection title={'All-In-One Practice Hub'} profile={false}/>
+                    <ProfileLogoSection title={'All-In-One Practice Hub'} profile={false} altStyle={[componentStyles.authTitleText]}/>
                     <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={bottomStyles.button}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={bottomStyles.blackButton}>
                             <Text style={bottomStyles.buttonText}>Login</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('Register')} style={bottomStyles.button}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Register')} style={bottomStyles.blackButton}>
                             <Text style={bottomStyles.buttonText}>Register</Text>
                         </TouchableOpacity>
                     </View>

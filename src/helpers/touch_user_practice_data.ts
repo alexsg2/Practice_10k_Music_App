@@ -43,13 +43,13 @@ export const setPraticeDataField = async (docRef: DocumentReference, field: stri
     }
 };
 
-export const fetchPraticeDataField = async (docRef: DocumentReference, field: string, value: any): Promise<void> =>
-{
-    try {
-        // TODO : write logic to fetch data
-        // await (docRef, { [field]: value });
-    }
-    catch (e) {
-        // Handle in main code
-    }
-};
+// export const fetchPraticeDataField = async (docRef: DocumentReference, field: string, value: any): Promise<void> =>
+// {
+//     try {
+//         // TODO : write logic to fetch data
+//         // await (docRef, { [field]: value });
+//     }
+//     catch (e) {
+//         // Handle in main code
+//     }
+// };

@@ -3,7 +3,7 @@
  */
 
 import { db } from '../config/firebase';
-import { doc, setDoc, deleteDoc, DocumentReference, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, DocumentReference, updateDoc, getDoc } from 'firebase/firestore';
 
 
 export const addUserData = async (userId: string, name: string, dob: string,
@@ -25,6 +25,27 @@ export const deleteUserData = async (userId: string): Promise<void> =>
     try {
         const userDocRef = doc(db, 'users', userId);
         await deleteDoc(userDocRef);
+    }
+    catch (e) {
+        // Handle in main code
+    }
+};
+
+
+export const fetchUserData = async (userId: string, field: string): Promise<any> =>
+{
+    try {
+        const userDocRef = doc(db, 'users', userId);
+        const userDocSnapshot = await getDoc(userDocRef);
+
+        if (userDocSnapshot.exists()) {
+            const userData = userDocSnapshot.data();
+            const fieldValue = userData[field];
+            return fieldValue;
+        }
+        else {
+            return null;
+        }
     }
     catch (e) {
         // Handle in main code

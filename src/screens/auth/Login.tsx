@@ -6,11 +6,11 @@ import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedbac
 
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, inputStyles, bottomStyles } from "./auth_styles";
+import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_nav';
-import { validateLoginFormat } from '../../helpers/validate_auth';
+import { validateLoginFormat } from '../../helpers';
 type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
 
@@ -31,7 +31,7 @@ const Login = () =>
                 await signInWithEmailAndPassword(auth, email, password);
             }
             catch (e) {
-                Alert.alert('Login Failed', 'Unable to login account. Please check your credentials or try again later.',
+                Alert.alert('Login Failed', 'Unable to login. Please check your credentials or try again later.',
                             [{ text: 'OK' }]);
             }
         }
@@ -43,19 +43,19 @@ const Login = () =>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection title={'Hello.'} profile={false}/>
+                            <ProfileLogoSection title={'Hello.'} profile={false} altStyle={[componentStyles.authTitleText]}/>
                             <View style={containerStyles.inputContainer}>
-                                <Text style={inputStyles.labelText}>Email</Text>
+                                <Text style={inputStyles.authLabelText}>Email</Text>
                                 <TextInput
-                                    style={inputStyles.inputBox}
+                                    style={inputStyles.authInputBox}
                                     placeholder='Enter email address'
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setEmail(text)}
                                     value={email}
                                 />
-                                <Text style={inputStyles.labelText}>Password</Text>
+                                <Text style={inputStyles.authLabelText}>Password</Text>
                                 <TextInput
-                                    style={inputStyles.inputBox}
+                                    style={inputStyles.authInputBox}
                                     placeholder='Enter password'
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
@@ -63,11 +63,15 @@ const Login = () =>
                                     value={password}
                                 />
                                 <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
-                                    <Text style={inputStyles.forgotText}>Forgot Password? Click here.</Text>
+                                    <Text style={{ fontStyle: 'italic', fontSize: 13, marginTop: '-4%', marginBottom: '5%',
+                                                   paddingRight: '2%', textAlign: 'right', color: 'white'
+                                                }}>
+                                        Forgot Password? Click here.
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
                             <View style={containerStyles.buttonContainer}>
-                                <TouchableOpacity onPress={handleLogin} style={bottomStyles.button}>
+                                <TouchableOpacity onPress={handleLogin} style={bottomStyles.blackButton}>
                                     <Text style={bottomStyles.buttonText}>Login</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>

@@ -14,9 +14,7 @@ export default function Home() {
         <View style={styles.container}>
             <Text>Temporary home screen.</Text>
             <Text>Welcome, {user?.email}</Text>
-            <TouchableOpacity onPress={() => signOut(auth)} style={styles.button}>
-                <Text>Press here to logout</Text>
-            </TouchableOpacity>
+            <Text>To logout, go to Profile and scroll down</Text>
             <StatusBar style="auto" />
         </View>
   );

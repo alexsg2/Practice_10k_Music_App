@@ -6,7 +6,7 @@ import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, Aler
 
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, inputStyles, bottomStyles } from "./auth_styles";
+import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 const auth = getAuth();
 import { AuthStackParamList} from './auth_nav';
@@ -43,11 +43,11 @@ const ResetPassword = () =>
         <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={containerStyles.innerContainer}>
-                    <ProfileLogoSection title={'Reset Password.'} profile={false}/>
+                    <ProfileLogoSection title={'Reset Password.'} profile={false} altStyle={[componentStyles.authTitleText]}/>
                     <View style={containerStyles.inputContainer}>
-                        <Text style={inputStyles.labelText}>Email</Text>
+                        <Text style={inputStyles.authLabelText}>Email</Text>
                         <TextInput
-                            style={inputStyles.inputBox}
+                            style={inputStyles.authInputBox}
                             placeholder='Enter email address'
                             placeholderTextColor='#CCCCCC'
                             onChangeText={(text) => setEmail(text)}
@@ -55,7 +55,7 @@ const ResetPassword = () =>
                         />
                     </View>
                     <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity onPress={handleReset} style={bottomStyles.button}>
+                        <TouchableOpacity onPress={handleReset} style={bottomStyles.blackButton}>
                             <Text style={bottomStyles.buttonText}>Reset Password</Text>
                         </TouchableOpacity>
                     </View>
