@@ -20,6 +20,20 @@ export const addUserData = async (userId: string, name: string, dob: string,
 };
 
 
+export const saveUserData = async (userId: string, name: string, dob: string,
+                                   email: string, instruments: string[], level: string[],
+                                   password: string): Promise<void> =>
+{
+    try {
+        const userDocRef = doc(db, 'users', userId);
+        await updateDoc(userDocRef, { userId, name, dob, email, instruments, level, password });
+    }
+    catch (e) {
+        // Handle in main code.
+    }
+};
+
+
 export const deleteUserData = async (userId: string): Promise<void> =>
 {
     try {
@@ -53,10 +67,11 @@ export const fetchUserData = async (userId: string, field: string): Promise<any>
 };
 
 
-export const setUserDataField = async (docRef: DocumentReference, field: string, value: any): Promise<void> =>
+export const setUserDataField = async (userId: string, field: string, value: any): Promise<void> =>
 {
     try {
-        await updateDoc(docRef, { [field]: value });
+        const userDocRef = doc(db, 'users', userId);
+        await updateDoc(userDocRef, { [field]: value });
     }
     catch (e) {
         // Handle in main code

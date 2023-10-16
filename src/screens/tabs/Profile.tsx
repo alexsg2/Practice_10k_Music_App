@@ -9,7 +9,7 @@ import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../co
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 const auth = getAuth();
-import { validateProfileEditFormat } from '../../helpers';
+import { deleteUserData, validateProfileEditFormat } from '../../helpers';
 import { useAuthentication } from '../../utils/hooks/useAuthentication';
 
 
@@ -31,13 +31,12 @@ const Profile = () =>
     async function  handleDeletion() {
         try {
             // TODO : Complete these steps:
-                // Step 1: Use 'Alert' react component to ask user if sure and if so:
-                // Step 2: Delete user data in Firestore (i.e. profile info and practice data)
-                // Step 3: Delete user account from Firebase
-            
-            // Alert.alert('Accound Deleted', 'All user information has been deleted.',
-            //             [ {text: 'OK', onPress: () => navigation.navigate('Start')} ]
-            // );
+            const userUid = user.uid;
+            // Step 1: Use 'Alert' react component to ask user if sure and if so:
+            // Step 2: Delete user data from Firestore
+                //deleteUserData(userUid);
+            // Step 3: Delete user account from Firebase
+            // Step 4: Navigate to Start screen
         }
         catch (e) {
             Alert.alert('Request Failed', 'Unable to delete account. Please try again later.',
