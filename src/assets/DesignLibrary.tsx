@@ -156,11 +156,12 @@ const color_pallete = {
 
 
 const fontSizes = {
-    titles: 35,
-    labels: 16,
+    title: 35,
+    name: 24,
+    button: 18,
+    label: 16,
     normal: 14,
-    buttons: 18,
-    footers: 12,
+    footer: 13,
 };
 
 

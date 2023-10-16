@@ -1,12 +1,11 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
-import { NavigationContainer, RouteProp } from '@react-navigation/native';
-import { StackNavigationProp, createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 
 import { DesignLibrary } from '../../assets/DesignLibrary';
-
 
 import Start from './Start';
 import Login from './Login';
@@ -19,14 +18,8 @@ export type AuthStackParamList = {
     ResetPassword: undefined;
     Register: undefined;
 };
-
 const Stack = createStackNavigator<AuthStackParamList>();
 
-interface ResetPasswordProps {
-    navigation: StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
-    route: RouteProp<AuthStackParamList, 'ResetPassword'>;
-    showPopup: (message: string) => void;
-  }
 
 const AuthNavigation = () =>
 {
@@ -50,7 +43,9 @@ const AuthNavigation = () =>
                                 <Ionicons name="arrow-back" size={40} color='white' left="7%"/>
                             </TouchableOpacity>
                         ),
-                        headerTitle: "" })}
+                        headerTitle: "Login",
+                        headerTitleStyle: {fontSize: 24, color: 'white', fontWeight: 'bold', padding: '5%'}
+                    })}
                     name="Login"
                     component={ Login }
                 />
@@ -76,7 +71,9 @@ const AuthNavigation = () =>
                                 <Ionicons name="arrow-back" size={40} color='white' left="7%"/>
                             </TouchableOpacity>
                         ),
-                        headerTitle: "" })}
+                        headerTitle: "Register",
+                        headerTitleStyle: {fontSize: 24, color: 'white', fontWeight: 'bold', padding: '5%'}
+                    })}
                     name="Register"
                     component={ Register }
                 />

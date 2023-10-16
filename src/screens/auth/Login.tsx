@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, inputStyles, bottomStyles } from "./auth_style";
+import { containerStyles, inputStyles, bottomStyles } from "./auth_styles";
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_nav';
-import { validateLoginFormat } from '../../helpers/AuthValidation';
+import { validateLoginFormat } from '../../helpers/validate_auth';
 type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
 
@@ -18,30 +18,21 @@ const Login = () =>
 {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
 
     const navigation = useNavigation<loginScreenProp>();
     
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);
         if (loginError) {
-            setError(loginError);
+            Alert.alert('Invalid Login', loginError, [ {text: 'OK'} ]);
         }
         else {
             try {
                 await signInWithEmailAndPassword(auth, email, password);
             }
-            catch (error: any) {
-                // TODO : fix this
-                // if (error.code === 'user-not-found') {
-                //     setError('No account with the given email exists.');
-                // }
-                // else if (error.code === 'wrong-password') {
-                //     setError('Password is incorrect.');
-                // }
-                // else {
-                //     setError(error.code);
-                // }
+            catch (e) {
+                Alert.alert('Login Failed', 'Unable to login account. Please check your credentials or try again later.',
+                            [{ text: 'OK' }]);
             }
         }
     }
@@ -52,10 +43,7 @@ const Login = () =>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection profile={false}/>
-                            <View style={containerStyles.errorContainer}>
-                                <Text style={inputStyles.errorText}>{error}</Text>
-                            </View>
+                            <ProfileLogoSection title={'Hello.'} profile={false}/>
                             <View style={containerStyles.inputContainer}>
                                 <Text style={inputStyles.labelText}>Email</Text>
                                 <TextInput

@@ -2,54 +2,47 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
-import { containerStyles, inputStyles, bottomStyles } from "./auth_style";
+import { containerStyles, inputStyles, bottomStyles } from "./auth_styles";
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_nav';
-import { validateRegistrationFormat } from '../../helpers/validate_auth';
+import { validateRegistrationFormat, addUserData } from '../../helpers';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
 
 const Register = () =>
 {
+    // TODO : Figure out how to handle profile picture !!
+    //      - For now, picture is not editable and is set in component/profile_logo_section file.
     const [name, setName] = useState('');
-    // TODO : note that profile picture is being saved in componet/profile_logo_section
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [instruments, setInstruments] = useState<string[]>([]);
     const [level, setLevel] = useState<string[]>([]);          
     const [email, setEmail] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
-    const [error, setError] = useState('');
-    // TODO : should error disapear after awhile ??
 
     const navigation = useNavigation<registerScreenProp>();
 
-    async function handleRegistering() {
+    async function handleRegister() {
         const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);
         if (registerError) {
-            setError(registerError);
+            Alert.alert('Invalid Registration', registerError, [ {text: 'OK'} ]);
         }
         else {
             try {
-                await createUserWithEmailAndPassword(auth, email, newPassword);
+                const userCredentials = await createUserWithEmailAndPassword(auth, email, newPassword);
+                const userUid = userCredentials.user.uid;
+                await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
             }
-            catch (error: any) {
-                // TODO : fix this
-                // if (error.code === 'user-not-found') {
-                //     setError('No account with the given email exists.');
-                // }
-                // else if (error.code === 'wrong-password') {
-                //     setError('Password is incorrect.');
-                // }
-                // else {
-                //     setError(error.code);
-                // }
+            catch (e) {
+                Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',
+                            [{ text: 'OK' }]);
             }
         }
     }
@@ -60,30 +53,30 @@ const Register = () =>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection profile={true}/>
+                            <ProfileLogoSection title={''} profile={true}/>
                             <View style={containerStyles.inputContainer}>
                                 <Text style={inputStyles.labelText}>Name</Text>
                                 <TextInput
                                     style={inputStyles.inputBox}
-                                    placeholder='First Last'
+                                    placeholder='Enter your name'
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setName(text)}
                                     value={name}
                                 />
                                 <Text style={inputStyles.labelText}>Date of Birth</Text>
-                                <DropdownCalendar selectedDate={dateOfBirth} setDate={setDateOfBirth}/>
+                                <DropdownCalendar title={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}/>
                                 <Text style={inputStyles.labelText}>Email</Text>
                                 <TextInput
                                     style={inputStyles.inputBox}
-                                    placeholder='you@example.com'
+                                    placeholder='Enter email address'
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setEmail(text)}
                                     value={email}
                                 />
                                 <Text style={inputStyles.labelText}>Instrument(s)</Text>
-                                <DropdownSelector dataList={INSTRUMENTS} multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}/>
+                                <DropdownSelector title={'Select your instrument(s)'} dataList={INSTRUMENTS} multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}/>
                                 <Text style={inputStyles.labelText}>Musical Level</Text>
-                                <DropdownSelector dataList={LEVELS} multiselect={false} selectedItems={level} setSelectedItems={setLevel}/>
+                                <DropdownSelector title={'Select your level'} dataList={LEVELS} multiselect={false} selectedItems={level} setSelectedItems={setLevel}/>
                                 <Text style={inputStyles.labelText}>New Password</Text>
                                 <TextInput
                                     style={inputStyles.inputBox}
@@ -103,11 +96,8 @@ const Register = () =>
                                     value={confPassword}
                                 />
                             </View>
-                            <View style={containerStyles.errorContainer}>
-                                <Text style={inputStyles.errorText}>{error}</Text>
-                            </View>
                             <View style={containerStyles.buttonContainer}>
-                                <TouchableOpacity onPress={handleRegistering} style={bottomStyles.button}>
+                                <TouchableOpacity onPress={handleRegister} style={bottomStyles.button}>
                                     <Text style={bottomStyles.buttonText}>Register</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>

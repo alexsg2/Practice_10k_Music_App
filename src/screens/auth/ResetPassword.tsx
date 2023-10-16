@@ -1,67 +1,61 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, View, Image, TouchableOpacity, Text, TextInput } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
-import PopupMessage from '../../components/PopupMessage';
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, inputStyles, bottomStyles } from "./auth_style";
-import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
-import { AuthStackParamList } from './auth_nav';
-import { RouteProp } from '@react-navigation/native';
-type resetScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
+import { containerStyles, inputStyles, bottomStyles } from "./auth_styles";
 
-interface ResetPasswordProps {
-    navigation: StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
-    route: RouteProp<AuthStackParamList, 'ResetPassword'>;
-    showPopup: (message: string) => void;
-}
+const auth = getAuth();
+import { AuthStackParamList} from './auth_nav';
+type resetPasswordScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
+
+
 const ResetPassword = () =>
 {
     const [email, setEmail] = useState('');
-    const [error, setError] = useState('');
 
-    const navigation = useNavigation<resetScreenProp>();
+    const navigation = useNavigation<resetPasswordScreenProp>();
 
-    async function handleResetPassword() {
-        // TODO: write the logic
-        const auth = getAuth();
-        // the email takes the user to firebase to reset password
-        sendPasswordResetEmail(auth, email)
-        .then(() => {
-            console.log("email sent");
-            navigation.navigate('Login');
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // ..
-        });
-        // navigation.navigate('Login');
-
-        
+    async function handleReset() {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            Alert.alert('Invalid Request', 'Please check the format of your email.', [ {text: 'OK'} ]);
+        }
+        else {
+            try {
+                await sendPasswordResetEmail(auth, email);
+                Alert.alert('Password Reset Email Sent', 'Check your email for instructions.',
+                            [ {text: 'OK', onPress: () => navigation.navigate('Login')} ]
+                );
+            }
+            catch (e) {
+                Alert.alert('Request Failed', 'Unable to reset password. Please try again later.',
+                            [ {text: 'OK'} ]
+                );
+            }
+        }        
     };
 
     return (
         <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={containerStyles.innerContainer}>
-                    <ProfileLogoSection profile={false}/>
+                    <ProfileLogoSection title={'Reset Password.'} profile={false}/>
                     <View style={containerStyles.inputContainer}>
+                        <Text style={inputStyles.labelText}>Email</Text>
                         <TextInput
                             style={inputStyles.inputBox}
-                            placeholder='Email'
-                            placeholderTextColor='white'
+                            placeholder='Enter email address'
+                            placeholderTextColor='#CCCCCC'
                             onChangeText={(text) => setEmail(text)}
                             value={email}
                         />
                     </View>
-                    <View style={containerStyles.errorContainer}>
-                        <Text style={inputStyles.errorText}>{error}</Text>
-                    </View>
                     <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity onPress={handleResetPassword} style={bottomStyles.button}>
+                        <TouchableOpacity onPress={handleReset} style={bottomStyles.button}>
                             <Text style={bottomStyles.buttonText}>Reset Password</Text>
                         </TouchableOpacity>
                     </View>

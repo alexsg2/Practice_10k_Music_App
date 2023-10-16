@@ -5,7 +5,7 @@ import { SafeAreaView, ScrollView, View, TouchableOpacity, Text } from 'react-na
 
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, bottomStyles } from "./auth_style";
+import { containerStyles, bottomStyles } from "./auth_styles";
 
 import { AuthStackParamList } from './auth_nav';
 type startScreenProp = StackNavigationProp<AuthStackParamList, 'Start'>;
@@ -19,7 +19,7 @@ const Start = () =>
         <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={containerStyles.innerContainer}>
-                    <ProfileLogoSection profile={false}/>
+                    <ProfileLogoSection title={'All-In-One Practice Hub'} profile={false}/>
                     <View style={containerStyles.buttonContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('Login')} style={bottomStyles.button}>
                             <Text style={bottomStyles.buttonText}>Login</Text>

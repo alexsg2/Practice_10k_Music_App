@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colorPallete, fontSizes } from '../../assets/DesignLibrary';
+import { colorPallete, fontSizes } from '../../assets/design_library';
 
 
 // Styles for the containers
@@ -21,11 +21,6 @@ const containerStyles = StyleSheet.create(
         alignItems: 'center',
         justifyContent: 'center',
     },
-    errorContainer: {
-        width: '90%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     inputContainer: {
         flex: 1,
         width: '80%',
@@ -42,14 +37,9 @@ const containerStyles = StyleSheet.create(
 // Styles for the input section
 const inputStyles = StyleSheet.create(
 {
-    errorText: {
-        fontWeight: 'bold',
-        fontSize: fontSizes.normal,
-        color: colorPallete.yellow_gradiant["default"],
-    },
     labelText: {
         paddingLeft: '4%',
-        fontSize: fontSizes.labels,
+        fontSize: fontSizes.label,
         color: colorPallete.white_gradiant["default"],
     },
     inputBox: {
@@ -59,6 +49,7 @@ const inputStyles = StyleSheet.create(
         borderRadius: 10,
         marginTop: '2.5%',
         marginBottom: '10%',
+        fontSize: fontSizes.normal,
         backgroundColor: colorPallete.white_gradiant["20%"],
     },
     forgotText: {
@@ -67,7 +58,7 @@ const inputStyles = StyleSheet.create(
         paddingRight: '2%',
         textAlign: 'right',
         fontStyle: 'italic',
-        fontSize: fontSizes.footers,
+        fontSize: fontSizes.footer,
         color: colorPallete.white_gradiant["default"],
     },
 });
@@ -86,11 +77,11 @@ const bottomStyles = StyleSheet.create(
     },
     buttonText: {
         fontWeight: 'bold',
-        fontSize: fontSizes.buttons,
+        fontSize: fontSizes.button,
         color: colorPallete.white_gradiant["default"],
     },
     footerText: {
-        fontSize: fontSizes.footers,
+        fontSize: fontSizes.footer,
         textDecorationLine: 'underline',
         color: colorPallete.white_gradiant["default"],
     },

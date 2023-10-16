@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
+import { colorPallete, fontSizes } from '../assets/design_library';
 
 export type TabHeaderStackParamList = {
     Home: undefined;
@@ -11,10 +12,10 @@ type HeaderNavigationProp = NavigationProp<TabHeaderStackParamList, 'Home' | 'Pr
 
 
 interface HeaderProp {
-    title: string;
+    name: string;
 }
 
-const AppHeader: React.FC<HeaderProp> = ({ title }) =>
+const AppHeader: React.FC<HeaderProp> = ({ name }) =>
 {
     const navigation = useNavigation<HeaderNavigationProp>();
 
@@ -25,13 +26,13 @@ const AppHeader: React.FC<HeaderProp> = ({ title }) =>
                     <Image source={require('../assets/images/small-black-logo.png')} style={styles.logo} />
                 </TouchableOpacity>
             </View>
-            <View style={styles.titleContainer}>
-                <Text style={styles.titleText}>{title}</Text>
+            <View style={styles.nameContainer}>
+                <Text style={styles.nameText}>{name}</Text>
             </View>
             <View style={styles.profileContainer}>
                 {/* TODO : get user profile picture */}
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Image source={require('../assets/images/temp-profile.avif')} style={styles.profile} />
+                    <Image source={require('../assets/images/blank-profile-picture.png')} style={styles.profile} />
                 </TouchableOpacity>
             </View>
         </View>
@@ -46,8 +47,8 @@ const styles = StyleSheet.create(
       width: '100%',
       flexDirection: 'row',
       alignItems: 'center',
-      borderBottomColor: 'black',
       justifyContent: 'space-between',
+      borderBottomColor: colorPallete.black_gradiant["default"],
     },
     logoContainer: {
         flex: 1,
@@ -57,13 +58,13 @@ const styles = StyleSheet.create(
         width: 45,
         height: 45,
     },
-    titleContainer: {
+    nameContainer: {
         flex: 1,
         alignItems: 'center',
     },
-    titleText: {
-        fontSize: 24,
+    nameText: {
         fontWeight: 'bold',
+        fontSize: fontSizes.name,
     },
     profileContainer: {
         flex: 1,
@@ -73,6 +74,8 @@ const styles = StyleSheet.create(
         width: 45,
         height: 45,
         borderRadius: 35,
+        borderWidth: 0.5,
+        borderColor: colorPallete.black_gradiant["40%"],
     },
 });
   

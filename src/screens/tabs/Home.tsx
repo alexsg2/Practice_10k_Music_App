@@ -5,7 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAuthentication } from '../../utils/hooks/useAuthentication';
 
 
-const auth = getAuth()
+const auth = getAuth();
 
 export default function Home() {
     const { user } = useAuthentication();

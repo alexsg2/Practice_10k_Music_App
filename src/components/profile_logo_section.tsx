@@ -1,23 +1,24 @@
 import React, { useState }from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { StyleProp, ViewStyle, View, Image, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 
-import { colorPallete, fontSizes } from '../assets/DesignLibrary';
+import { colorPallete, fontSizes } from '../assets/design_library';
 
 
 interface ProfileLogoProp {
+    title: string,
     profile: boolean,
+    altStyle?: StyleProp<ViewStyle>;
 }
   
-const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ profile }) =>
+const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, altStyle }) =>
 {
     const [profilePicture, setProfilePicture] = useState('');
-    const [error, setError] = useState('');
-    // TODO : should error disapear after awhile ??
 
     const changeProfilePicture = async () => {
         const status = await ImagePicker.getMediaLibraryPermissionsAsync();
-    
+
+        // TODO : Make picture editable (e.g., position) and save where (local or remote storage)?
         if (status.granted) {
             const result = await ImagePicker.launchImageLibraryAsync();
             
@@ -26,7 +27,7 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ profile }) =>
             }
         }
         else {
-            setError('Access to photo library denied, check your settings.');
+            Alert.alert('Access Denied', 'Access to photo library denied. Check your settings.', [{ text: 'OK' }]);
         }
     };
 
@@ -37,14 +38,16 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ profile }) =>
             ) : (
                 <Image source={require('../assets/images/med-white-logo.png')} style={styles.logo} />
             )}
+            {title !== '' ? (
+                <Text style={styles.nameText}>{title}</Text>
+            ): null}
             {profile ? (
-                <TouchableOpacity onPress={changeProfilePicture} style={styles.changePictureButton}>
+                <TouchableOpacity onPress={changeProfilePicture} style={[styles.changePictureButton, altStyle]}>
                     <Text style={styles.changePictureText}>Change {profile ? 'Profile ' : ''}Picture</Text>
                 </TouchableOpacity>
             ) : (
-                <Text style={styles.titleText}>Hello.</Text>
+                <Text style={styles.titleText}>{title}</Text>
             )}
-            <Text style={styles.errorText}>{error}</Text>
         </View>
     );
 };
@@ -62,12 +65,19 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
         marginTop: '10%',
     },
-    titleText: {
+    nameText: {
+        marginTop: '5%',
         fontWeight: 'bold',
-        marginTop: '10%',
-        marginBottom: '7.5%',
         textAlign: 'center',
-        fontSize: fontSizes.titles,
+        fontSize: fontSizes.title,
+        color: colorPallete.black_gradiant["default"],
+    },
+    titleText: {
+        marginTop: '10%',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: '7.5%',
+        fontSize: fontSizes.title,
         color: colorPallete.white_gradiant["default"],
     },
     profilePicture: {
@@ -76,7 +86,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 75,
         marginTop: '10%',
-        borderColor: 'grey',
+        borderColor: colorPallete.black_gradiant["40%"],
     },
     changePictureButton: {
         width: '70%',
@@ -87,15 +97,9 @@ const styles = StyleSheet.create({
         backgroundColor: colorPallete.black_gradiant["50%"],
     },
     changePictureText: {
+        fontWeight: 'bold',
         marginVertical: '5%',
-        fontSize: fontSizes.footers,
+        fontSize: fontSizes.footer,
         color: colorPallete.white_gradiant["default"],
     },
-    errorText: {
-        fontWeight: 'bold',
-        marginBottom: '5%',
-        textAlign: 'center',
-        fontSize: fontSizes.normal,
-        color: colorPallete.yellow_gradiant["default"],
-    }
 });

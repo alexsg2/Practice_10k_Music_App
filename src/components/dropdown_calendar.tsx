@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons'; 
 import DatePicker from 'react-native-modern-datepicker';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleProp, ViewStyle, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-import { colorPallete, fontSizes } from '../assets/DesignLibrary';
+import { colorPallete, fontSizes } from '../assets/design_library';
 
 
 interface DropDownProp {
+    title: string,
     selectedDate: string,
     setDate: (selectedDate: string) => void;
+    altStyle?: StyleProp<ViewStyle>;
 }
   
-const DropdownCalendar: React.FC<DropDownProp> = ({ selectedDate, setDate }) =>
+const DropdownCalendar: React.FC<DropDownProp> = ({ title, selectedDate, setDate, altStyle }) =>
 {
     const [showDatePicker, setShowDatePicker] = useState(false);
     
@@ -24,9 +26,9 @@ const DropdownCalendar: React.FC<DropDownProp> = ({ selectedDate, setDate }) =>
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.calendarButton} onPress={() => setShowDatePicker(!showDatePicker)}>
-                <Text style={styles.buttonText}>
-                    {selectedDate !== '' ? selectedDate : 'Select'}
+            <TouchableOpacity style={[styles.calendarButton, altStyle]} onPress={() => setShowDatePicker(!showDatePicker)}>
+                <Text style={selectedDate !== '' ? styles.selectedText : styles.defaultText}>
+                    {selectedDate !== '' ? selectedDate : title}
                 </Text>
                 <Ionicons name="calendar-sharp" size={30} color="white" onPress={() => setShowDatePicker(!showDatePicker)}/>
             </TouchableOpacity>
@@ -62,10 +64,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: colorPallete.white_gradiant["20%"],
     },
-    buttonText: {
+    selectedText: {
         alignSelf: 'center',
         fontSize: fontSizes.normal,
         color: colorPallete.white_gradiant["default"],
+    },
+    defaultText: {
+        alignSelf: 'center',
+        fontSize: fontSizes.normal,
+        color: colorPallete.grey_gradiant["50%"],
     },
     calendarBox: {
         width: '110%',

@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons'; 
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { StyleProp, ViewStyle, View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 
-import { colorPallete, fontSizes } from '../assets/DesignLibrary';
+import { colorPallete, fontSizes } from '../assets/design_library';
 
 
 interface DropDownProp {
+    title: string,
     dataList: string[];
     multiselect: boolean,
     selectedItems: string[];
     setSelectedItems: (items: string[]) => void;
+    altStyle?: StyleProp<ViewStyle>;
 }
   
-const DropdownSelector: React.FC<DropDownProp> = ({ dataList, multiselect, selectedItems, setSelectedItems }) =>
+const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect, selectedItems, setSelectedItems, altStyle }) =>
 {
     const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 
@@ -34,9 +36,9 @@ const DropdownSelector: React.FC<DropDownProp> = ({ dataList, multiselect, selec
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.dropdownButton} onPress={() => setDropdownIsOpen(!dropdownIsOpen)}>
-                <Text style={styles.dropdownButtonText}>
-                    {selectedItems.length > 0 ? selectedItems.join(', ') : 'Select'}
+            <TouchableOpacity style={[styles.dropdownButton, altStyle]} onPress={() => setDropdownIsOpen(!dropdownIsOpen)}>
+                <Text style={selectedItems.length > 0 ? styles.selectedText : styles.defaultText}>
+                    {selectedItems.length > 0 ? selectedItems.join(', ') : title}
                 </Text>
                 {dropdownIsOpen ? (
                     <MaterialIcons name="keyboard-arrow-up" size={30} color="white"/>
@@ -79,10 +81,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: colorPallete.white_gradiant["20%"],
     },
-    dropdownButtonText: {
-        width: '80%',
+    selectedText: {
+        alignSelf: 'center',
         fontSize: fontSizes.normal,
         color: colorPallete.white_gradiant["default"],
+    },
+    defaultText: {
+        alignSelf: 'center',
+        fontSize: fontSizes.normal,
+        color: colorPallete.grey_gradiant["50%"],
     },
     dropdownArea: {
         height: 250,
@@ -95,7 +102,7 @@ const styles = StyleSheet.create({
     },
     optionsText: {
         marginVertical: '2%',
-        fontSize: fontSizes.labels,
+        fontSize: fontSizes.label,
         color: colorPallete.black_gradiant["default"],
     },
     dropdownItem: {
