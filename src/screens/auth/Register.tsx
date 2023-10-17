@@ -8,6 +8,7 @@ import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedbac
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
+import  { addUserData } from '../../utils/firestore-function/addUserData';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,7 +16,8 @@ import { decrement } from '../../redux/actions';
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_nav';
-import { validateRegistrationFormat, addUserData } from '../../helpers';
+import { validateRegistrationFormat } from '../../helpers';
+// import { validateRegistrationFormat, addUserData } from '../../helpers';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
 
@@ -38,8 +40,8 @@ const Register = () =>
     // const dispatch = useDispatch();
     // const { count } = useSelector((state: any) => state.counter);
     
-    async function handleRegistering() {
-        const registerError = validateRegistrationFormat(name, email, newPassword, confPassword);
+    async function handleRegister() {
+        const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);
         if (registerError) {
             Alert.alert('Invalid Registration', registerError, [ {text: 'OK'} ]);
         }
@@ -47,7 +49,8 @@ const Register = () =>
             try {
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, newPassword);
                 const userUid = userCredentials.user.uid;
-                await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
+                // await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
+                await addUserData(userUid, name, instruments, level[0], dateOfBirth);
             }
             catch (e) {
                 Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',
