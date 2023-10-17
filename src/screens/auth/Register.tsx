@@ -30,7 +30,7 @@ const Register = () =>
     const [instruments, setInstruments] = useState<string[]>([]);
     const [level, setLevel] = useState<string[]>([]);          
     const [email, setEmail] = useState('');
-    const [newPassword, setNewPassword] = useState('');
+    const [password, setPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
 
     const navigation = useNavigation<registerScreenProp>();
@@ -44,13 +44,13 @@ const Register = () =>
     // const { count } = useSelector((state: any) => state.counter);
     
     async function handleRegister() {
-        const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);
+        const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, password, confPassword);
         if (registerError) {
             Alert.alert('Invalid Registration', registerError, [ {text: 'OK'} ]);
         }
         else {
             try {
-                const userCredentials = await createUserWithEmailAndPassword(auth, email, newPassword);
+                const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
                 const userUid = userCredentials.user.uid;
                 // await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
                 await addUserData(userUid, name, instruments, level[0], dateOfBirth);
@@ -106,8 +106,8 @@ const Register = () =>
                                     placeholder='Enter a password'
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
-                                    onChangeText={(text) => setNewPassword(text)}
-                                    value={newPassword}
+                                    onChangeText={(text) => setPassword(text)}
+                                    value={password}
                                 />
                                 <Text style={inputStyles.authLabelText}>Confirm Password</Text>
                                 <TextInput
