@@ -34,6 +34,9 @@ const Register = () =>
     const [confPassword, setConfPassword] = useState('');
 
     const navigation = useNavigation<registerScreenProp>();
+    
+    const dispatch = useDispatch();
+    
 
     // async function handleRegister() {
     //     const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, newPassword, confPassword);

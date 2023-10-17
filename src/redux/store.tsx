@@ -9,6 +9,7 @@ const logger = createLogger({
 const store = configureStore({
   reducer: {
     counter: counterReducer,
+    // profile: profileReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

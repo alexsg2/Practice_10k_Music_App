@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { getAuth, signOut } from 'firebase/auth';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAuthentication } from '../../utils/hooks/useAuthentication';
+import { setUserDataField } from '../../helpers';
 
 
 const auth = getAuth();

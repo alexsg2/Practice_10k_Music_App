@@ -1,6 +1,7 @@
 // Types
 export const INCREMENT = 'INCREMENT';
 export const DECREMENT = 'DECREMENT';
+export const SET_USER_FIELDS = 'SET_USER_FIELDS'
 
 /*
 Actions
@@ -20,3 +21,18 @@ export const increment = () => ({
 export const decrement = () => ({
   type: DECREMENT,
 });
+
+interface setUserFieldsProps {
+  name: string,
+  dateOfBirth: string,
+  instruments: string[],
+  level: string[],
+  email: string,
+  password: string,
+};
+
+export const setUserFields = (payload: setUserFieldsProps) => ({
+  type: SET_USER_FIELDS,
+  payload
+});
+
