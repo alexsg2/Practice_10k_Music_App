@@ -1,87 +1,90 @@
 import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
+import { increment } from '../../redux/actions';
 
+import { ProfileLogoSection } from '../../components';
+import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 const auth = getAuth();
-import authStyles from './authStyles';
-import { AuthStackParamList } from './authNavigation';
-import { validateLoginFormat } from '../../helpers/AuthValidation';
-
+import { AuthStackParamList } from './auth_nav';
+import { validateLoginFormat } from '../../helpers';
 type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
+
 
 const Login = () =>
 {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
 
     const navigation = useNavigation<loginScreenProp>();
     
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);
         if (loginError) {
-            setError(loginError);
+            Alert.alert('Invalid Login', loginError, [ {text: 'OK'} ]);
         }
         else {
             try {
                 await signInWithEmailAndPassword(auth, email, password);
             }
-            catch (signError) {
-                setError('Incorrect email or password.')
+            catch (e) {
+                Alert.alert('Login Failed', 'Unable to login. Please check your credentials or try again later.',
+                            [{ text: 'OK' }]);
             }
         }
     }
     
     return (
-        <ScrollView contentContainerStyle={authStyles.scrollContainer}>
-            <KeyboardAvoidingView style={authStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={authStyles.innerContainer}>
-                        <View style={authStyles.backContainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate('Start')}>
-                                <Ionicons name="arrow-back" size={40} color='white'/>
-                            </TouchableOpacity>
+        <SafeAreaView style={containerStyles.safeContainer}>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={containerStyles.innerContainer}>
+                            <ProfileLogoSection title={'Hello.'} profile={false} altStyle={[componentStyles.authTitleText]}/>
+                            <View style={containerStyles.inputContainer}>
+                                <Text style={inputStyles.authLabelText}>Email</Text>
+                                <TextInput
+                                    style={inputStyles.authInputBox}
+                                    placeholder='Enter email address'
+                                    placeholderTextColor='#CCCCCC'
+                                    onChangeText={(text) => setEmail(text)}
+                                    value={email}
+                                />
+                                <Text style={inputStyles.authLabelText}>Password</Text>
+                                <TextInput
+                                    style={inputStyles.authInputBox}
+                                    placeholder='Enter password'
+                                    placeholderTextColor='#CCCCCC'
+                                    secureTextEntry
+                                    onChangeText={(text) => setPassword(text)}
+                                    value={password}
+                                />
+                                <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
+                                    <Text style={{ fontStyle: 'italic', fontSize: 13, marginTop: '-4%', marginBottom: '5%',
+                                                   paddingRight: '2%', textAlign: 'right', color: 'white'
+                                                }}>
+                                        Forgot Password? Click here.
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={containerStyles.buttonContainer}>
+                                <TouchableOpacity onPress={handleLogin} style={bottomStyles.blackButton}>
+                                    <Text style={bottomStyles.buttonText}>Login</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                                    <Text style={bottomStyles.footerText}>Not registered? Click here.</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <View style={authStyles.logoContainer}>
-                            <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
-                            <Text style={authStyles.headerText}>Hello.</Text>
-                        </View>
-                        <View style={authStyles.errorContainer}>
-                            <Text style={authStyles.errorText}>{error}</Text>
-                        </View>
-                        <View style={authStyles.inputContainer}>
-                            <TextInput
-                                placeholder='Email'
-                                placeholderTextColor='white'
-                                onChangeText={(text) => setEmail(text)}
-                                value={email}
-                                style={authStyles.input}
-                            />
-                            <TextInput
-                                placeholder='Password'
-                                placeholderTextColor='white'
-                                onChangeText={(text) => setPassword(text)}
-                                value={password}
-                                secureTextEntry
-                                style={authStyles.input}
-                            />
-                        </View>
-                        <View style={authStyles.buttonContainer}>
-                            <TouchableOpacity onPress={handleLogin} style={authStyles.button}>
-                                <Text style={authStyles.buttonText}>Login</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                                <Text style={authStyles.footerText}>Not registered? Click here.</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View> 
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+                </ScrollView>
             </KeyboardAvoidingView>
-        </ScrollView>
+        </SafeAreaView>
     );
 }
 
