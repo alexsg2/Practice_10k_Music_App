@@ -3,11 +3,11 @@ import { db, auth } from '../../config/firebase';
 import { setDoc, doc, addDoc, collection } from 'firebase/firestore';
 import { IProfileProps } from "../../redux/reducers"
 
-interface IUserDataProps extends IProfileProps {
-    userId: string,
+interface IUserDataProps extends Omit<IProfileProps, 'password'> {
+    userId: string;
 }
 
-export const addUserData = async ({userId, name, instruments, level, dateOfBirth, email, password, profilePicture}:IUserDataProps): Promise<void> => {
+export const addUserData = async ({userId, name, instruments, level, dateOfBirth, email, profilePicture}:IUserDataProps): Promise<void> => {
     // Add a new document in collection "users"
     try{
         // TODO check if user is authenticated first
@@ -26,7 +26,6 @@ export const addUserData = async ({userId, name, instruments, level, dateOfBirth
             level: level,
             dateOfBirth,
             email,
-            password,
             profilePicture
         });
 

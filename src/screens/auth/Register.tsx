@@ -44,10 +44,9 @@ const Register = () =>
         else {
             try {
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-                console.log("userCredentials.user123", userCredentials.user)
                 const userUid = userCredentials.user.uid;
                 // await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
-                await addUserData({userId: userUid, profilePicture: '', name, instruments, level, dateOfBirth, password, email});
+                await addUserData({userId: userUid, profilePicture: '', name, instruments, level, dateOfBirth, email});
                 
                 dispatch(setProfile({name, dateOfBirth, instruments, level, email, password, profilePicture: ''}));
             }
