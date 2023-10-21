@@ -1,13 +1,13 @@
 // userDataFunctions.ts
 import { db, auth } from '../../config/firebase';
 import { setDoc, doc, addDoc, collection } from 'firebase/firestore';
-export const addUserData = async (
+import { IProfileProps } from "../../redux/reducers"
+
+interface IUserDataProps extends IProfileProps {
     userId: string,
-    username: string, 
-    instruments: string[], 
-    level: string,
-    dob: string
-): Promise<void> => {
+}
+
+export const addUserData = async ({userId, name, instruments, level, dateOfBirth, email, password, profilePicture}:IUserDataProps): Promise<void> => {
     // Add a new document in collection "users"
     try{
         // TODO check if user is authenticated first
@@ -18,16 +18,19 @@ export const addUserData = async (
         //     level: level,
         //     age: age
         // });
-
-        const docRef = await addDoc(collection(db, "users"), {
-                userID: userId,
-                username: username,
-                instruments: instruments,
-                level: level,
-                DOB: dob
+        const userDocRef = doc(db, "users", userId);
+        await setDoc(userDocRef, {
+            userID: userId,
+            name,
+            instruments: instruments,
+            level: level,
+            dateOfBirth,
+            email,
+            password,
+            profilePicture
         });
 
-        console.log("Document written with id: ", docRef.id);
+        console.log("Document written with id: ", userDocRef.id);
     }
     catch(error){
         console.error("Error adding user: ", error);
