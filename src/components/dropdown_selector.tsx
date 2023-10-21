@@ -54,7 +54,7 @@ const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect
                     </Text>
                     <FlatList
                         data={dataList}
-                        keyExtractor={(index) => index.toString()}
+                        keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <TouchableOpacity onPress={() => handleItemSelect(item)}
                                               style={[{ padding: '7%', marginBottom: '2.5%', borderBottomWidth: 1, borderBottomColor: colorPallete.white_gradiant["60%"] },

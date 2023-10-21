@@ -48,6 +48,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.22.5",
     "@types/react": "~18.2.14",
     "@types/redux-logger": "^3.0.10",
     "typescript": "^5.1.3"
