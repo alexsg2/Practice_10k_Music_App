@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { getAuth, signOut } from 'firebase/auth';
 import { Alert, LayoutAnimation, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
-
+import { setProfile } from '../../redux/actions'
+import { RootState } from "../../redux/store"
 import { colorPallete } from '../../assets/design_library';
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
@@ -15,14 +17,18 @@ import { deleteUserData, validateProfileEditFormat } from '../../helpers';
 
 const Profile = () =>
 {
+    const dispatch = useDispatch();
     // TODO : use redux for these
-    const [name, setName] = useState('');
-    const [profilePicture, setProfilePicture] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
-    const [instruments, setInstruments] = useState<string[]>([]);
-    const [level, setLevel] = useState<string[]>([]);
-    const [email, setEmail] = useState('');
-    const [oldPassword, setOldPassword] = useState('');
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const [name, setName] = useState(currentUserProfile.name);
+    const [profilePicture, setProfilePicture] = useState(currentUserProfile.profilePicture);
+    const [dateOfBirth, setDateOfBirth] = useState(currentUserProfile.dateOfBirth);
+    const [instruments, setInstruments] = useState<string[]>(currentUserProfile.instruments);
+    const [level, setLevel] = useState<string[]>(currentUserProfile.level);
+    const [email, setEmail] = useState(currentUserProfile.email);
+    const [oldPassword, setOldPassword] = useState(currentUserProfile.password);
+    
+    
     const [newPassword, setNewPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
 
@@ -53,6 +59,8 @@ const Profile = () =>
             try {
                 // TODO : To finish by getting the current user in DB and updating it with the edits
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                
+                dispatch(setProfile({name, dateOfBirth, instruments, level, email, password :confPassword, profilePicture: ''}));
                 setIsEditMode(false);
             }
             catch (e) {
@@ -69,7 +77,7 @@ const Profile = () =>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         {!isEditMode ? (
                             <View style={containerStyles.innerContainer}>
-                                <ProfileLogoSection title={'User Name'} profile={true} altStyle={[componentStyles.profileTitleText, componentStyles.profileChangePictureButton, componentStyles.profileChangeText]}/>
+                                <ProfileLogoSection title={name} profile={true} altStyle={[componentStyles.profileTitleText, componentStyles.profileChangePictureButton, componentStyles.profileChangeText]}/>
                                 <View style={{ flex: 1, width: '90%', marginBottom: '2%', borderRadius: 10, alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                                     <TouchableOpacity onPress={() => setIsEditMode(true)}
                                                       style={{ paddingVertical: '3%', paddingHorizontal: '5%', borderRadius: 10,

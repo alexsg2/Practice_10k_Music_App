@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
+import { setProfile } from '../../redux/actions'
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 import  { addUserData } from '../../utils/firestore-function/addUserData';
 
-import { useDispatch, useSelector } from 'react-redux';
+
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_navigation';
@@ -21,6 +23,7 @@ type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
 const Register = () =>
 {
+    const dispatch = useDispatch();
     // TODO : profile picture is set in component/profile_logo_section file.
     const [name, setName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
@@ -28,6 +31,7 @@ const Register = () =>
     const [level, setLevel] = useState<string[]>([]);          
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
     const [confPassword, setConfPassword] = useState('');
 
     const navigation = useNavigation<registerScreenProp>();
@@ -42,7 +46,9 @@ const Register = () =>
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
                 const userUid = userCredentials.user.uid;
                 // await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
-                await addUserData(userUid, name, instruments, level[0], dateOfBirth);
+                await addUserData({userId: userUid, profilePicture: '', name, instruments, level, dateOfBirth, email});
+                
+                dispatch(setProfile({name, dateOfBirth, instruments, level, email, password, profilePicture: ''}));
             }
             catch (e) {
                 Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',
@@ -50,7 +56,6 @@ const Register = () =>
             }
         }
     }
-    
     return (
         <SafeAreaView style={containerStyles.safeContainer}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
