@@ -1,8 +1,8 @@
 import { SET_PROFILE } from './actions';
 
 export interface IProfileProps {
+  profilePicture: string | number;
   name: string,
-  profilePicture: string,
   dateOfBirth: string,
   instruments: string[],
   level: string[],
@@ -10,8 +10,8 @@ export interface IProfileProps {
   password: string,
 }
 const initialState: IProfileProps = {
-  name: '',
   profilePicture: '',
+  name: '',
   dateOfBirth: '',
   instruments: [],
   level: [],

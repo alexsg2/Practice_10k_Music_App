@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons'; 
-import { StyleProp, ViewStyle, View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { StyleProp, ViewStyle, View, Text, TouchableOpacity, FlatList } from 'react-native';
 
 import { colorPallete, fontSizes } from '../assets/design_library';
 
 
 interface DropDownProp {
-    title: string,
+    input: string,
     dataList: string[];
     multiselect: boolean,
     selectedItems: string[];
@@ -15,7 +15,7 @@ interface DropDownProp {
 }
   
 // TODO : Issue with scrolling when we reach the bottom of the flatlist
-const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect, selectedItems, setSelectedItems, altStyle }) =>
+const DropdownSelector: React.FC<DropDownProp> = ({ input, dataList, multiselect, selectedItems, setSelectedItems, altStyle }) =>
 {
     const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
 
@@ -39,7 +39,7 @@ const DropdownSelector: React.FC<DropDownProp> = ({ title, dataList, multiselect
         <View>
             <TouchableOpacity onPress={() => setDropdownIsOpen(!dropdownIsOpen)} style={[altStyle[0]]}>
                 <Text style={selectedItems.length > 0 ? altStyle[1] : altStyle[2]}>
-                    {selectedItems.length > 0 ? selectedItems.join(', ') : title}
+                    {selectedItems.length > 0 ? selectedItems.join(', ') : input}
                 </Text>
                 {dropdownIsOpen ? (
                     <MaterialIcons name="keyboard-arrow-up" size={30} color="white"/>

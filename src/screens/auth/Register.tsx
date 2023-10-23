@@ -1,37 +1,35 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
-import { setProfile } from '../../redux/actions'
+import { addUserData } from '../../helpers';
+import { RootState } from '../../redux/store';
+import { setProfile } from '../../redux/actions';
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
-import  { addUserData } from '../../utils/firestore-function/addUserData';
-
-
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_navigation';
 import { validateRegistrationFormat } from '../../helpers';
-// import { validateRegistrationFormat, addUserData } from '../../helpers';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
 
 
 const Register = () =>
 {
     const dispatch = useDispatch();
-    // TODO : profile picture is set in component/profile_logo_section file.
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    
     const [name, setName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [instruments, setInstruments] = useState<string[]>([]);
     const [level, setLevel] = useState<string[]>([]);          
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
     const [confPassword, setConfPassword] = useState('');
 
     const navigation = useNavigation<registerScreenProp>();
@@ -44,11 +42,10 @@ const Register = () =>
         else {
             try {
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-                const userUid = userCredentials.user.uid;
-                // await addUserData(userUid, name, dateOfBirth, email, instruments, level, confPassword);
-                await addUserData({userId: userUid, profilePicture: '', name, instruments, level, dateOfBirth, email});
                 
-                dispatch(setProfile({name, dateOfBirth, instruments, level, email, password, profilePicture: ''}));
+                const userUid = userCredentials.user.uid;
+                await addUserData({userId: userUid, name, dateOfBirth, instruments, level, email});
+                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level, email, password}));
             }
             catch (e) {
                 Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',
@@ -62,7 +59,9 @@ const Register = () =>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection title={''} profile={true} altStyle={[componentStyles.authTitleText, componentStyles.authChangePictureButton, componentStyles.authChangeText]}/>
+                            <ProfileLogoSection title={''} profile={true}
+                                                altStyle={[componentStyles.authTitleText, componentStyles.authChangePictureButton, componentStyles.authChangeText]}
+                            />
                             <View style={containerStyles.inputContainer}>
                                 <Text style={inputStyles.authLabelText}>Name</Text>
                                 <TextInput
@@ -73,7 +72,7 @@ const Register = () =>
                                     value={name}
                                 />
                                 <Text style={inputStyles.authLabelText}>Date of Birth</Text>
-                                <DropdownCalendar title={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}
+                                <DropdownCalendar input={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}
                                                   altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authCalendarBox]}
                                 />
                                 <Text style={inputStyles.authLabelText}>Email</Text>
@@ -85,12 +84,12 @@ const Register = () =>
                                     value={email}
                                 />
                                 <Text style={inputStyles.authLabelText}>Instrument(s)</Text>
-                                <DropdownSelector title={'Select your instrument(s)'} dataList={INSTRUMENTS}
+                                <DropdownSelector input={'Select your instrument(s)'} dataList={INSTRUMENTS}
                                                   multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
                                                   altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
                                 />
                                 <Text style={inputStyles.authLabelText}>Musical Level</Text>
-                                <DropdownSelector title={'Select your level'} dataList={LEVELS}
+                                <DropdownSelector input={'Select your level'} dataList={LEVELS}
                                                   multiselect={false} selectedItems={level} setSelectedItems={setLevel}
                                                   altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
                                 />

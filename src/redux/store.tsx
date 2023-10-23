@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
-import { profileReducer, IProfileProps } from './reducers';
+import { profileReducer } from './reducers';
 
 const logger = createLogger({
   collapsed: () => true,

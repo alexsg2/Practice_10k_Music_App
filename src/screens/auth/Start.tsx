@@ -7,7 +7,7 @@ import { SafeAreaView, ScrollView, View, TouchableOpacity, Text } from 'react-na
 import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
-import { AuthStackParamList } from './auth_nav';
+import { AuthStackParamList } from './auth_navigation';
 type startScreenProp = StackNavigationProp<AuthStackParamList, 'Start'>;
 
 

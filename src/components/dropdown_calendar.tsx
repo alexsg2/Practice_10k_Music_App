@@ -5,13 +5,13 @@ import { StyleProp, ViewStyle, View, Text, TouchableOpacity } from 'react-native
 
 
 interface DropDownProp {
-    title: string,
+    input: string,
     selectedDate: string,
     setDate: (selectedDate: string) => void;
     altStyle: StyleProp<ViewStyle>[];
 }
   
-const DropdownCalendar: React.FC<DropDownProp> = ({ title, selectedDate, setDate, altStyle }) =>
+const DropdownCalendar: React.FC<DropDownProp> = ({ input, selectedDate, setDate, altStyle }) =>
 {
     const [showDatePicker, setShowDatePicker] = useState(false);
     
@@ -28,7 +28,7 @@ const DropdownCalendar: React.FC<DropDownProp> = ({ title, selectedDate, setDate
                               style={altStyle[0]}
             >
                 <Text style={selectedDate !== '' ? altStyle[1] : altStyle[2]}>
-                    {selectedDate !== '' ? selectedDate : title}
+                    {selectedDate !== '' ? selectedDate : input}
                 </Text>
                 <Ionicons name="calendar-sharp" size={30} color="white" onPress={() => setShowDatePicker(!showDatePicker)}/>
             </TouchableOpacity>

@@ -1,9 +1,7 @@
-import { validateProfileEditFormat } from './validate_profile_edits';
-import { validateLoginFormat, validateRegistrationFormat } from './validate_auth';
-import { addUserData, deleteUserData, setUserDataField } from './touch_user_profile_data';
+import { addUserData, updateUserData, deleteUserData } from './touch_user_profile_data';
+import { validateLoginFormat, validateRegistrationFormat, validateEdits } from './validate_auth_and_profile';
 
 
-export { validateProfileEditFormat,
-         validateLoginFormat, validateRegistrationFormat,
-         addUserData, deleteUserData, setUserDataField };
+export { addUserData, updateUserData, deleteUserData,
+         validateLoginFormat, validateRegistrationFormat, validateEdits };
          

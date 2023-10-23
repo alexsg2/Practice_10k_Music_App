@@ -9,7 +9,7 @@ import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 const auth = getAuth();
-import { AuthStackParamList} from './auth_nav';
+import { AuthStackParamList} from './auth_navigation';
 type resetPasswordScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
 
 

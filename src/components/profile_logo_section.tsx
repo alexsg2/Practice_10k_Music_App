@@ -1,8 +1,11 @@
-import React, { useState }from 'react';
+import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { StyleProp, ViewStyle, View, Image, TouchableOpacity, Text, Alert } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { StyleProp, ViewStyle, View, Image, TouchableOpacity, Text, Alert, ImageSourcePropType } from 'react-native';
 
-import { colorPallete, fontSizes } from '../assets/design_library';
+import { RootState } from '../redux/store';
+import { setProfile } from '../redux/actions';
+import { colorPallete } from '../assets/design_library';
 
 
 interface ProfileLogoProp {
@@ -13,15 +16,16 @@ interface ProfileLogoProp {
   
 const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, altStyle }) =>
 {
-    const [profilePicture, setProfilePicture] = useState('');
+    const dispatch = useDispatch();
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const picture = currentUserProfile.profilePicture;
 
     const changeProfilePicture = async () => {
         const status = await ImagePicker.getMediaLibraryPermissionsAsync();
-        // TODO : Make picture editable (e.g., position) and save where (local or remote storage)?
         if (status.granted) {
             const result = await ImagePicker.launchImageLibraryAsync();
             if (!result.canceled) {
-                setProfilePicture(result.assets[0].uri);
+                dispatch(setProfile({ ...currentUserProfile, profilePicture: result.assets[0].uri }));
             }
         }
         else {
@@ -32,7 +36,7 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, altStyl
     return (
         <View style={{ flex: 1, width: '80%', alignItems: 'center', justifyContent: 'center' }}>
             {profile ? (
-                <Image source={profilePicture !== '' ? { uri: profilePicture } : require('../assets/images/blank-profile-picture.png')}
+                <Image source={picture ? typeof picture === 'string' ? { uri: picture } : picture : require('../assets/images/blank-profile-picture.png')}
                        style={{ width: 150, height: 150, marginTop: '10%', borderWidth: 1, borderRadius: 75, borderColor: colorPallete.black_gradiant["40%"] }}
                 />
             ) : (

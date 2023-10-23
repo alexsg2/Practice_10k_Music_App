@@ -1,14 +1,17 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
+
+import { RootState } from '../redux/store';
 import { colorPallete, fontSizes } from '../assets/design_library';
 
-export type TabHeaderStackParamList = {
+export type AppHeaderStackParamList = {
     Home: undefined;
     Profile: undefined;
 };
-type HeaderNavigationProp = NavigationProp<TabHeaderStackParamList, 'Home' | 'Profile'>;
+type AppHeaderNavigationProp = NavigationProp<AppHeaderStackParamList, 'Home' | 'Profile'>;
 
 
 interface HeaderProp {
@@ -17,7 +20,10 @@ interface HeaderProp {
 
 const AppHeader: React.FC<HeaderProp> = ({ name }) =>
 {
-    const navigation = useNavigation<HeaderNavigationProp>();
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const picture = currentUserProfile.profilePicture;
+    
+    const navigation = useNavigation<AppHeaderNavigationProp>();
 
     return (
         <View style={styles.container}>
@@ -30,9 +36,8 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
                 <Text style={styles.nameText}>{name}</Text>
             </View>
             <View style={styles.profileContainer}>
-                {/* TODO : get user profile picture */}
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Image source={require('../assets/images/blank-profile-picture.png')} style={styles.profile} />
+                    <Image source={picture ? typeof picture === 'string' ? { uri: picture } : picture : require('../assets/images/blank-profile-picture.png')} style={styles.profile} />
                 </TouchableOpacity>
             </View>
         </View>

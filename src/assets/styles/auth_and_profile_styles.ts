@@ -27,7 +27,7 @@ const containerStyles = StyleSheet.create(
         borderRadius: 10,
         marginTop: '-5%',
         marginBottom: '10%',
-        backgroundColor: colorPallete.yellow_gradiant["70%"],
+        backgroundColor: colorPallete.blue_gradiant["60%"],
     },
     inputContainer: {
         flex: 1,
@@ -51,7 +51,7 @@ const containerStyles = StyleSheet.create(
         marginBottom: '10%',
         alignItems: 'center',
         paddingVertical: '5%',
-        backgroundColor: colorPallete.yellow_gradiant["70%"],
+        backgroundColor: colorPallete.blue_gradiant["60%"],
     },
     buttonContainer: {
         flex: 1,
@@ -92,7 +92,7 @@ const componentStyles = StyleSheet.create(
         marginVertical: '7%',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(209, 26, 42, 0.65)',
+        backgroundColor: colorPallete.black_gradiant["60%"],
     },
     authChangeText: {
         fontWeight: 'bold',

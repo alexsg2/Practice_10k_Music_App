@@ -3,20 +3,37 @@ import { StyleSheet } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
+import { AppHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
 import Progress from './Progress';
 import Journal from './Journal';
 import Profile from './Profile';
+import EditProfile from './EditProfile';
 
 const Tab = createBottomTabNavigator();
-import { AppHeader } from '../../components';
+
+export type ProfileStackParamList = {
+    Profile: undefined;
+    EditProfile: undefined;
+};
+const ProfileStack = createNativeStackNavigator();
+
 
 function AppNavigation()
 {
+    // TODO : Figure out how to remove AppHeader for EditProfile !!!!
+    const ProfileNavigationStack = () => (
+        <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+            <ProfileStack.Screen name="Profile" component={Profile}/>
+            <ProfileStack.Screen name="EditProfile" component={EditProfile}/>
+        </ProfileStack.Navigator>
+    );
+
     return (
         <NavigationContainer>
             <Tab.Navigator>
@@ -40,11 +57,10 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Journal"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="Profile" component={Profile}
+                <Tab.Screen name="Profile" component={ProfileNavigationStack}
                     options={{tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                               headerTitle: () => <AppHeader name="Profile"/>, 
-                              headerStyle: styles.header,
-                            }}/>
+                              headerStyle: styles.header}}/>
               </Tab.Navigator>
           </NavigationContainer>
     );
