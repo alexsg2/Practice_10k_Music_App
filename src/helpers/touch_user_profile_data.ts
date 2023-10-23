@@ -24,6 +24,7 @@ export const addUserData = async ({userId, name, dateOfBirth, instruments, level
 };
 
 
+// TODO : not updating db
 export const updateUserData = async ({userId, name, dateOfBirth, instruments, level, email}:IUserDataProps): Promise<void> =>
 {
     try {
