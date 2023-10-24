@@ -1,105 +1,130 @@
 import React, { useState } from 'react';
-import { Ionicons } from '@expo/vector-icons';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+
+
+import { addUserData } from '../../helpers';
+import { RootState } from '../../redux/store';
+import { setProfile } from '../../redux/actions';
+import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
+import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
+import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
 const auth = getAuth();
-import authStyles from './authStyles';
-import { AuthStackParamList } from './authNavigation';
-import { validateRegistrationFormat } from '../../helpers/AuthValidation';
-
+import { AuthStackParamList } from './auth_navigation';
+import { validateRegistrationFormat } from '../../helpers';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
+
 
 const Register = () =>
 {
+    const dispatch = useDispatch();
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    
     const [name, setName] = useState('');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [instruments, setInstruments] = useState<string[]>([]);
+    const [level, setLevel] = useState<string[]>([]);          
     const [email, setEmail] = useState('');
-    const [newPassword, setNewPassword] = useState('');
+    const [password, setPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
-    const [error, setError] = useState('');
 
     const navigation = useNavigation<registerScreenProp>();
     
-    async function handleRegistering() {
-        const registerError = validateRegistrationFormat(name, email, newPassword, confPassword);
+    async function handleRegister() {
+        const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, password, confPassword);
         if (registerError) {
-            setError(registerError);
+            Alert.alert('Invalid Registration', registerError, [ {text: 'OK'} ]);
         }
         else {
             try {
-                await createUserWithEmailAndPassword(auth, email, newPassword);
-                // navigation.navigate('ProfileSetup');
+                const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+                
+                const userUid = userCredentials.user.uid;
+                await addUserData({userId: userUid, name, dateOfBirth, instruments, level, email});
+                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level, email, password}));
             }
             catch (e) {
-                // TODO : display more detailed explanations of why registration was not possible
-                setError('Could not register user.');
+                Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',
+                            [{ text: 'OK' }]);
             }
         }
     }
-    
     return (
-        <ScrollView contentContainerStyle={authStyles.scrollContainer}>
-            <KeyboardAvoidingView style={authStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <View style={authStyles.innerContainer}>
-                        <View style={authStyles.backContainer}>
-                            <TouchableOpacity onPress={() => navigation.navigate('Start')}>
-                                <Ionicons name="arrow-back" size={30} color='white'/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={authStyles.logoContainer}>
-                            <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
-                            <Text style={authStyles.headerText}>Hello.</Text>
-                        </View>
-                        <View style={authStyles.errorContainer}>
-                            <Text style={authStyles.errorText}>{error}</Text>
-                        </View>
-                        <View style={authStyles.inputContainer}>
-                            <TextInput
-                                placeholder='Name'
-                                placeholderTextColor='white'
-                                onChangeText={(text) => setName(text)}
-                                value={name}
-                                style={authStyles.input}
+        <SafeAreaView style={containerStyles.safeContainer}>
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                        <View style={containerStyles.innerContainer}>
+                            <ProfileLogoSection title={''} profile={true}
+                                                altStyle={[componentStyles.authTitleText, componentStyles.authChangePictureButton, componentStyles.authChangeText]}
                             />
-                            <TextInput
-                                placeholder='Email'
-                                placeholderTextColor='white'
-                                onChangeText={(text) => setEmail(text)}
-                                value={email}
-                                style={authStyles.input}
-                            />
-                            <TextInput
-                                placeholder='New Password'
-                                placeholderTextColor='white'
-                                onChangeText={(text) => setNewPassword(text)}
-                                value={newPassword}
-                                secureTextEntry
-                                style={authStyles.input}
-                            />
-                            <TextInput
-                                placeholder='Confirm Password'
-                                placeholderTextColor='white'
-                                onChangeText={(text) => setConfPassword(text)}
-                                value={confPassword}
-                                secureTextEntry
-                                style={authStyles.input}
-                            />
+                            <View style={containerStyles.inputContainer}>
+                                <Text style={inputStyles.authLabelText}>Name</Text>
+                                <TextInput
+                                    style={inputStyles.authInputBox}
+                                    placeholder='Enter your name'
+                                    placeholderTextColor='#CCCCCC'
+                                    onChangeText={(text) => setName(text)}
+                                    value={name}
+                                />
+                                <Text style={inputStyles.authLabelText}>Date of Birth</Text>
+                                <DropdownCalendar input={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authCalendarBox]}
+                                />
+                                <Text style={inputStyles.authLabelText}>Email</Text>
+                                <TextInput
+                                    style={inputStyles.authInputBox}
+                                    placeholder='Enter email address'
+                                    placeholderTextColor='#CCCCCC'
+                                    onChangeText={(text) => setEmail(text)}
+                                    value={email}
+                                />
+                                <Text style={inputStyles.authLabelText}>Instrument(s)</Text>
+                                <DropdownSelector input={'Select your instrument(s)'} dataList={INSTRUMENTS}
+                                                  multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
+                                />
+                                <Text style={inputStyles.authLabelText}>Musical Level</Text>
+                                <DropdownSelector input={'Select your level'} dataList={LEVELS}
+                                                  multiselect={false} selectedItems={level} setSelectedItems={setLevel}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
+                                />
+                                <Text style={inputStyles.authLabelText}>New Password</Text>
+                                <TextInput
+                                    style={inputStyles.authInputBox}
+                                    placeholder='Enter a password'
+                                    placeholderTextColor='#CCCCCC'
+                                    secureTextEntry
+                                    onChangeText={(text) => setPassword(text)}
+                                    value={password}
+                                />
+                                <Text style={inputStyles.authLabelText}>Confirm Password</Text>
+                                <TextInput
+                                    style={inputStyles.authInputBox}
+                                    placeholder="Re-enter password above"
+                                    placeholderTextColor='#CCCCCC'
+                                    secureTextEntry
+                                    onChangeText={(text) => setConfPassword(text)}
+                                    value={confPassword}
+                                />
+                            </View>
+                            <View style={containerStyles.buttonContainer}>
+                                <TouchableOpacity onPress={handleRegister} style={bottomStyles.blackButton}>
+                                    <Text style={bottomStyles.buttonText}>Register</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                    <Text style={bottomStyles.footerText}>Already a user? Click here.</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                        <View style={authStyles.buttonContainer}>
-                            <TouchableOpacity onPress={handleRegistering} style={authStyles.button}>
-                                <Text style={authStyles.buttonText}>Register</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                                <Text style={authStyles.footerText}>Already a user? Click here.</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>   
+                </ScrollView>
             </KeyboardAvoidingView>
-        </ScrollView>
+        </SafeAreaView>
     );
 }
 
