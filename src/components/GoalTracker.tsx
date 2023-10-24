@@ -15,9 +15,9 @@ const ProgressTracker = ({ title = "", goal_amount = 0, hours_amount = 0, pieces
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Text style={{ fontSize: 16 }}>{title}</Text>
-        <Text style={{ marginBottom: 15, fontSize: 14 }}>Remaining = Goal - Hours</Text>
-
+        
+        <Text style={{ fontSize: 24 }}>{title}</Text>
+        <Text style={{ marginBottom: 15, fontSize: 10 }}>Remaining = Goal - Hours</Text>
 
         <View style={styles.progressContainer}>
           <CircularProgress
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 200,
     borderRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#ECF1F7',
     flexDirection: 'row',
     borderWidth: 2, // Add a black border
     borderColor: DesignLibrary.color_pallete.black["default"], // Set the border color to black
@@ -93,7 +93,6 @@ const styles = StyleSheet.create({
   iconContainer: {
     marginRight: 15, // Adjust the spacing between icon and text
   },
-
   textContainer: {
     flex: 1, // Allow text to expand to fill available space
   },
