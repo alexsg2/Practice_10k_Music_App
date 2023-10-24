@@ -1,101 +1,75 @@
-import React, { useMemo, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import {Calendar, Agenda, ExpandableCalendar, CalendarProvider, AgendaList} from 'react-native-calendars';
+import React, { useEffect, useMemo, useState } from 'react';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { Calendar, DateData } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
+import { db } from '../../config/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const Journal: React.FC = () => {
+  const [practiceLogs, setPracticeLogs] = useState([] as any);
+  const [filteredLogs, setFilteredLogs] = useState([] as any);
+  const [markedDates, setMarkedDates] = useState<{ [date: string]: any }>({});
+  //let markedDates = {};
+  let currMonth = new Date().getMonth() + 1;
 
-    const [selected, setSelected] = useState('');
+  // Load data when user opens screen
+  useEffect(() => {
+    const loadData = async () => {
+      // use authentication, then user.uid
+      const users = collection(db, "users/52N76v6p9F7bsg4WLfqF/practiceLogs");
+      const querySnapshot = await getDocs(users);
+      
+      const dates: { [date: string]: any } = {};
+      // Format the dates properly
+      querySnapshot.forEach((doc) => {
+        const date = doc.data().date.toDate().toISOString().split('T')[0]; // Adjust this to your data structure
+        dates[date] = { marked: true, dotColor: "red" };
+      });
 
-    const agendaItems = {
-        '2023-09-20': [
-          {
-            name: 'The Wild Horseman',
-            height: 50,
-            day: '2023-09-19'
-          }
-        ],
-        '2023-09-25': [
-          {
-            name: 'Sonata in A minor',
-            time: '10:00 AM',
-            height: 50,
-            day: '2023-09-25',
-          },
-          {
-            name: 'Rhapsody no 1',
-            time: '12:30 PM',
-            height: 50,
-            day: '2023-09-25',
-          },
-        ],
-        '2023-09-26': [
-          {
-            name: 'Warm Up',
-            time: '9:30 AM',
-            height: 50,
-            day: '2023-09-26',
-          },
-          {
-            name: 'Concerto',
-            time: '2:00 PM',
-            height: 50,
-            day: '2023-09-26',
-          },
-        ],
-      };
+      // All practice logs
+      setPracticeLogs(querySnapshot.docs.map(doc => doc.data()));
 
-      const renderEmptyDate = () => {
-        return (
-          <View style={styles.container}>
-            <Text style={styles.emptyDate}>No practice logs for this day.</Text>
-          </View>
-        );
-      };
-
-      const marked = useMemo(() => ({
-        [selected]: {
-          selected: true,
-          selectedColor: '#222222',
-          selectedTextColor: 'yellow',
-        }
-      }), [selected]);
+      // Initially the filtered logs should be the same as the practice
+      setFilteredLogs(querySnapshot.docs.map(doc => doc.data()).filter((log: any) => 
+        log.date.toDate().toISOString().split('-')[1] == currMonth));
+      setMarkedDates(dates);
+      
+    }
+    loadData();
+  }, []);
     
-    
-    return (
-      // TODO : Cannot exit calendar view when it's been pulled down.
-      // <SafeAreaView style={styles.calendar}>
-      //   <Agenda
-      //       items={agendaItems}
-      //       renderItem={(item, isFirst) => (
-      //           <TouchableOpacity style={styles.item}>
-      //             <Ionicons name='musical-note' size={30}></Ionicons>
-      //             <Text style={styles.itemText}>{item.name}</Text>
-      //           </TouchableOpacity>
-      //       )}
-      //       onDayPress={day => {
-      //         setSelected(day.dateString);
-      //     }}
-      //       renderEmptyDate={renderEmptyDate}
-      //       renderEmptyData={renderEmptyDate}
-      //       theme={{
-      //         dotColor: 'red'
-      //       }}
-      //       />
-      // </SafeAreaView>
-      null
-    );
-  };
+  return (
+    <View style={{flex:1}}>
+      <Calendar
+        markedDates={markedDates}
+        markingType="period"
+        onMonthChange={(month) => {
+          currMonth = month.month;
+
+          // Filter practice logs based on the current month
+          setFilteredLogs(practiceLogs.filter((log: any) => 
+            log.date.toDate().toISOString().split('-')[1] == month.month))
+          }}
+      />
+        <FlatList
+          data={filteredLogs}
+          extraData={filteredLogs}
+          renderItem={({item}) => (
+            <TouchableOpacity style={styles.item}>
+              <Ionicons name='musical-note' size={25}></Ionicons>
+              <Text key={item.id}>{item.date.toDate().toDateString()}</Text>
+            </TouchableOpacity>
+          )}
+        />
+    </View>
+  );
+};
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-    },
-    calendar: {
-        flex: 1,
-        width: '100%'
     },
     item: {
         backgroundColor: '#7BC3E9',
@@ -108,11 +82,6 @@ const Journal: React.FC = () => {
     itemText: {
       color: 'black',
       fontSize: 16,
-    },
-    emptyDate: {
-        fontSize: 24,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     text: {
       fontSize: 24,
