@@ -3,7 +3,7 @@ import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity } from 'react-na
 import {Calendar, Agenda, ExpandableCalendar, CalendarProvider, AgendaList} from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
 
-const JournalScreen: React.FC = () => {
+const Journal: React.FC = () => {
 
     const [selected, setSelected] = useState('');
 
@@ -63,25 +63,27 @@ const JournalScreen: React.FC = () => {
     
     
     return (
-      <SafeAreaView style={styles.calendar}>
-        <Agenda
-            items={agendaItems}
-            renderItem={(item, isFirst) => (
-                <TouchableOpacity style={styles.item}>
-                  <Ionicons name='musical-note' size={30}></Ionicons>
-                  <Text style={styles.itemText}>{item.name}</Text>
-                </TouchableOpacity>
-            )}
-            onDayPress={day => {
-              setSelected(day.dateString);
-          }}
-            renderEmptyDate={renderEmptyDate}
-            renderEmptyData={renderEmptyDate}
-            theme={{
-              dotColor: 'red'
-            }}
-            />
-      </SafeAreaView>
+      // TODO : Cannot exit calendar view when it's been pulled down.
+      // <SafeAreaView style={styles.calendar}>
+      //   <Agenda
+      //       items={agendaItems}
+      //       renderItem={(item, isFirst) => (
+      //           <TouchableOpacity style={styles.item}>
+      //             <Ionicons name='musical-note' size={30}></Ionicons>
+      //             <Text style={styles.itemText}>{item.name}</Text>
+      //           </TouchableOpacity>
+      //       )}
+      //       onDayPress={day => {
+      //         setSelected(day.dateString);
+      //     }}
+      //       renderEmptyDate={renderEmptyDate}
+      //       renderEmptyData={renderEmptyDate}
+      //       theme={{
+      //         dotColor: 'red'
+      //       }}
+      //       />
+      // </SafeAreaView>
+      null
     );
   };
 
@@ -123,4 +125,4 @@ const JournalScreen: React.FC = () => {
     },
   });
   
-  export default JournalScreen;
+  export default Journal;

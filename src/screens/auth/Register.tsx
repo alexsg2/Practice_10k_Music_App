@@ -1,171 +1,106 @@
 import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Image, Text, TextInput, TouchableOpacity } from 'react-native';
 
 const auth = getAuth();
+import authStyles from './authStyles';
+import { AuthStackParamList } from './authNavigation';
+import { validateRegistrationFormat } from '../../helpers/AuthValidation';
 
-const RegisterScreen = () =>
+type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
+
+const Register = () =>
 {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confPassword, setConfPassword] = useState('');
     const [error, setError] = useState('');
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<registerScreenProp>();
     
     async function handleRegistering() {
-        if (email === '' || password === '') {
-            setError('Email and password are mandatory.')
-            return;
+        const registerError = validateRegistrationFormat(name, email, newPassword, confPassword);
+        if (registerError) {
+            setError(registerError);
         }
-      
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            navigation.navigate('Login');
-          } catch (error) {
-            setError('')
-          }
+        else {
+            try {
+                await createUserWithEmailAndPassword(auth, email, newPassword);
+                // navigation.navigate('ProfileSetup');
+            }
+            catch (e) {
+                // TODO : display more detailed explanations of why registration was not possible
+                setError('Could not register user.');
+            }
+        }
     }
     
     return (
-        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.innerContainer}>
-                    <View style={styles.backContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Start')}>
-                            <Image style={styles.back} source={require('../../assets/images/back-arrow.png')}/>
-                        </TouchableOpacity>
+        <ScrollView contentContainerStyle={authStyles.scrollContainer}>
+            <KeyboardAvoidingView style={authStyles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <View style={authStyles.innerContainer}>
+                        <View style={authStyles.backContainer}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Start')}>
+                                <Ionicons name="arrow-back" size={30} color='white'/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={authStyles.logoContainer}>
+                            <Image source={require('../../assets/images/med-white-logo.png')} style={authStyles.logo}/>
+                            <Text style={authStyles.headerText}>Hello.</Text>
+                        </View>
+                        <View style={authStyles.errorContainer}>
+                            <Text style={authStyles.errorText}>{error}</Text>
+                        </View>
+                        <View style={authStyles.inputContainer}>
+                            <TextInput
+                                placeholder='Name'
+                                placeholderTextColor='white'
+                                onChangeText={(text) => setName(text)}
+                                value={name}
+                                style={authStyles.input}
+                            />
+                            <TextInput
+                                placeholder='Email'
+                                placeholderTextColor='white'
+                                onChangeText={(text) => setEmail(text)}
+                                value={email}
+                                style={authStyles.input}
+                            />
+                            <TextInput
+                                placeholder='New Password'
+                                placeholderTextColor='white'
+                                onChangeText={(text) => setNewPassword(text)}
+                                value={newPassword}
+                                secureTextEntry
+                                style={authStyles.input}
+                            />
+                            <TextInput
+                                placeholder='Confirm Password'
+                                placeholderTextColor='white'
+                                onChangeText={(text) => setConfPassword(text)}
+                                value={confPassword}
+                                secureTextEntry
+                                style={authStyles.input}
+                            />
+                        </View>
+                        <View style={authStyles.buttonContainer}>
+                            <TouchableOpacity onPress={handleRegistering} style={authStyles.button}>
+                                <Text style={authStyles.buttonText}>Register</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                                <Text style={authStyles.footerText}>Already a user? Click here.</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.logoContainer}>
-                        <Image source={require('../../assets/images/white-logo.png')} style={styles.logo}/>
-                        <Text style={styles.headerText}>Hello.</Text>
-                    </View>
-                    {!!error && <View style={styles.error}><Text>{error}</Text></View>}
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            placeholder='Name'
-                            placeholderTextColor='white'
-                            onChangeText={(text) => setName(text)}
-                            value={name}
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder='Email'
-                            placeholderTextColor='white'
-                            onChangeText={(text) => setEmail(text)}
-                            value={email}
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder='Password'
-                            placeholderTextColor='white'
-                            onChangeText={(text) => setPassword(text)}
-                            value={password}
-                            secureTextEntry
-                            style={styles.input}
-                        />
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={handleRegistering} style={styles.button}>
-                            <Text style={styles.buttonText}>Register</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                            <Text style={styles.footerText}>Already a user? Click here.</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </ScrollView>
     );
 }
 
-export default RegisterScreen;
-
-const styles = StyleSheet.create(
-{
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#5982C2',
-    },
-    innerContainer: {
-        flexGrow: 1,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-    backContainer: {
-        top: '10%',
-        left: '-40%',
-        position: 'relative',
-    },
-    back: {
-        width: 30,
-        height: 27,
-        tintColor: 'white',
-    },
-    logoContainer: {
-        width: '80%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    logo: {
-        aspectRatio: 1,
-        marginTop: '30%',
-    },
-    headerText: {
-        fontSize: 30,
-        color: 'white',
-        textAlign: 'center',
-        marginVertical: '10%',
-        // TODO: get a cursive font style
-    },
-    inputContainer: {
-        width: '80%',
-        marginBottom: '5%',
-    },
-    input: {
-        width: '100%',
-        padding: '7%',
-        borderRadius: 10,
-        alignItems: 'center',
-        marginVertical: '5%',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    },
-    buttonContainer: {
-        width: '80%',
-        marginBottom: '20%',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button: {
-        width: '100%',
-        padding: '7%',
-        borderRadius: 10,
-        marginVertical: '5%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-    buttonText: {
-        fontSize: 18,
-        color: 'white',
-        fontWeight: 'bold',
-    },
-    footerText: {
-        fontSize: 14,
-        color: 'white',
-        textDecorationLine: 'underline',
-    },
-    error: {
-        marginTop: 10,
-        padding: 10,
-        color: 'white',
-        fontWeight: 'bold'
-      }
-});
-    
+export default Register;

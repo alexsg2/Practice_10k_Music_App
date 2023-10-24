@@ -1,7 +1,14 @@
 import React from 'react';
-import './config/firebase';
-import RootNavigation from './navigation';
+import { Provider } from 'react-redux';
+import './src/config/firebase';
+import RootNavigation from './src/navigation';
+import store from './src/redux/store';
 
 export default function App() {
-  return <RootNavigation />;
+  return (
+    <Provider store={store}>
+      <RootNavigation />
+    </Provider>
+  );
+
 }
