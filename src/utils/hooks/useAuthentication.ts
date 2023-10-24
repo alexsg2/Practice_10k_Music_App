@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { db } from "../../config/firebase"
@@ -6,10 +6,9 @@ const auth = getAuth();
 
 
 export function useAuthentication() {
-  const [user, setUser] = React.useState<User>();
-  const [userData, setUserData] = React.useState<any>();
-  
-  React.useEffect(() => {
+  const [user, setUser] = useState<User>();
+  const [userData, setUserData] = useState<any>();
+  useEffect(() => {
     const unsubscribeFromAuthStatusChanged = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
@@ -33,7 +32,7 @@ export function useAuthentication() {
 
     return unsubscribeFromAuthStatusChanged;
   }, []);
-
+  
   return {
     user, userData
   };
