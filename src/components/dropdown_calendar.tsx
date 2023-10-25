@@ -4,13 +4,16 @@ import DatePicker from 'react-native-modern-datepicker';
 import { StyleProp, ViewStyle, View, Text, TouchableOpacity } from 'react-native';
 
 
+import { colorPallete } from '../assets/design_library';
+
 interface DropDownProp {
     input: string,
     selectedDate: string,
     setDate: (selectedDate: string) => void;
     altStyle: StyleProp<ViewStyle>[];
 }
-  
+
+
 const DropdownCalendar: React.FC<DropDownProp> = ({ input, selectedDate, setDate, altStyle }) =>
 {
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -34,10 +37,17 @@ const DropdownCalendar: React.FC<DropDownProp> = ({ input, selectedDate, setDate
             </TouchableOpacity>
             {showDatePicker && (
                 <DatePicker
-                    style={altStyle[3]}
+                    style={{borderRadius: 10, marginTop: '-5%', marginBottom: '5%', borderWidth: 1, borderColor: colorPallete.black_gradiant["20%"]}}
                     mode="calendar"
                     selectorEndingYear={(new Date()).getFullYear()}
-                    options={{mainColor: '#5982C2'}}
+                    options={{ backgroundColor: '#333333',
+                               textHeaderColor: colorPallete.white_gradiant["default"],
+                               textDefaultColor: colorPallete.white_gradiant["default"],
+                               selectedTextColor: colorPallete.blue_gradiant["default"],
+                               mainColor: colorPallete.white_gradiant["default"],
+                               textSecondaryColor: colorPallete.white_gradiant["default"],
+                               borderColor: colorPallete.white_gradiant["20%"],
+                            }}
                     onSelectedChange={handleDateChange}
                 />
             )}

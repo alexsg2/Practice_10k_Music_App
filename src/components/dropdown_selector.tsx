@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons'; 
-import { StyleProp, ViewStyle, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { StyleProp, ViewStyle, ScrollView, View, Text, TouchableOpacity } from 'react-native';
+
 
 import { colorPallete, fontSizes } from '../assets/design_library';
-
 
 interface DropDownProp {
     input: string,
@@ -14,7 +14,7 @@ interface DropDownProp {
     altStyle: StyleProp<ViewStyle>[];
 }
   
-// TODO : Issue with scrolling when we reach the bottom of the flatlist
+
 const DropdownSelector: React.FC<DropDownProp> = ({ input, dataList, multiselect, selectedItems, setSelectedItems, altStyle }) =>
 {
     const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
@@ -48,28 +48,25 @@ const DropdownSelector: React.FC<DropDownProp> = ({ input, dataList, multiselect
                 )}
             </TouchableOpacity>
             {dropdownIsOpen ? (
-                <View style={altStyle[3]}>
-                    <Text style={{ marginVertical: '2%', fontSize: fontSizes.label, color: colorPallete.black_gradiant["default"] }}>
+                <ScrollView style={{ width: '100%', alignSelf: 'center', maxHeight: 250, marginTop: '-7%', marginBottom: '5%', borderRadius: 10, alignContent: 'center', backgroundColor: '#333333' }} >
+                    <Text style={{ flex: 1, alignSelf: 'center', marginVertical: '5%', fontWeight: 'bold', fontSize: fontSizes.button, color: colorPallete.white_gradiant["60%"] }}>
                         Options:
                     </Text>
-                    <FlatList
-                        data={dataList}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => (
-                            <TouchableOpacity onPress={() => handleItemSelect(item)}
-                                              style={[{ padding: '7%', marginBottom: '2.5%', borderBottomWidth: 1, borderBottomColor: colorPallete.white_gradiant["60%"] },
-                                                        selectedItems.includes(item) ?
-                                                            { borderRadius: 10, backgroundColor: colorPallete.login_blue["default"] }
-                                                            : null
-                                                    ]} 
-                            >
-                                <Text style={{ fontSize: fontSizes.normal, color: colorPallete.black_gradiant["default"] }}>
-                                    {item}
-                                </Text>
-                            </TouchableOpacity>
-                        )}
-                    />
-                </View>
+                    {dataList.map((item, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            onPress={() => handleItemSelect(item)}
+                            style={[
+                                { padding: '7%', borderBottomWidth: 1, borderBottomColor: colorPallete.white_gradiant["60%"] },
+                                selectedItems.includes(item) ? { backgroundColor: colorPallete.white_gradiant["60%"] } : null
+                            ]}
+                        >
+                            <Text style={{ flex: 1, alignSelf: 'center', fontSize: fontSizes.normal, color: colorPallete.white_gradiant["default"] }}>
+                                {item}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
             ) : null}
         </View>
   );
