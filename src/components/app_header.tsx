@@ -49,11 +49,11 @@ export default AppHeader;
 const styles = StyleSheet.create(
 {
     container: {
-      width: '100%',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      borderBottomColor: colorPallete.black_gradiant["default"],
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottomColor: colorPallete.black_gradiant["default"],
     },
     logoContainer: {
         flex: 1,

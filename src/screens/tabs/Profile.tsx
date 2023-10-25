@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +28,6 @@ const Profile = () =>
     const dateOfBirth = currentUserProfile.dateOfBirth;
     const level = currentUserProfile.level;
     const instruments = currentUserProfile.instruments;
-    const password = currentUserProfile.password;
 
     async function  handleDeletion() {
         Alert.alert('Delete Account','Are you sure you want to delete your account?',
@@ -85,13 +84,6 @@ const Profile = () =>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
                                     value={instruments.length > 0 ? instruments.join(', ') : instruments[0]}
-                                    editable={false}
-                                />
-                                <Text style={inputStyles.profileLabelText}>Password</Text>
-                                <TextInput
-                                    style={inputStyles.profileInputBox}
-                                    value={password}
-                                    secureTextEntry
                                     editable={false}
                                 />
                             </View>

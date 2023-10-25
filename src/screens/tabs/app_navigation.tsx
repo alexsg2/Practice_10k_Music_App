@@ -2,11 +2,12 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-import { AppHeader } from '../../components';
+import { AppHeader, EditHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
@@ -26,10 +27,9 @@ const ProfileStack = createNativeStackNavigator();
 
 function AppNavigation()
 {
-    // TODO : Figure out how to remove AppHeader for EditProfile !!!!
     const ProfileNavigationStack = () => (
         <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-            <ProfileStack.Screen name="Profile" component={Profile}/>
+            <ProfileStack.Screen name="ProfileScreen" component={Profile}/>
             <ProfileStack.Screen name="EditProfile" component={EditProfile}/>
         </ProfileStack.Navigator>
     );
@@ -58,9 +58,17 @@ function AppNavigation()
                               headerStyle: styles.header,
                             }}/>
                 <Tab.Screen name="Profile" component={ProfileNavigationStack}
-                    options={{tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
-                              headerTitle: () => <AppHeader name="Profile"/>, 
-                              headerStyle: styles.header}}/>
+                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
+                                              headerTitle: () => {
+                                                    const routeName = getFocusedRouteNameFromRoute(route);
+                                                    if (routeName === 'EditProfile') {
+                                                        return <EditHeader/>;
+                                                    } else {
+                                                        return <AppHeader name="Profile"/>;
+                                                    }
+                                             },
+                                             headerStyle: styles.header,
+                                            })}/>
               </Tab.Navigator>
           </NavigationContainer>
     );

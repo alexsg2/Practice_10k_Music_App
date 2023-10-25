@@ -73,7 +73,7 @@ const Register = () =>
                                 />
                                 <Text style={inputStyles.authLabelText}>Date of Birth</Text>
                                 <DropdownCalendar input={'MM/DD/YYYY'} selectedDate={dateOfBirth} setDate={setDateOfBirth}
-                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authCalendarBox]}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.authLabelText}>Email</Text>
                                 <TextInput
@@ -86,12 +86,12 @@ const Register = () =>
                                 <Text style={inputStyles.authLabelText}>Instrument(s)</Text>
                                 <DropdownSelector input={'Select your instrument(s)'} dataList={INSTRUMENTS}
                                                   multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
-                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.authLabelText}>Musical Level</Text>
                                 <DropdownSelector input={'Select your level'} dataList={LEVELS}
                                                   multiselect={false} selectedItems={level} setSelectedItems={setLevel}
-                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText, containerStyles.authDropdownBox]}
+                                                  altStyle={[componentStyles.authComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.authLabelText}>New Password</Text>
                                 <TextInput
