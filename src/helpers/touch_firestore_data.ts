@@ -31,7 +31,7 @@ export const updateUserProfile = async ({ userId, name, dateOfBirth, instruments
 {
     try {
         const userDocRef = doc(db, 'users', userId);
-        await setDoc(userDocRef, { name, dateOfBirth, instruments, level }, { merge: true });
+        await setDoc(userDocRef, { userId, name, dateOfBirth, instruments, level }, { merge: true });
     }
     catch (e) {
         console.log("not updating user, because of: " + e);
@@ -56,7 +56,7 @@ export const deleteUserAccount = async (userId: string): Promise<void> =>
 
 
 
-export const addPracticeData = async (userId: string, title: string, piece: string, composer: string, duration: number, notes: string) =>
+export const addPracticeData = async (userId: string, title: string, piece: string, composer: string, date: Date, duration: number, notes: string) =>
 {
     try {
         const userDocRef = doc(db, 'users', userId);

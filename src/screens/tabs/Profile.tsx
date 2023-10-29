@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
@@ -24,7 +24,16 @@ const Profile = () =>
 
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
     const name = currentUserProfile.name;
-    const email = user?.email;
+    const [uid, setUid] = useState<string>('');
+    const [email, setEmail] = useState<string | null>(null);
+    useEffect(() => {const unsubscribe = onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            setUid(user.uid);
+                            setEmail(user.email);
+                        }
+                    });
+                    return unsubscribe;
+    }, []);
     const dateOfBirth = currentUserProfile.dateOfBirth;
     const instruments = currentUserProfile.instruments;
     const level = currentUserProfile.level;
@@ -33,8 +42,9 @@ const Profile = () =>
         Alert.alert('Delete Account','Are you sure you want to delete your account?',
                     [ {text: 'Cancel' }, { text: 'Delete', onPress: async () => {
                         try {
-                            // TODO : await auth.deleteUser(user.uid);
-                            await deleteUserAccount(user.uid);
+                            await deleteUserAccount(uid);
+                            user.delete();
+                            signOut(auth);
                         } catch (e) {
                             Alert.alert('Request Failed', 'Unable to delete account. Please try again later.', [{ text: 'OK' }]);
                         }

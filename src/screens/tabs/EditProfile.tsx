@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { getAuth } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -27,6 +27,15 @@ const EditProfile = () =>
     
     const dispatch = useDispatch();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const [uid, setUid] = useState<string>('');
+    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            setUid(user.uid);
+                        }
+                    });
+                    return unsubscribe;
+    }, []);
+    
     const [name, setName] = useState(currentUserProfile.name);
     const [dateOfBirth, setDateOfBirth] = useState(currentUserProfile.dateOfBirth);
     const [instruments, setInstruments] = useState<string[]>(currentUserProfile.instruments);
@@ -39,7 +48,7 @@ const EditProfile = () =>
         }
         else {
             try {
-                await updateUserProfile({userId: user?.uid, name, dateOfBirth, instruments, level: level[0]});
+                await updateUserProfile({userId: uid, name, dateOfBirth, instruments, level: level[0]});
                 dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level: level[0]}));
                 navigation.goBack();
             }

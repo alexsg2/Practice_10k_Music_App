@@ -39,12 +39,7 @@ const Home = () =>
                 </View>
             </ScrollView>
         </SafeAreaView>
-        //     <Text>Temporary home screen.</Text>
-        //     <Text>Welcome, {user?.email}</Text>
-        //     <Text>To logout, go to Profile and scroll down</Text>
-        //     <StatusBar style="auto" />
-        // </View>
-  );
+    );
 }
 
 export default Home;
