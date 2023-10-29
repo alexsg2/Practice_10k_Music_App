@@ -29,7 +29,7 @@ const Planner: React.FC<PlannerProp> = ({ date, practice }) =>
     };
 
     const handleViewPlan = () => {
-        // TODO : navigate to 'viewing plan' screen just like journal
+        // TODO : just like journal - Claire's
     };
 
     const handleStartPlan = () => {
@@ -46,9 +46,13 @@ const Planner: React.FC<PlannerProp> = ({ date, practice }) =>
                         style={styles.item}
                         onPress={() => {handleViewPlan}}
                     >
-                        <Ionicons name='musical-note' size={25}></Ionicons>
-                        <Text style={styles.itemText}>{plan}</Text>
-                        <AntDesign name="right" size={24} right={'-780%'} color="black"/>
+                        <View style={styles.leftContainer}>
+                            <Ionicons name='musical-note' size={25}></Ionicons>
+                            <Text style={styles.itemText}>{plan}</Text>
+                        </View>
+                        <View style={styles.rightContainer}>
+                            <AntDesign name="right" size={24} color="black"/>
+                        </View>
                     </TouchableOpacity>
                 ))
             ) : (
@@ -84,9 +88,19 @@ const styles = StyleSheet.create(
         flexDirection: 'row',
         backgroundColor: '#7BC3E9',
     },
+    leftContainer: {
+        flex: 1,
+        paddingRight: '5%',
+        alignItems: 'center',
+        flexDirection: 'row',
+    },
+    rightContainer: {
+        alignItems: 'flex-end',
+    },
     itemText: {
         fontSize: 16,
-        paddingHorizontal: '2.5%',
+        alignSelf: 'center',
+        paddingHorizontal: '5%',
     },
     startButton: {
         width: '50%',
