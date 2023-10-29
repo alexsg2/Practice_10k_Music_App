@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, ScrollView, Text, TouchableHighlight, View } from 'react-native';
+import { SafeAreaView, ScrollView, StatusBar, Text, TouchableHighlight, View } from 'react-native';
 
 
 import GoalTracker from '../../components/GoalTracker';
@@ -38,6 +38,7 @@ const Home = () =>
                     <Planner date={new Date()} practice={false}></Planner>
                 </View>
             </ScrollView>
+            <StatusBar/>
         </SafeAreaView>
     );
 }

@@ -44,16 +44,29 @@ export function validateRegistrationFormat(name: string, dob: string, instrument
     return null; // No validation errors
 }
 
-export function validateEdits(name: string, dob: string, instruments: string[], level: string): string | null
+export function validateEdits(name: string, dob: string, instruments: string[], level: string, oldPassword: string, newPassword: string, confPassword: string): string | null
 {
     if (!name || !dob || !instruments || !level) {
-        return 'All fields are required.';
+        return 'All fields, except the ones related to passwords, are required.';
     }
 
     const dateElem = dob.split("/");
     const convDate  = new Date(parseInt(dateElem[2]), parseInt(dateElem[0]) - 1, parseInt(dateElem[1]));
     if (convDate >= new Date()) {
         return 'Date of birth is invalid.'
+    }
+
+    if (oldPassword && newPassword && confPassword) {
+        if (newPassword.length < 8) {
+            return 'New password should be at least 8 characters long.';
+        }
+          
+        if (newPassword !== confPassword) {
+            return 'New and confirmed passwords do not match.';
+        }
+    }
+    else {
+        return 'To change your password, all three password fields are required.'
     }
   
     return null; // No validation errors
