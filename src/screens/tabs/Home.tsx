@@ -1,33 +1,50 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { getAuth } from 'firebase/auth';
-import { StyleSheet, Text, View } from 'react-native';
-import { useAuthentication } from '../../utils/hooks/useAuthentication';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, Text, TouchableHighlight, View } from 'react-native';
 
 
-const auth = getAuth();
+import GoalTracker from '../../components/GoalTracker';
+import { colorPallete } from '../../assets/design_library';
+import Planner from '../../components/planner';
 
-export default function Home() {
-    const { user } = useAuthentication();
-    
+
+const Home = () =>
+{
+    const dateOptions = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const [selectedDate, setSelectedDate] = useState(dateOptions[(new Date()).getDay()]);
+
+    const renderDateBoxes = () => {
+        return dateOptions.map((date, index) => (
+            <TouchableHighlight
+                key={index}
+                style={{ padding: '2.5%', borderWidth: 1, borderRadius: 10, backgroundColor: selectedDate === date ? colorPallete.yellow_gradiant["50%"] : 'white', }}
+                underlayColor="#D3D3D3"
+                onPress={() => setSelectedDate(date)}
+            >
+                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{date}</Text>
+            </TouchableHighlight>
+        ));
+    };
+
     return (
-        <View style={styles.container}>
-            <Text>Temporary home screen.</Text>
-            <Text>Welcome, {user?.email}</Text>
-            <Text>To logout, go to Profile and scroll down</Text>
-            <StatusBar style="auto" />
-        </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{ width: "100%", paddingVertical: '5%', alignItems: 'center', backgroundColor: '#ECF1F7' }}>
+                    <GoalTracker title="Overall Hours" goal_amount={10000}/>
+                </View>
+                <View style={{ width: "100%", paddingVertical: '2.5%', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around' }}>
+                    {renderDateBoxes()}
+                </View>
+                <View style={{ backgroundColor: '#ECF1F7' }}>
+                    <Planner date={new Date()} practice={false}></Planner>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+        //     <Text>Temporary home screen.</Text>
+        //     <Text>Welcome, {user?.email}</Text>
+        //     <Text>To logout, go to Profile and scroll down</Text>
+        //     <StatusBar style="auto" />
+        // </View>
   );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button: {
-        marginTop: 10
-    },
-});
+export default Home;

@@ -22,7 +22,8 @@ export function validateRegistrationFormat(name: string, dob: string, instrument
         return 'All fields are required.';
     }
 
-    const convDate = new Date(dob);
+    const dateElem = dob.split("/");
+    const convDate  = new Date(parseInt(dateElem[2]), parseInt(dateElem[0]) - 1, parseInt(dateElem[1]));
     if (convDate >= new Date()) {
         return 'Date of birth is invalid.'
     }
@@ -43,34 +44,16 @@ export function validateRegistrationFormat(name: string, dob: string, instrument
     return null; // No validation errors
 }
 
-export function validateEdits(name: string, dob: string, instruments: string[], level: string[], email: string, currPassword: string, oldPassword: string, newPassword: string, confPassword: string): string | null
+export function validateEdits(name: string, dob: string, instruments: string[], level: string): string | null
 {
-    if (!name || !dob || !instruments || !level || !email) {
-        return 'If password is not being changed, the first 5 fields are required.';
+    if (!name || !dob || !instruments || !level) {
+        return 'All fields are required.';
     }
 
-    const convDate = new Date(dob);
+    const dateElem = dob.split("/");
+    const convDate  = new Date(parseInt(dateElem[2]), parseInt(dateElem[0]) - 1, parseInt(dateElem[1]));
     if (convDate >= new Date()) {
         return 'Date of birth is invalid.'
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return 'Email format is invalid.';
-    }
-
-    if (newPassword) {
-        if (currPassword !== oldPassword) {
-            return 'Old password is incorrect.';
-        }
-      
-        if (newPassword.length < 8) {
-          return 'Password should be at least 8 characters long.';
-        }
-        
-        if (newPassword !== confPassword) {
-            return 'Passwords do not match.';
-        }
     }
   
     return null; // No validation errors

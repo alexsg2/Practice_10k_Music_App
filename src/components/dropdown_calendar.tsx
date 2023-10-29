@@ -52,7 +52,7 @@ const DropdownCalendar: React.FC<DropDownProp> = ({ input, selectedDate, setDate
                 />
             )}
         </View>
-  );
+    );
 };
 
 export default DropdownCalendar;

@@ -1,21 +1,21 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react'; 
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
-export default function Practice() {
+
+import Planner from '../../components/planner';
+
+
+const Practice = () =>
+{
     return (
-        <View style={styles.container}>
-            <Text>Temporary practice screen.</Text>
-            <StatusBar style="auto" />
-        </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={{ backgroundColor: '#ECF1F7' }}>
+                    <Planner date={new Date()} practice={true}></Planner>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+export default Practice;

@@ -7,7 +7,7 @@ import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithout
 
 
 import { RootState } from '../../redux/store';
-import { deleteUserData } from '../../helpers';
+import { deleteUserAccount } from '../../helpers';
 import { ProfileLogoSection } from '../../components';
 import { colorPallete } from '../../assets/design_library';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from '../../assets/styles/auth_and_profile_styles';
@@ -24,16 +24,17 @@ const Profile = () =>
 
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
     const name = currentUserProfile.name;
-    const email = currentUserProfile.email;
+    const email = user?.email;
     const dateOfBirth = currentUserProfile.dateOfBirth;
-    const level = currentUserProfile.level;
     const instruments = currentUserProfile.instruments;
+    const level = currentUserProfile.level;
 
     async function  handleDeletion() {
         Alert.alert('Delete Account','Are you sure you want to delete your account?',
                     [ {text: 'Cancel' }, { text: 'Delete', onPress: async () => {
                         try {
-                            await deleteUserData(user.uid);
+                            // TODO : await auth.deleteUser(user.uid);
+                            await deleteUserAccount(user.uid);
                         } catch (e) {
                             Alert.alert('Request Failed', 'Unable to delete account. Please try again later.', [{ text: 'OK' }]);
                         }
@@ -65,7 +66,7 @@ const Profile = () =>
                                 <Text style={inputStyles.profileLabelText}>Email</Text>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
-                                    value={email}
+                                    value={email || ''}
                                     editable={false}
                                 />
                                 <Text style={inputStyles.profileLabelText}>Date of Birth</Text>
@@ -77,7 +78,7 @@ const Profile = () =>
                                 <Text style={inputStyles.profileLabelText}>Level</Text>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
-                                    value={level[0]}
+                                    value={level}
                                     editable={false}
                                 />
                                 <Text style={inputStyles.profileLabelText}>Instrument(s)</Text>
