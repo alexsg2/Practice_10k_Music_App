@@ -1,75 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-export type PracticeStackParamList = {
-    Practice: undefined;
-    PracticeTimer: undefined;
-};
-type PracticeNavigationProp = NavigationProp<PracticeStackParamList, 'Practice' | 'PracticeTimer'>;
+import AddPlanDetails from './add_plan_details';
+import ViewPlanDetails from './view_plan_details';
+import { getPracticeDataByDate } from '../helpers';
 
 interface PlannerProp {
-    date: Date;
-    practice: boolean;
+    userId: string;
+    date: Date[];
 }
 
-const Planner: React.FC<PlannerProp> = ({ date, practice }) =>
+
+const Planner: React.FC<PlannerProp> = ({ userId, date }) =>
 {
-    const navigation = useNavigation<PracticeNavigationProp>();
+    const [loading, setLoading] = useState(true);
     
-    const [plans, setPlans] = useState<string[]>([]);
-    useEffect(() => {
-        // TODO : fetch data in firestore by date and set plans
-    }, [date]);
+    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [addPlanVisible, setAddPlanVisible] = useState(false);
+    const [viewPlanVisible, setViewPlanVisible] = useState(false);
 
-    const handleAddPlan = () => {
-        // TODO : navigate to 'adding plan' screen - claire's
+    const [plans, setPlans] = useState<any[]>([]);
+    useEffect(() => { async function fetchPlans() {
+                        try {
+                            const practiceData = await getPracticeDataByDate(userId, date[0], date[1]);
+                            setPlans(practiceData || []);
+                        }
+                        catch (e: any) {
+                            // Alert.alert('Loading Failed', 'Unable to load practice plans. Please reload or try again later: ' + e.code, [{ text: 'OK' }]);
+                        }
+                    }
+
+                    fetchPlans();
+                    setLoading(false);
+                }, [userId, date, addPlanVisible, viewPlanVisible]);
+
+    async function handleAddPlan() {
+        setAddPlanVisible(true);
     };
 
-    const handleViewPlan = () => {
-        // TODO : just like journal - Claire's
-    };
-
-    const handleStartPlan = () => {
-        // TODO : navigate to 'viewing plan' screen just like journal
+    async function handleViewPlan(plan: any) {
+        setSelectedPlan(plan);
+        setViewPlanVisible(true);
     };
 
     return (
         <View style={{ flex: 1, padding: '3%', width: '100%' }}>
             <Text style={{ fontSize: 20 }}>Today's Plans</Text>
-            {plans.length > 0 ? (
-                plans.map((plan, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={styles.item}
-                        onPress={() => {handleViewPlan}}
-                    >
-                        <View style={styles.leftContainer}>
-                            <Ionicons name='musical-note' size={25}></Ionicons>
-                            <Text style={styles.itemText}>{plan}</Text>
-                        </View>
-                        <View style={styles.rightContainer}>
-                            <AntDesign name="right" size={24} color="black"/>
-                        </View>
-                    </TouchableOpacity>
-                ))
-            ) : (
-                <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center', marginTop: '7%' }}>Nothing planned for this date.</Text>
-            )}
+            {loading ? (
+                <ActivityIndicator size='large' color='black' style={{ marginTop: '5%'}} />
+            ) : plans.length > 0 ? (
+                    plans.map((plan, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={styles.item}
+                            onPress={() => {handleViewPlan(plan)}}
+                        >
+                            <View style={styles.leftContainer}>
+                                <Ionicons name='musical-note' size={25}></Ionicons>
+                                <Text style={styles.itemText}>{plan.title}</Text>
+                            </View>
+                            <View style={styles.rightContainer}>
+                                <AntDesign name="right" size={24} color="black"/>
+                            </View>
+                        </TouchableOpacity>
+                    ))
+                ) : (
+                    <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center', marginTop: '7%' }}>Nothing planned for this date.</Text>
+                )}
             <TouchableOpacity style={styles.item} onPress={handleAddPlan}>
                 <Ionicons name="add-sharp" size={30} color="black"/>
                 <Text style={styles.itemText}>Add Piece</Text>
             </TouchableOpacity>
-            {practice && plans.length > 0 ? (
-                <TouchableOpacity style={styles.startButton} onPress={handleStartPlan}>
-                    <Ionicons name="play" size={25} color="black"/>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Start</Text>
-                </TouchableOpacity>
-            ) : (
-                null
-            )}
+            {addPlanVisible ? (
+                <AddPlanDetails uid={userId} date={date[1]} view={addPlanVisible} setView={setAddPlanVisible}/> 
+            ) : null}
+            {viewPlanVisible ? (
+                <ViewPlanDetails uid={userId} plan={selectedPlan} view={viewPlanVisible} setView={setViewPlanVisible}/> 
+            ) : null}
         </View>
     );
 };
@@ -101,16 +110,5 @@ const styles = StyleSheet.create(
         fontSize: 16,
         alignSelf: 'center',
         paddingHorizontal: '5%',
-    },
-    startButton: {
-        width: '50%',
-        padding: '5%',
-        marginTop: '5%',
-        borderRadius: 10,
-        alignSelf: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        backgroundColor: '#7BC3E9',
     },
 });

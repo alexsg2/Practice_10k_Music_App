@@ -34,7 +34,7 @@ const Profile = () =>
                         }
                     });
                     return unsubscribe;
-    }, []);
+    }, [uid, email]);
     const dateOfBirth = currentUserProfile.dateOfBirth;
     const instruments = currentUserProfile.instruments;
     const level = currentUserProfile.level;
@@ -115,7 +115,7 @@ const Profile = () =>
                                     <Text style={bottomStyles.buttonText}>Logout</Text>
                                 </TouchableOpacity>
                                 <Modal
-                                    animationType="slide"
+                                    animationType="fade"
                                     transparent={true}
                                     visible={modalVisible}
                                     onRequestClose={() => {setModalVisible(!modalVisible);

@@ -1,5 +1,6 @@
 /*
- * Helper functions to validate user information format during login, registration and edit profile.
+ * Helper functions to validate user information format during login, registration, edit profile
+ * and add/edit practice plan.
  */
 
 export function validateLoginFormat(email: string, password: string): string | null
@@ -67,6 +68,15 @@ export function validateEdits(name: string, dob: string, instruments: string[], 
     }
     else {
         return 'To change your password, all three password fields are required.'
+    }
+  
+    return null; // No validation errors
+}
+
+export function validatePracticePlan(title: string, piece: string, composer: string): string | null
+{
+    if (!title || !piece || !composer) {
+        return 'All editable fields are required.';
     }
   
     return null; // No validation errors

@@ -16,9 +16,6 @@ export const addUserAccount = async ({ userId, name, dateOfBirth, instruments, l
     try {
         const userDocRef = doc(db, 'users', userId);
         await setDoc(userDocRef, { userId, name, dateOfBirth, instruments, level });
-        
-        const practiceCollection = collection(userDocRef, 'practiceData');
-        await setDoc(doc(practiceCollection, 'placeholder'), {});   // creates subcollection within user collection
     }
     catch (e) {
         console.log("not adding user, because of: " + e);
@@ -34,7 +31,6 @@ export const updateUserProfile = async ({ userId, name, dateOfBirth, instruments
         await setDoc(userDocRef, { userId, name, dateOfBirth, instruments, level }, { merge: true });
     }
     catch (e) {
-        console.log("not updating user, because of: " + e);
         // Handle rest in main code.
     }
 };
@@ -49,58 +45,63 @@ export const deleteUserAccount = async (userId: string): Promise<void> =>
         await deleteDoc(userDocRef);
     }
     catch (e) {
-        console.log("not deleting user, because of: " + e);
         // Handle rest in main code
     }
 };
 
 
 
-export const addPracticeData = async (userId: string, title: string, piece: string, composer: string, date: Date, duration: number, notes: string) =>
+export const addPracticeData = async (userId: string, title: string, piece: string, composer: string, practiceDate: Date, notes: string) =>
 {
     try {
         const userDocRef = doc(db, 'users', userId);
         const practiceCollection = collection(userDocRef, 'practiceData');
-        // TODO : find a way to add practice data here
+        await setDoc(doc(practiceCollection), { title, piece, composer, practiceDate, duration: 0, status: "Not Yet Started", notes });
     }
-    catch (e) {
-        console.log("not adding practice, because of: " + e);
+    catch (e: any) {
+        console.log("not adding practice, because of: " + e.message);
         // Handle rest in main code
     }
 };
 
 
-// TODO : create a function to --> fetch practice data by date range, update pratice data and delete practice data
-export const getPracticeData = async (userId: string, dateStart: Date, dateEnd:Date) => 
+export const getPracticeDataByDate = async (userId: string, dateStart: Date, dateEnd: Date) => 
 {
-    const q = query(collection(db, 'users', userId, 'practiceLogs'), and(where('date', ">=", dateStart), where('date', '<=', dateEnd)));
-    try{
-        // query practiceLog collection to get practice logs by date range given
-        // TODO this should have the practice logs of the user by the date
-        const querySnapshot = await getDocs(q);
-        return querySnapshot;
+    const userDocRef = doc(db, 'users', userId);
+    const practiceCollection = collection(userDocRef, 'practiceData');
+    const practiceQuery = query(practiceCollection, where('practiceDate', ">=", dateStart), where('practiceDate', '<=', dateEnd));
+    try {
+        const querySnap = await getDocs(practiceQuery);
+        const practiceData: any[] = [];
+        querySnap.forEach((doc) => { practiceData.push({ id: doc.id, ...doc.data() }); });
+        return practiceData;
     }
-    catch(e){
-        console.log("something went wrong getting the practice. error: " + e);
-    }
-}
-
-export const updatePracticeData = async (userId: string, practiceLogId: string, data: any) => {
-    const practiceLogRef = doc(db, userId, "practiceLogs", practiceLogId);
-    try{
-        await updateDoc(practiceLogRef, data);
-    }
-    catch(e){
-        console.log("something went wrong with updating. error: " + e);
+    catch (e: any) {
+        console.log("not getting practice by date, because of: " + e.message);
+        // Handle rest in main code
     }
 }
 
-export const deletePracticeData = async (userId: string, practiceLogId: string) => {
-    const practiceLogRef = doc(db, userId, "practiceLogs", practiceLogId);
-    try{
-        await deleteDoc(practiceLogRef);
+
+export const updatePracticeData = async (userId: string, practiceId: string, title: string, piece: string, composer: string, practiceDate: Date, duration: number, status: string, notes: string) => {
+    const practiceDataRef = doc(db, 'users', userId, "practiceData", practiceId);
+    try {
+        await setDoc(practiceDataRef, { title, piece, composer, practiceDate, duration, status, notes }, { merge: true });
     }
-    catch(e){
-        console.log("something went wrong with deleting. error: " + e);
+    catch (e: any) {
+        console.log("not updating practice, because of: " + e.message);
+        // Handle rest in main code
+    }
+}
+
+
+export const deletePracticeData = async (userId: string, practiceId: string) => {
+    const practiceDataRef = doc(db, 'users', userId, "practiceData", practiceId);
+    try {
+        await deleteDoc(practiceDataRef);
+    }
+    catch (e: any) {
+        console.log("not deleting practice, because of: " + e.message);
+        // Handle rest in main code
     }
 }

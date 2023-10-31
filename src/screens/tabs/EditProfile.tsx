@@ -36,7 +36,7 @@ const EditProfile = () =>
                         }
                     });
                     return unsubscribe;
-    }, []);
+    }, [uid, email]);
     const [name, setName] = useState(currentUserProfile.name);
     const [dateOfBirth, setDateOfBirth] = useState(currentUserProfile.dateOfBirth);
     const [instruments, setInstruments] = useState<string[]>(currentUserProfile.instruments);

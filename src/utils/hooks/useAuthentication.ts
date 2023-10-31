@@ -1,8 +1,10 @@
 import {useState, useEffect} from 'react';
+import { doc, getDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { db } from "../../config/firebase"
+
+
 const auth = getAuth();
+import { db } from "../../config/firebase"
 
 
 export function useAuthentication() {
