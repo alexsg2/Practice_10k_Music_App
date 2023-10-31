@@ -46,8 +46,7 @@ const Planner: React.FC<PlannerProp> = ({ userId, date }) =>
     };
 
     return (
-        <View style={{ flex: 1, padding: '3%', width: '100%' }}>
-            <Text style={{ fontSize: 20 }}>Today's Plans</Text>
+        <View style={{ flex: 1, paddingHorizontal: '3%' }}>
             {loading ? (
                 <ActivityIndicator size='large' color='black' style={{ marginTop: '5%'}} />
             ) : plans.length > 0 ? (
@@ -77,7 +76,7 @@ const Planner: React.FC<PlannerProp> = ({ userId, date }) =>
                 <AddPlanDetails uid={userId} date={date[1]} view={addPlanVisible} setView={setAddPlanVisible}/> 
             ) : null}
             {viewPlanVisible ? (
-                <ViewPlanDetails uid={userId} plan={selectedPlan} view={viewPlanVisible} setView={setViewPlanVisible}/> 
+                <ViewPlanDetails uid={userId} date={date[1]} plan={selectedPlan} view={viewPlanVisible} setView={setViewPlanVisible}/> 
             ) : null}
         </View>
     );

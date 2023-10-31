@@ -44,7 +44,8 @@ const Practice = () =>
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Planner userId={uid} date={getDateRange()}></Planner>
+                <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>Today's Plans</Text>
+                <Planner userId={uid} date={getDateRange()}/>
                 <TouchableOpacity onPress={handleStartTimer}
                                   style={{ width: '50%', padding: '5%', marginTop: '5%', borderRadius: 10, alignSelf: 'center', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#7BC3E9' }}>
                     <Ionicons name="play" size={25} color="black"/>

@@ -75,7 +75,7 @@ const AddPlanDeatails: React.FC<AddPlanDetailsProp> = ({ uid, date, view, setVie
                                     onChangeText={(text) => setComposer(text)}
                                     value={composer}
                                 />
-                                <Text style={inputStyles.profileLabelText}>Practice Date</Text>
+                                <Text style={inputStyles.profileLabelText}>Practice Date - Not Editable</Text>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
                                     value={date.toDateString()}
