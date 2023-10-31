@@ -5,7 +5,14 @@ import MusicDistribution from '../../components/MusicDistribution';
 import Swiper from 'react-native-swiper';
 import { DesignLibrary } from '../../assets/DesignLibrary';
 
-
+const songs = [
+    { artist: 'Bach', duration: 100 },
+    { artist: 'Jessie Montgomery', duration: 80 },
+    { artist: 'Dvorak', duration: 50 },
+    { artist: 'Beethoven', duration: 20 },
+    { artist: 'Artist 5', duration: 10 },
+  ];
+  
 export default function Progress() {
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -30,9 +37,10 @@ export default function Progress() {
             </View>
             <View style={styles.distributionContainer}>
                 <MusicDistribution
-                    date="January 11-12"
+                    date="October 23-27"
                     hours_amount={"10"}
                     minutes_amount={"59"}
+                    songs={songs}
                 />
             </View>
         </ScrollView>
