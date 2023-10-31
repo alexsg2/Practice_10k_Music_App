@@ -25,7 +25,7 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, altStyl
         if (status.granted) {
             const result = await ImagePicker.launchImageLibraryAsync();
             if (!result.canceled) {
-                dispatch(setProfile({ ...currentUserProfile, profilePicture: result.assets[0].uri }));
+                dispatch(setProfile({...currentUserProfile, profilePicture: result.assets[0].uri}));
             }
         }
         else {

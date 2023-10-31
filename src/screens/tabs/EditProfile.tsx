@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAuth, updatePassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
 import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
-import { updateUserData, validateEdits } from '../../helpers';
+import { validateEdits, updateUserProfile } from '../../helpers';
 import { DropdownSelector, DropdownCalendar } from '../../components';
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 
@@ -23,32 +23,52 @@ type editProfileScreenProp = StackNavigationProp<ProfileStackParamList, 'EditPro
 
 const EditProfile = () =>
 {
-    const navigation = useNavigation<editProfileScreenProp>();
-    
     const dispatch = useDispatch();
-    
+    const navigation = useNavigation<editProfileScreenProp>();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
+
+    const [uid, setUid] = useState<string>('');
+    const [email, setEmail] = useState<string | null>(null);
+    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            setUid(user.uid);
+                            setEmail(user.email);
+                        }
+                    });
+                    return unsubscribe;
+    }, [uid, email]);
     const [name, setName] = useState(currentUserProfile.name);
     const [dateOfBirth, setDateOfBirth] = useState(currentUserProfile.dateOfBirth);
     const [instruments, setInstruments] = useState<string[]>(currentUserProfile.instruments);
-    const [level, setLevel] = useState<string[]>(currentUserProfile.level);
-    const [email, setEmail] = useState(currentUserProfile.email);
-    const currPassword = currentUserProfile.password;
+    const [level, setLevel] = useState<string[]>([currentUserProfile.level]);
+   
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
 
+    async function change_password(password: string) {
+        if (password) {
+            const cred = EmailAuthProvider.credential(email!, password);
+            try {
+                await reauthenticateWithCredential(user, cred);
+                await updatePassword(user, newPassword);
+            }
+            catch (e) {
+                Alert.alert('Password Change Failed', 'Could not change password. Please make sure old password is correct or try again later', [ {text: 'OK'} ]);
+            }
+        }
+    }
+    
     async function handleSave() {
-        // TODO: password reset doesn't work since currPassword is null.
-        const editsError = validateEdits(name, dateOfBirth, instruments, level, email, currPassword, oldPassword, newPassword, confPassword);
+        const editsError = validateEdits(name, dateOfBirth, instruments, level[0], oldPassword, newPassword, confPassword);
         if (editsError) {
             Alert.alert('Invalid Edits', editsError, [ {text: 'OK'} ]);
         }
         else {
             try {
-                // TODO: update password and email in Firebase Authentication (not just Firestore fields)
-                await updateUserData({userId: user?.uid, name, dateOfBirth, instruments, level, email});
-                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level, email, password: newPassword}));
+                await updateUserProfile({userId: uid, name, dateOfBirth, instruments, level: level[0]});
+                await change_password(oldPassword);
+                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level: level[0]}));
                 navigation.goBack();
             }
             catch (e) {
@@ -76,14 +96,6 @@ const EditProfile = () =>
                                 <DropdownCalendar input={dateOfBirth} selectedDate={dateOfBirth} setDate={setDateOfBirth}
                                                 altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
-                                <Text style={inputStyles.profileLabelText}>Email</Text>
-                                <TextInput
-                                    style={inputStyles.profileInputBox}
-                                    placeholder={email}
-                                    placeholderTextColor='#CCCCCC'
-                                    onChangeText={(text) => setEmail(text)}
-                                    value={email}
-                                />
                                 <Text style={inputStyles.profileLabelText}>Instrument(s)</Text>
                                 <DropdownSelector input={instruments.length > 0 ? instruments.join(', ') : instruments[0]} dataList={INSTRUMENTS}
                                                 multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
@@ -97,7 +109,7 @@ const EditProfile = () =>
                                 <Text style={inputStyles.profileLabelText}>Old Password</Text>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
-                                    placeholder='Enter old password'
+                                    placeholder='(Optional) Enter old password'
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
                                     onChangeText={(text) => setOldPassword(text)}
@@ -106,7 +118,7 @@ const EditProfile = () =>
                                 <Text style={inputStyles.profileLabelText}>New Password</Text>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
-                                    placeholder='Enter new password'
+                                    placeholder='(Optional) Enter new password'
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
                                     onChangeText={(text) => setNewPassword(text)}
@@ -115,7 +127,7 @@ const EditProfile = () =>
                                 <Text style={inputStyles.profileLabelText}>Confirm Password</Text>
                                 <TextInput
                                     style={inputStyles.profileInputBox}
-                                    placeholder="Re-enter new password"
+                                    placeholder="(Optional) Re-enter new password"
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
                                     onChangeText={(text) => setConfPassword(text)}

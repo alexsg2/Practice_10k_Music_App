@@ -6,7 +6,6 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
-import { addUserData } from '../../helpers';
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
 import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
@@ -15,9 +14,8 @@ import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../
 
 const auth = getAuth();
 import { AuthStackParamList } from './auth_navigation';
-import { validateRegistrationFormat } from '../../helpers';
+import { validateRegistrationFormat, addUserAccount } from '../../helpers';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
-
 
 const Register = () =>
 {
@@ -44,8 +42,8 @@ const Register = () =>
                 const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
                 
                 const userUid = userCredentials.user.uid;
-                await addUserData({userId: userUid, name, dateOfBirth, instruments, level, email});
-                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level, email, password}));
+                await addUserAccount({ userId: userUid, name, dateOfBirth, instruments, level: level[0] })
+                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level: level[0]}));
             }
             catch (e) {
                 Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',

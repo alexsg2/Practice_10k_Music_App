@@ -1,7 +1,10 @@
-import { addUserData, updateUserData, deleteUserData } from './touch_user_profile_data';
-import { validateLoginFormat, validateRegistrationFormat, validateEdits } from './validate_auth_and_profile';
+import { validateLoginFormat, validateRegistrationFormat, validateEdits , validatePracticePlan } from './validate_user_data';
+import { addUserAccount, updateUserProfile, deleteUserAccount,
+         addPracticeData, updatePracticeData, deletePracticeData,
+         getPracticeDataByDate, getPracticePiecesAndHoursByDate, getMostPracticedComposersByDate } from './touch_firestore_data';
 
 
-export { addUserData, updateUserData, deleteUserData,
-         validateLoginFormat, validateRegistrationFormat, validateEdits };
+export { validateLoginFormat, validateRegistrationFormat, validateEdits, validatePracticePlan,
+         addUserAccount, updateUserProfile, deleteUserAccount, addPracticeData, updatePracticeData, deletePracticeData,
+         getPracticeDataByDate, getPracticePiecesAndHoursByDate, getMostPracticedComposersByDate };
          

@@ -69,7 +69,7 @@ const DropdownSelector: React.FC<DropDownProp> = ({ input, dataList, multiselect
                 </ScrollView>
             ) : null}
         </View>
-  );
+    );
 };
 
 export default DropdownSelector;
