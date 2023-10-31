@@ -56,7 +56,7 @@ export const addPracticeData = async (userId: string, title: string, piece: stri
     try {
         const userDocRef = doc(db, 'users', userId);
         const practiceCollection = collection(userDocRef, 'practiceData');
-        await setDoc(doc(practiceCollection), { title, piece, composer, practiceDate, duration: 0, status: "Not Yet Started", notes });
+        await setDoc(doc(practiceCollection), { title, piece, composer, practiceDate, duration: 0, status: 'Not Yet Started', notes });
     }
     catch (e: any) {
         console.log("not adding practice, because of: " + e.message);
@@ -79,6 +79,66 @@ export const getPracticeDataByDate = async (userId: string, dateStart: Date, dat
     catch (e: any) {
         console.log("not getting practice by date, because of: " + e.message);
         // Handle rest in main code
+    }
+}
+
+
+export const getPracticePiecesAndHoursByDate = async (userId: string, dateStart: Date, dateEnd: Date) => 
+{
+    const userDocRef = doc(db, 'users', userId);
+    const practiceCollection = collection(userDocRef, 'practiceData');
+    const practiceQuery = query(practiceCollection, where('practiceDate', ">=", dateStart), where('practiceDate', '<=', dateEnd));
+
+    let hours = 0;
+    let pieces = 0;
+    try {
+        const querySnap = await getDocs(practiceQuery);
+        querySnap.forEach((doc) => { const practiceData = doc.data();
+                                     hours += practiceData.duration;
+                                     if (practiceData.status !== 'Not Yet Started') {
+                                         pieces += 1;
+                                     }
+        });
+        return [pieces, hours];
+    }
+    catch (e: any) {
+        console.log("not getting practice by date, because of: " + e.message);
+        // Handle rest in main code
+        return [pieces, hours];
+    }
+}
+
+
+// TODO: THIS FUNCTION HAS NOT YET BEEN TESTED !!!!
+export const getMostPracticedComposersByDate = async (userId: string, dateStart: Date, dateEnd: Date) => 
+{
+    const userDocRef = doc(db, 'users', userId);
+    const practiceCollection = collection(userDocRef, 'practiceData');
+    const practiceQuery = query(practiceCollection, where('practiceDate', ">=", dateStart), where('practiceDate', '<=', dateEnd));
+
+    try {
+        const querySnap = await getDocs(practiceQuery);
+
+        const composersMap = new Map<string, number>();
+        querySnap.forEach((doc) => { const practiceData = doc.data();
+                                     if (practiceData.status !== 'Not Yet Started') {
+                                         const composer = practiceData.composer;
+                                         if (composersMap.has(composer)) {
+                                             composersMap.set(composer, composersMap.get(composer) + practiceData.duration);
+                                         }
+                                         else {
+                                             composersMap.set(composer, practiceData.duration);
+                                         }
+                                     }
+        });
+        const sortedComposers = Array.from(composersMap, ([composer, hours]) => ({ composer, hours })).sort((a, b) => b.hours - a.hours);
+
+        return sortedComposers.slice(0, 5);
+    }
+    catch (e: any) {
+        console.log("not getting practice by date, because of: " + e.message);
+        // Handle rest in main code
+        return [];
     }
 }
 

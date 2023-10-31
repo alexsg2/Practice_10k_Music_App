@@ -11,13 +11,11 @@ import { setProfile } from '../redux/actions';
 
 export default function RootNavigation() {
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
-    const { user, userData } = useAuthentication();
+    const { user, userData, loading } = useAuthentication();
     
     useEffect(() => {
         if (userData) {
             dispatch(setProfile(userData));
-            setLoading(false);
         }
     }, [userData, dispatch]);
     

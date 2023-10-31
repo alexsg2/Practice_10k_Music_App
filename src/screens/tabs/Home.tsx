@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { SafeAreaView, ScrollView, StatusBar, Text, TouchableHighlight, View } from 'react-native';
+import { SafeAreaView, ScrollView, View, ActivityIndicator, StatusBar, Text, TouchableHighlight } from 'react-native';
 
 
 import { Planner, GoalTracker } from '../../components';
 import { colorPallete } from '../../assets/design_library';
+import { getPracticePiecesAndHoursByDate } from '../../helpers';
 
 const auth = getAuth();
 
@@ -17,13 +19,37 @@ const Home = () =>
     const [selectedDateAbbr, setSelectedDateAbbr] = useState(dateOptionsAbbr[(new Date()).getDay()]);
     
     const [uid, setUid] = useState<string>('');
-    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const [totalHours, setTotalHours] = useState<number>(0);
+    const [totalPieces, setTotalPieces] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
+    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, async (user) => {
                         if (user) {
                             setUid(user.uid);
                         }
+                        fetchPracticeGoalData();
                     });
                     return unsubscribe;
-    }, [uid]);
+    }, [uid, totalPieces, totalHours]);
+
+    useFocusEffect(React.useCallback(() => { fetchPracticeGoalData(); }, [uid]));
+
+    const fetchPracticeGoalData = async () => {
+        const startDate = new Date(2023, 9, 29, -4, 0, 0);
+        const endDate = new Date();
+        endDate.setHours(19, 59, 59, 999);
+    
+        try {
+            const [pieces, hours] = await getPracticePiecesAndHoursByDate(uid, startDate, endDate);
+            setTotalPieces(pieces);
+            setTotalHours(hours);
+        }
+        catch (e) {
+            // Alert.alert('Loading Failed', 'Unable to load practice plans. Please reload or try again later: ' + e.code, [{ text: 'OK' }]);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
 
     const getDateRange = () => {
         const curr = new Date();
@@ -36,24 +62,16 @@ const Home = () =>
         return [start, end];
     };
 
-    const renderDateBoxes = () => {
-        return dateOptions.map((date, index) => (
-            <TouchableHighlight
-                key={index}
-                style={{ padding: '2.5%', borderWidth: 1, borderRadius: 10, backgroundColor: selectedDate === date ? colorPallete.yellow_gradiant["50%"] : 'white', }}
-                underlayColor="#D3D3D3"
-                onPress={() => setSelectedDate(date)}
-            >
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{date}</Text>
-            </TouchableHighlight>
-        ));
-    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ width: "100%", paddingVertical: '5%', alignItems: 'center' }}>
-                    <GoalTracker title="Overall Hours" goal_amount={10000}/>
+                    {loading ? (
+                        <ActivityIndicator size="large" color='black'/>
+                    ) : (
+                        <GoalTracker title="Overall Hours" goal_amount={10000} hours_amount={totalHours} pieces_amount={totalPieces} />
+                    )}
                 </View>
                 <View style={{ width: "100%", paddingVertical: '2.5%', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
                     {dateOptionsAbbr.map((date, index) => (

@@ -23,18 +23,18 @@ const Planner: React.FC<PlannerProp> = ({ userId, date }) =>
 
     const [plans, setPlans] = useState<any[]>([]);
     useEffect(() => { async function fetchPlans() {
-                        try {
-                            const practiceData = await getPracticeDataByDate(userId, date[0], date[1]);
-                            setPlans(practiceData || []);
-                        }
-                        catch (e: any) {
-                            // Alert.alert('Loading Failed', 'Unable to load practice plans. Please reload or try again later: ' + e.code, [{ text: 'OK' }]);
-                        }
-                    }
+                         try {
+                             const practiceData = await getPracticeDataByDate(userId, date[0], date[1]);
+                             setPlans(practiceData || []);
+                         }
+                         catch (e: any) {
+                             // Alert.alert('Loading Failed', 'Unable to load practice plans. Please reload or try again later: ' + e.code, [{ text: 'OK' }]);
+                         }
+                     }
 
-                    fetchPlans();
-                    setLoading(false);
-                }, [userId, date, addPlanVisible, viewPlanVisible]);
+                     fetchPlans();
+                     setLoading(false);
+    }, [userId, date, addPlanVisible, viewPlanVisible]);
 
     async function handleAddPlan() {
         setAddPlanVisible(true);

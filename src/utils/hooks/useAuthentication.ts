@@ -10,8 +10,11 @@ import { db } from "../../config/firebase"
 export function useAuthentication() {
   const [user, setUser] = useState<User>();
   const [userData, setUserData] = useState<any>();
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const unsubscribeFromAuthStatusChanged = onAuthStateChanged(auth, async (user) => {
+      setLoading(true);
       if (user) {
         setUser(user);
         try {
@@ -25,10 +28,13 @@ export function useAuthentication() {
           }
         } catch (err) {
           console.error("Error fetching user data:", err);
+        } finally {
+          setLoading(false);
         }
       } else {
         setUser(undefined);
         setUserData(undefined);
+        setLoading(false);
       }
     });
 
@@ -36,6 +42,6 @@ export function useAuthentication() {
   }, []);
   
   return {
-    user, userData
+    user, userData, loading
   };
 }

@@ -29,6 +29,7 @@ const AddPlanDeatails: React.FC<AddPlanDetailsProp> = ({ uid, date, view, setVie
         }
         else {
             try {
+                date.setHours(19, 59, 58, 998);
                 await addPracticeData(uid, title, piece, composer, date, notes);
                 setView(false);
             }
