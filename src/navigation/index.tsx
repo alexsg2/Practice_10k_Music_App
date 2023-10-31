@@ -7,15 +7,16 @@ import UserStack from './userStack';
 import AuthStack from './authStack';
 import { setProfile } from '../redux/actions';
 
+
 export default function RootNavigation() {
     const dispatch = useDispatch();
     const { user, userData } = useAuthentication();
-    // Was causing a warning without wrapping in a useEffect
+    
     useEffect(() => {
-        if(userData){
-            dispatch(setProfile(userData))
+        if (userData) {
+            dispatch(setProfile(userData));
         }
-    })
+    }, [userData, dispatch]);
     
     return user ? <UserStack /> : <AuthStack />;
 }

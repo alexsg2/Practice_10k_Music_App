@@ -1,9 +1,8 @@
-import { initializeApp, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
-import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-
+import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApp } from "firebase/app";
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth';
 // TODO: Add other SDKs as needed
 // https://firebase.google.com/docs/web/setup#available-libraries
 
