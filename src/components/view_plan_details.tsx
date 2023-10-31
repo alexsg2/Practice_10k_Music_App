@@ -58,13 +58,13 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, plan, view, setVi
                 setView(false);
             }
             catch (e) {
-                Alert.alert('Update Failed', 'Unable to update plan. Please try again later.', [{ text: 'OK' }]);
+                Alert.alert('Practice Plan Update Failed', 'Unable to update plan. Please try again later.', [{ text: 'OK' }]);
             }
         }
     }
 
     async function handleDelete() {
-        Alert.alert('Practice Plan Deletion','Are you sure you want to delete plan?',
+        Alert.alert('Practice Plan Deletion','Are you sure you want to delete this plan?',
                 [{ text: 'Yes', onPress: async () => { await deletePracticeData(uid, pId); setView(false); }}, { text: 'Cancel' }]
         );
     }

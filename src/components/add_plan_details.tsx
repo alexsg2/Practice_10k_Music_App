@@ -33,7 +33,7 @@ const AddPlanDeatails: React.FC<AddPlanDetailsProp> = ({ uid, date, view, setVie
                 setView(false);
             }
             catch (e) {
-                Alert.alert('Addition Failed', 'Unable to add plan. Please try again later.', [{ text: 'OK' }]);
+                Alert.alert('Practice Plan Addition Failed', 'Unable to add plan. Please try again later.', [{ text: 'OK' }]);
             }
         }
     }
