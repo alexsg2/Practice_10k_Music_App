@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { NavigationContainer } from '@react-navigation/native';
 
-import Login from './Login';
+import Login from '../Login';
 
 jest.mock('firebase/auth', () => ({
   getAuth: jest.fn(),

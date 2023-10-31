@@ -1,22 +1,20 @@
 import { SET_PROFILE } from './actions';
 
+
 export interface IProfileProps {
-  profilePicture: string | number;
+  profilePicture: string | number | null;
   name: string,
   dateOfBirth: string,
   instruments: string[],
-  level: string[],
-  email: string,
-  password: string,
+  level: string,
 }
+
 const initialState: IProfileProps = {
-  profilePicture: '',
+  profilePicture: null,
   name: '',
   dateOfBirth: '',
   instruments: [],
-  level: [],
-  email: '',
-  password: '',
+  level: '',
 };
 
 /*

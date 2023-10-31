@@ -34,7 +34,7 @@ const EditHeader: React.FC = () =>
                 <Text style={styles.nameText}>Edit Profile</Text>
             </View>
         </View>
-  );
+    );
 };
 
 export default EditHeader;

@@ -1,5 +1,6 @@
 /*
- * Helper functions to validate user information format during login, registration and edit profile.
+ * Helper functions to validate user information format during login, registration, edit profile
+ * and add/edit practice plan.
  */
 
 export function validateLoginFormat(email: string, password: string): string | null
@@ -22,7 +23,8 @@ export function validateRegistrationFormat(name: string, dob: string, instrument
         return 'All fields are required.';
     }
 
-    const convDate = new Date(dob);
+    const dateElem = dob.split("/");
+    const convDate  = new Date(parseInt(dateElem[2]), parseInt(dateElem[0]) - 1, parseInt(dateElem[1]));
     if (convDate >= new Date()) {
         return 'Date of birth is invalid.'
     }
@@ -43,34 +45,38 @@ export function validateRegistrationFormat(name: string, dob: string, instrument
     return null; // No validation errors
 }
 
-export function validateEdits(name: string, dob: string, instruments: string[], level: string[], email: string, currPassword: string, oldPassword: string, newPassword: string, confPassword: string): string | null
+export function validateEdits(name: string, dob: string, instruments: string[], level: string, oldPassword: string, newPassword: string, confPassword: string): string | null
 {
-    if (!name || !dob || !instruments || !level || !email) {
-        return 'If password is not being changed, the first 5 fields are required.';
+    if (!name || !dob || !instruments || !level) {
+        return 'All fields, except the ones related to passwords, are required.';
     }
 
-    const convDate = new Date(dob);
+    const dateElem = dob.split("/");
+    const convDate  = new Date(parseInt(dateElem[2]), parseInt(dateElem[0]) - 1, parseInt(dateElem[1]));
     if (convDate >= new Date()) {
         return 'Date of birth is invalid.'
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return 'Email format is invalid.';
-    }
-
-    if (newPassword) {
-        if (currPassword !== oldPassword) {
-            return 'Old password is incorrect.';
-        }
-      
+    if (oldPassword && newPassword && confPassword) {
         if (newPassword.length < 8) {
-          return 'Password should be at least 8 characters long.';
+            return 'New password should be at least 8 characters long.';
         }
-        
+          
         if (newPassword !== confPassword) {
-            return 'Passwords do not match.';
+            return 'New and confirmed passwords do not match.';
         }
+    }
+    else {
+        return 'To change your password, all three password fields are required.'
+    }
+  
+    return null; // No validation errors
+}
+
+export function validatePracticePlan(title: string, piece: string, composer: string): string | null
+{
+    if (!title || !piece || !composer) {
+        return 'All editable fields are required.';
     }
   
     return null; // No validation errors

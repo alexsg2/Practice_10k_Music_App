@@ -1,21 +1,59 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; 
+import React, { useEffect, useState } from 'react';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { SafeAreaView, ScrollView, View, TouchableOpacity, Text } from 'react-native';
 
-export default function Practice() {
+
+import { Planner } from '../../components';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+export type PracticeStackParamList = {
+    Practice: undefined;
+    PracticeTimer: undefined;
+};
+type PracticeNavigationProp = NavigationProp<PracticeStackParamList, 'Practice' | 'PracticeTimer'>;
+
+const auth = getAuth();
+
+
+const Practice = () =>
+{
+    const navigation = useNavigation<PracticeNavigationProp>();
+    
+    const [uid, setUid] = useState<string>('');
+    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            setUid(user.uid);
+                        }
+                    });
+                    return unsubscribe;
+    }, [uid]);
+
+    const getDateRange = () => {
+        const start = new Date();
+        start.setHours(-4, 0, 0, 0);
+        const end = new Date(start);
+        end.setHours(43, 59, 59, 999);
+        return [start, end];
+    };
+    
+    const handleStartTimer = () => {
+        // TODO : navigate to corresponding screen - Alex's
+    };
+
     return (
-        <View style={styles.container}>
-            <Text>Temporary practice screen.</Text>
-            <StatusBar style="auto" />
-        </View>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>Today's Plans</Text>
+                <Planner userId={uid} date={getDateRange()}/>
+                <TouchableOpacity onPress={handleStartTimer}
+                                  style={{ width: '50%', padding: '5%', marginTop: '5%', borderRadius: 10, alignSelf: 'center', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#7BC3E9' }}>
+                    <Ionicons name="play" size={25} color="black"/>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Start</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+export default Practice;

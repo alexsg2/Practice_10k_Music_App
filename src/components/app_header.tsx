@@ -41,7 +41,7 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
                 </TouchableOpacity>
             </View>
         </View>
-  );
+    );
 };
 
 export default AppHeader;

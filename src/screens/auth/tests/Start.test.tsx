@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import { useNavigation, NavigationContainer } from '@react-navigation/native';
-import Start from './Start';
+import Start from '../Start';
 
 // Mock the useNavigation hook
 jest.mock('@react-navigation/native', () => ({
