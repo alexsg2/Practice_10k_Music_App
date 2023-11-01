@@ -10,40 +10,73 @@ import { getPracticeDataByDate } from '../helpers';
 interface PlannerProp {
     userId: string;
     date: Date[];
+    reload: boolean;
+    setReload: (selected: boolean) => void;
 }
 
 
-const Planner: React.FC<PlannerProp> = ({ userId, date }) =>
+const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
 {
     const [loading, setLoading] = useState(true);
     
-    const [selectedPlan, setSelectedPlan] = useState(null);
+    const [selectedPlan, setSelectedPlan] = useState<{ id: string; title: string; piece: string;
+                                                       composer: string; instrument: string;
+                                                       practiceDate: Date; duration: number;
+                                                       status: string; notes: string; }>({ id: '', title: '', piece: '', composer: '',
+                                                                                           instrument: '', practiceDate: new Date(),
+                                                                                           duration: 0, status: '', notes: '' });
     const [addPlanVisible, setAddPlanVisible] = useState(false);
     const [viewPlanVisible, setViewPlanVisible] = useState(false);
 
     const [plans, setPlans] = useState<any[]>([]);
     useEffect(() => { async function fetchPlans() {
-                         try {
-                             const practiceData = await getPracticeDataByDate(userId, date[0], date[1]);
-                             setPlans(practiceData || []);
-                         }
-                         catch (e: any) {
-                             // Alert.alert('Loading Failed', 'Unable to load practice plans. Please reload or try again later: ' + e.code, [{ text: 'OK' }]);
-                         }
-                     }
-
-                     fetchPlans();
-                     setLoading(false);
-    }, [userId, date, addPlanVisible, viewPlanVisible]);
+                        try {
+                            setLoading(true);
+                            const practiceData = await getPracticeDataByDate(userId, date[0], date[1]);
+                            setPlans(practiceData || []);
+                        }
+                        catch (e: any) {
+                            // Handle in any way
+                        }
+                        finally {
+                            setLoading(false);
+                        }
+                    }
+                    if (reload) {
+                        fetchPlans();
+                        setReload(false);
+                    }
+                }, [userId, date, reload]);
 
     async function handleAddPlan() {
         setAddPlanVisible(true);
     };
 
+    const [editable, setEditable] = useState<boolean>(false);
+    
     async function handleViewPlan(plan: any) {
-        setSelectedPlan(plan);
+        setSelectedPlan({ id: plan.id, title: plan.title, piece: plan.piece, composer: plan.composer,
+                          instrument: plan.instrument, practiceDate: plan.practiceDate, duration: plan.duration,
+                          status: plan.status, notes: plan.notes });
+        
+        const curr = new Date();
+        curr.setHours(-4, 0, 0, 0);
+        const selec = new Date(date[1]);
+        selec.setHours(-4, 0, 1, 0);
+        if (selec >= curr) {
+            setEditable(true);
+        }
+        else {
+            setEditable(false);
+        }
+        
         setViewPlanVisible(true);
     };
+
+    const curr = new Date();
+    curr.setHours(-4, 0, 0, 0);
+    const selection = new Date(date[1]);
+    selection.setHours(-4, 0, 1, 0);
 
     return (
         <View style={{ flex: 1, paddingHorizontal: '3%' }}>
@@ -68,15 +101,19 @@ const Planner: React.FC<PlannerProp> = ({ userId, date }) =>
                 ) : (
                     <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center', marginTop: '7%' }}>Nothing planned for this date.</Text>
                 )}
-            <TouchableOpacity style={styles.item} onPress={handleAddPlan}>
-                <Ionicons name="add-sharp" size={30} color="black"/>
-                <Text style={styles.itemText}>Add Piece</Text>
-            </TouchableOpacity>
+            {selection >= curr ? (
+                <TouchableOpacity style={styles.item} onPress={handleAddPlan}>
+                    <Ionicons name="add-sharp" size={30} color="black"/>
+                    <Text style={styles.itemText}>Add Piece</Text>
+                </TouchableOpacity>
+            ) : null}
             {addPlanVisible ? (
-                <AddPlanDetails uid={userId} date={date[1]} view={addPlanVisible} setView={setAddPlanVisible}/> 
+                <AddPlanDetails uid={userId} date={date[1]} view={addPlanVisible} setView={setAddPlanVisible} setReloadData={setReload}/>
             ) : null}
             {viewPlanVisible ? (
-                <ViewPlanDetails uid={userId} date={date[1]} plan={selectedPlan} view={viewPlanVisible} setView={setViewPlanVisible}/> 
+                <ViewPlanDetails uid={userId} date={date[1]} plan={selectedPlan}
+                                 view={viewPlanVisible} setView={setViewPlanVisible}
+                                 isEditable={editable} setReloadData={setReload}/>
             ) : null}
         </View>
     );

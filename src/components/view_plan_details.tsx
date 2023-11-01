@@ -1,71 +1,52 @@
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
 import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
-import { bottomStyles, inputStyles } from '../assets/styles/auth_and_profile_styles';
-import { validatePracticePlan, updatePracticeData, deletePracticeData } from '../helpers';
+import { RootState } from '../redux/store';
+import DropdownSelector from './dropdown_selector';
+import { bottomStyles, componentStyles, inputStyles } from '../assets/styles/auth_and_profile_styles';
+import { validatePracticePlan, updatePracticeDataByFields, deletePracticeData } from '../helpers';
 
 interface ViewPlanDetailsProp {
     uid: string;
     date: Date;
-    plan: null | { id: string;
-                   title: string;
-                   piece: string;
-                   composer: string;
-                   practiceDate: Date;
-                   duration: number;
-                   status: string;
-                   notes: string;
-                 };
+    plan: { id: string; title: string; piece: string;
+            composer: string; instrument: string, practiceDate: Date;
+            duration: number; status: string; notes: string; };
     view: boolean;
     setView: (selected: boolean) => void;
+    isEditable: boolean;
+    setReloadData: (selected: boolean) => void;
 }
 
 
-const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view, setView }) =>
+const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view, setView, isEditable, setReloadData }) =>
 {
-    const [pId, setPid] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [piece, setPiece] = useState<string>('');
-    const [composer, setComposer] = useState<string>('');
-    const [duration, setDuration] = useState<number>(0);
-    const [status, setStatus] = useState<string>('');
-    const [notes, setNotes] = useState<string>('');
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const instruments = currentUserProfile.instruments;
 
-    const [editable, setEditable] = useState<boolean>(false);
-
-    useEffect(() => {   if (plan) {
-                            setPid(plan.id);
-                            setTitle(plan.title);
-                            setPiece(plan.piece);
-                            setComposer(plan.composer);
-                            setDuration(plan.duration);
-                            setStatus(plan.status);
-                            setNotes(plan.notes);
-                        }
-
-                        const curr = new Date();
-                        curr.setHours(0, 0, 0, 0);
-                        const selectedDate = date;
-                        selectedDate.setHours(0, 0, 1, 0)
-
-                        if (selectedDate >= curr) {
-                            setEditable(true);
-                            return;
-                        }
-                        setEditable(false);
-    }, [plan]);
+    const pId = plan.id;
+    const [title, setTitle] = useState<string>(plan.title);
+    const [piece, setPiece] = useState<string>(plan.piece);
+    const [composer, setComposer] = useState<string>(plan.composer);
+    const [instrument, setInstrument] = useState<string[]>([plan.instrument]);
+    const duration = plan.duration;
+    const status = plan.status;
+    const [notes, setNotes] = useState<string>(plan.notes);
 
     async function handleSave() {
-        const detailsError = validatePracticePlan(title, piece, composer);
+        const detailsError = validatePracticePlan(title, piece, instrument[0], composer);
         if (detailsError) {
             Alert.alert('Invalid Details', detailsError, [ {text: 'OK'} ]);
         }
         else {
             try {
-                await updatePracticeData(uid, pId, title, piece, composer, date, 0, 'Not Yet Started', notes)
+                const updates = { title, piece, composer, instrument: instrument[0], notes}
+                await updatePracticeDataByFields(uid, pId, updates);
                 setView(false);
+                setReloadData(true);
             }
             catch (e) {
                 Alert.alert('Practice Plan Update Failed', 'Unable to update plan. Please try again later.', [{ text: 'OK' }]);
@@ -75,7 +56,10 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view,
 
     async function handleDelete() {
         Alert.alert('Practice Plan Deletion','Are you sure you want to delete this plan?',
-                [{ text: 'Yes', onPress: async () => { await deletePracticeData(uid, pId); setView(false); }}, { text: 'Cancel' }]
+                [{ text: 'Yes', onPress: async () => { await deletePracticeData(uid, pId); 
+                                                       setView(false);
+                                                       setReloadData(true); }},
+                 { text: 'Cancel' }]
         );
     }
 
@@ -91,7 +75,7 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view,
                                 </TouchableOpacity>
                                 <Text style={{ fontSize: 25, fontWeight: 'bold', left: '-95%', alignItems: 'center', }}>Plan Details</Text>
                             </View>
-                            {editable ? (
+                            {isEditable ? (
                                 <View>
                                     <Text style={inputStyles.profileLabelText}>Title</Text>
                                     <TextInput
@@ -116,6 +100,11 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view,
                                         placeholderTextColor='#CCCCCC'
                                         onChangeText={(text) => setComposer(text)}
                                         value={composer}
+                                    />
+                                    <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                                    <DropdownSelector input={'Select an instrument'} dataList={instruments}
+                                                    multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
+                                                    altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                     />
                                     <Text style={inputStyles.profileLabelText}>Practice Date - Not Editable</Text>
                                     <TextInput
@@ -158,6 +147,12 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view,
                                     <TextInput
                                         style={inputStyles.profileInputBox}
                                         value={composer}
+                                        editable={false}
+                                    />
+                                    <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                                    <TextInput
+                                        style={inputStyles.profileInputBox}
+                                        value={instrument[0]}
                                         editable={false}
                                     />
                                     <Text style={inputStyles.profileLabelText}>Practice Date</Text>

@@ -26,25 +26,28 @@ const Home = () =>
                         if (user) {
                             setUid(user.uid);
                         }
-                        fetchPracticeGoalData();
                     });
                     return unsubscribe;
-    }, [uid, totalPieces, totalHours]);
+    }, [uid]);
 
     useFocusEffect(React.useCallback(() => { fetchPracticeGoalData(); }, [uid]));
 
-    const fetchPracticeGoalData = async () => {
+    const [reloadData, setReloadData] = useState(false);
+    useFocusEffect(React.useCallback(() => { setReloadData(true); }, [uid, selectedDateAbbr]));
+
+    async function fetchPracticeGoalData() {
         const startDate = new Date(2023, 9, 29, -4, 0, 0);
         const endDate = new Date();
         endDate.setHours(19, 59, 59, 999);
     
         try {
+            setLoading(true);
             const [pieces, hours] = await getPracticePiecesAndHoursByDate(uid, startDate, endDate);
             setTotalPieces(pieces);
             setTotalHours(hours);
         }
         catch (e) {
-            // Alert.alert('Loading Failed', 'Unable to load practice plans. Please reload or try again later: ' + e.code, [{ text: 'OK' }]);
+            // Handle in any way
         }
         finally {
             setLoading(false);
@@ -89,7 +92,9 @@ const Home = () =>
                     ))}
                 </View>
                 <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>{selectedDateAbbr === dateOptionsAbbr[(new Date()).getDay()] ? "Today's Plans" : `${selectedDate}'s Plans`}</Text>
-                <Planner userId={uid} date={getDateRange()}/>
+                <View style={{ marginBottom: '5%' }}>
+                    <Planner userId={uid} date={getDateRange()} reload={reloadData} setReload={setReloadData}/>
+                </View>
             </ScrollView>
             <StatusBar/>
         </SafeAreaView>

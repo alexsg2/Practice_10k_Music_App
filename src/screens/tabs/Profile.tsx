@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { EmailAuthProvider, getAuth, onAuthStateChanged, reauthenticateWithCredential, signOut } from 'firebase/auth';
-import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { Alert, SafeAreaView, ActivityIndicator, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
 
 
 import { RootState } from '../../redux/store';
@@ -20,8 +20,8 @@ type profileScreenProp = StackNavigationProp<ProfileStackParamList, 'Profile'>;
 
 const Profile = () =>
 {
+    const [loading, setLoading] = useState(true);
     const navigation = useNavigation<profileScreenProp>();
-    const [modalVisible, setModalVisible] = useState(false);
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
     
     const name = currentUserProfile.name;
@@ -32,6 +32,7 @@ const Profile = () =>
                             setUid(user.uid);
                             setEmail(user.email);
                         }
+                        setLoading(false);
                     });
                     return unsubscribe;
     }, [uid, email]);
@@ -39,6 +40,8 @@ const Profile = () =>
     const instruments = currentUserProfile.instruments;
     const level = currentUserProfile.level;
     const [password, setPassword] = useState('');
+
+    const [modalVisible, setModalVisible] = useState(false);
 
     async function  handleDeletion() {
         if (!password) {
@@ -53,8 +56,11 @@ const Profile = () =>
             await user.delete();
             setModalVisible(false);
             await signOut(auth);
-        } catch (e) {
-            Alert.alert('Request Failed', 'Unable to delete account. Please verify password or try again later.', [{ text: 'OK' }]);
+        }
+        catch (e: any) {
+            Alert.alert('Deletion Failed', 'Unable to delete account. Please verify password or try again later: ' + e.message,
+                        [{ text: 'OK' }]
+            );
         }
     }
 
@@ -64,6 +70,14 @@ const Profile = () =>
         );
     }
     
+    if (loading) {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color='black'/>
+            </SafeAreaView>
+        );
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -132,19 +146,19 @@ const Profile = () =>
                                                 value={password}
                                             />
                                             <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                                                <Pressable onPress={handleDeletion} style={bottomStyles.smallRedButton}>
+                                                <TouchableOpacity onPress={handleDeletion} style={bottomStyles.smallRedButton}>
                                                     <Text style={bottomStyles.buttonText}>Confirm</Text>
-                                                </Pressable>
-                                                <Pressable onPress={() => setModalVisible(false)} style={bottomStyles.smallBlackButton}>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity onPress={() => setModalVisible(false)} style={bottomStyles.smallBlackButton}>
                                                     <Text style={bottomStyles.buttonText}>Cancel</Text>
-                                                </Pressable>
+                                                </TouchableOpacity>
                                             </View>
                                         </View>
                                     </View>
                                 </Modal>
-                                <Pressable onPress={() => setModalVisible(true)} style={bottomStyles.redButton}>
+                                <TouchableOpacity onPress={() => setModalVisible(true)} style={bottomStyles.redButton}>
                                     <Text style={bottomStyles.buttonText}>Delete Account</Text>
-                                </Pressable>
+                                </TouchableOpacity>
                             </View> 
                         </View>
                     </TouchableWithoutFeedback>   

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
-import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, SafeAreaView, ActivityIndicator, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
 import { RootState } from '../../redux/store';
@@ -24,6 +24,7 @@ type editProfileScreenProp = StackNavigationProp<ProfileStackParamList, 'EditPro
 const EditProfile = () =>
 {
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
     const navigation = useNavigation<editProfileScreenProp>();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
 
@@ -34,6 +35,7 @@ const EditProfile = () =>
                             setUid(user.uid);
                             setEmail(user.email);
                         }
+                        setLoading(false);
                     });
                     return unsubscribe;
     }, [uid, email]);
@@ -53,8 +55,10 @@ const EditProfile = () =>
                 await reauthenticateWithCredential(user, cred);
                 await updatePassword(user, newPassword);
             }
-            catch (e) {
-                Alert.alert('Password Change Failed', 'Could not change password. Please make sure old password is correct or try again later', [ {text: 'OK'} ]);
+            catch (e: any) {
+                Alert.alert('Password Change Failed', 'Could not change password. Please make sure old password is correct or try again later: ' + e.message,
+                            [ {text: 'OK'} ]
+                );
             }
         }
     }
@@ -71,10 +75,18 @@ const EditProfile = () =>
                 dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level: level[0]}));
                 navigation.goBack();
             }
-            catch (e) {
-                Alert.alert('Profile Update Failed', 'Unable to update profile. Please try again later.', [{ text: 'OK' }]);
+            catch (e: any) {
+                Alert.alert('Profile Update Failed', 'Unable to update profile. Please try again later: ' + e.message, [{ text: 'OK' }]);
             }
         }
+    }
+
+    if (loading) {
+        return (
+            <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color='black'/>
+            </SafeAreaView>
+        );
     }
     
     return (

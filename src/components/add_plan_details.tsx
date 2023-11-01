@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
+import { RootState } from '../redux/store';
+import DropdownSelector from './dropdown_selector';
 import { validatePracticePlan, addPracticeData } from '../helpers';
-import { bottomStyles, inputStyles } from '../assets/styles/auth_and_profile_styles';
+import { bottomStyles, componentStyles, inputStyles } from '../assets/styles/auth_and_profile_styles';
 
 
 interface AddPlanDetailsProp {
@@ -12,26 +15,32 @@ interface AddPlanDetailsProp {
     date: Date;
     view: boolean;
     setView: (selected: boolean) => void;
+    setReloadData: (selected: boolean) => void;
 }
 
 
-const AddPlanDeatails: React.FC<AddPlanDetailsProp> = ({ uid, date, view, setView }) =>
+const AddPlanDeatails: React.FC<AddPlanDetailsProp> = ({ uid, date, view, setView, setReloadData }) =>
 {
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const instruments = currentUserProfile.instruments;
+
     const [title, setTitle] = useState<string>('');
     const [piece, setPiece] = useState<string>('');
     const [composer, setComposer] = useState<string>('');
+    const [instrument, setInstrument] = useState<string[]>([]);
     const [notes, setNotes] = useState<string>('');
 
     async function handleSave() {
-        const detailsError = validatePracticePlan(title, piece, composer);
+        const detailsError = validatePracticePlan(title, piece, composer, instrument[0]);
         if (detailsError) {
             Alert.alert('Invalid Details', detailsError, [ {text: 'OK'} ]);
         }
         else {
             try {
                 date.setHours(19, 59, 58, 998);
-                await addPracticeData(uid, title, piece, composer, date, notes);
+                await addPracticeData(uid, title, piece, composer, instrument[0], date, notes);
                 setView(false);
+                setReloadData(true);
             }
             catch (e) {
                 Alert.alert('Practice Plan Addition Failed', 'Unable to add plan. Please try again later.', [{ text: 'OK' }]);
@@ -75,6 +84,11 @@ const AddPlanDeatails: React.FC<AddPlanDetailsProp> = ({ uid, date, view, setVie
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setComposer(text)}
                                     value={composer}
+                                />
+                                <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                                <DropdownSelector input={'Select an instrument'} dataList={instruments}
+                                                  multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
+                                                  altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.profileLabelText}>Practice Date - Not Editable</Text>
                                 <TextInput
