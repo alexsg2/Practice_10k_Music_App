@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons'; 
 import React, { useEffect, useState } from 'react';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, View, TouchableOpacity, Text } from 'react-native';
+import { SafeAreaView, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 
 
 import { Planner } from '../../components';
@@ -29,6 +29,9 @@ const Practice = () =>
                     return unsubscribe;
     }, [uid]);
 
+    const [reloadData, setReloadData] = useState(false);
+    useFocusEffect(React.useCallback(() => { setReloadData(true); }, [uid]));
+
     const getDateRange = () => {
         const start = new Date();
         start.setHours(-4, 0, 0, 0);
@@ -45,9 +48,9 @@ const Practice = () =>
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>Today's Plans</Text>
-                <Planner userId={uid} date={getDateRange()}/>
+                <Planner userId={uid} date={getDateRange()} reload={reloadData} setReload={setReloadData}/>
                 <TouchableOpacity onPress={handleStartTimer}
-                                  style={{ width: '50%', padding: '5%', marginTop: '5%', borderRadius: 10, alignSelf: 'center', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#7BC3E9' }}>
+                                  style={{ width: '50%', padding: '5%', marginVertical: '5%', borderRadius: 10, alignSelf: 'center', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#7BC3E9' }}>
                     <Ionicons name="play" size={25} color="black"/>
                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Start</Text>
                 </TouchableOpacity>

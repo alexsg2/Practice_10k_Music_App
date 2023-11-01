@@ -66,16 +66,16 @@ export function validateEdits(name: string, dob: string, instruments: string[], 
             return 'New and confirmed passwords do not match.';
         }
     }
-    else {
+    else if (oldPassword || newPassword || confPassword) {
         return 'To change your password, all three password fields are required.'
     }
   
     return null; // No validation errors
 }
 
-export function validatePracticePlan(title: string, piece: string, composer: string): string | null
+export function validatePracticePlan(title: string, piece: string, composer: string, instrument: string): string | null
 {
-    if (!title || !piece || !composer) {
+    if (!title || !piece || !composer || !instrument) {
         return 'All editable fields are required.';
     }
   
