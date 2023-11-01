@@ -43,7 +43,7 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view,
         }
         else {
             try {
-                const updates = { title, piece, composer, instrument: instrument[0], notes}
+                const updates = { title, piece, composer, instrument: instrument[0], notes};
                 await updatePracticeDataByFields(uid, pId, updates);
                 setView(false);
                 setReloadData(true);

@@ -146,6 +146,13 @@ export const getMostPracticedComposersByDate = async (userId: string, dateStart:
 
 
 export const updatePracticeDataByFields = async (userId: string, practiceId: string, updatedFields: Record<string, any>) => {
+    const validKeys = ['title', 'piece', 'composer', 'instrument', 'duration', 'status', 'notes'];
+    
+    const invalidKeys = Object.keys(updatedFields).filter(key => !validKeys.includes(key));
+    if (invalidKeys.length > 0) {
+        throw new Error("Invalid field names found in list of updates: " + invalidKeys.join(', '));
+    }
+
     const practiceDataRef = doc(db, 'users', userId, "practiceData", practiceId);
     try {
         await setDoc(practiceDataRef, updatedFields, { merge: true });
@@ -157,8 +164,8 @@ export const updatePracticeDataByFields = async (userId: string, practiceId: str
 }
 
 
-export const updateEntirePracticeData = async (userId: string, practiceId: string, title: string, piece: string, composer: string, instrument: string, practiceDate: Date, duration: number, status: string, notes: string) => {
-    const updates = { title, piece, composer, instrument, practiceDate, duration, status, notes };
+export const updatePracticeData = async (userId: string, practiceId: string, title: string, piece: string, composer: string, instrument: string, practiceDate: Date, duration: number, status: string, notes: string) => {
+    const updates = { title, piece, composer, instrument, duration, status, notes };
     try {
         await updatePracticeDataByFields(userId, practiceId, updates);
     }
