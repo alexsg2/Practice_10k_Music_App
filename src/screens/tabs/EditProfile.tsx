@@ -8,9 +8,9 @@ import { Alert, SafeAreaView, ActivityIndicator, ScrollView, KeyboardAvoidingVie
 
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
+import { INSTRUMENTS, LEVELS } from '../../assets/constants';
 import { validateEdits, updateUserProfile } from '../../helpers';
 import { DropdownSelector, DropdownCalendar } from '../../components';
-import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
 
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from '../../assets/styles/auth_and_profile_styles';
 

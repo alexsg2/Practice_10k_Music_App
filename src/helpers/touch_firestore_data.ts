@@ -5,8 +5,9 @@
 import { db } from '../config/firebase';
 import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc } from 'firebase/firestore';
 
+import { STATUS } from '../assets/constants';
 
-import { IProfileProps } from "../redux/reducers"
+import { IProfileProps } from '../redux/reducers';
 interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {
     userId: string;
 }
@@ -58,7 +59,7 @@ export const addPracticeData = async (userId: string, title: string, piece: stri
     try {
         const userDocRef = doc(db, 'users', userId);
         const practiceCollection = collection(userDocRef, 'practiceData');
-        await setDoc(doc(practiceCollection), { title, piece, composer, instrument, practiceDate, duration: 0, status: 'Not Started', notes });
+        await setDoc(doc(practiceCollection), { title, piece, composer, instrument, practiceDate, duration: 0, status: STATUS[0], notes });
     }
     catch (e) {
         console.log("not adding practice data, because of: " + e);
@@ -97,7 +98,7 @@ export const getPracticePiecesAndHoursByDate = async (userId: string, dateStart:
         const querySnap = await getDocs(practiceQuery);
         querySnap.forEach((doc) => { const practiceData = doc.data();
                                      hours += practiceData.duration;
-                                     if (practiceData.status !== 'Not Started') {
+                                     if (practiceData.status !== STATUS[0]) {
                                          pieces += 1;
                                      }
         });
@@ -123,7 +124,7 @@ export const getMostPracticedComposersByDate = async (userId: string, dateStart:
 
         const composersMap = new Map<string, number>();
         querySnap.forEach((doc) => { const practiceData = doc.data();
-                                     if (practiceData.status !== 'Not Yet Started') {
+                                     if (practiceData.status !== STATUS[0]) {
                                          const composer = practiceData.composer;
                                          if (composersMap.has(composer)) {
                                              composersMap.set(composer, composersMap.get(composer) + practiceData.duration);
@@ -151,6 +152,9 @@ export const updatePracticeDataByFields = async (userId: string, practiceId: str
     const invalidKeys = Object.keys(updatedFields).filter(key => !validKeys.includes(key));
     if (invalidKeys.length > 0) {
         throw new Error("Invalid field names found in list of updates: " + invalidKeys.join(', '));
+    }
+    if ('status' in updatedFields && ![STATUS[0], STATUS[1], STATUS[2]].includes(updatedFields['status'])) {
+        throw new Error("Invalid value found for 'status' field: " + updatedFields['status']);
     }
 
     const practiceDataRef = doc(db, 'users', userId, "practiceData", practiceId);

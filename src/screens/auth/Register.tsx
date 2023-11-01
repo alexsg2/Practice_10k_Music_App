@@ -8,7 +8,7 @@ import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedbac
 
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
-import { INSTRUMENTS, LEVELS } from '../../assets/constants/profile_fields';
+import { INSTRUMENTS, LEVELS } from '../../assets/constants';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
