@@ -8,7 +8,7 @@ import { colorPallete, fontSizes } from '../../assets/design_library';
 import { Ionicons } from '@expo/vector-icons'
 
 type JournalParamList = {
-    JournalDetail: { item: { date: Timestamp; duration: number; instrument: string; musicID: Array<string>, note: string} };
+    JournalDetail: { item: { composer: string; duration: number; instrument: string; notes: string; piece: string; practiceDate: Timestamp; status: string; title: string; } };
   };
 
 type JournalDetailRouteProp = RouteProp<JournalParamList, 'JournalDetail'>;
@@ -17,6 +17,18 @@ const JournalDetail = () => {
     const route = useRoute<JournalDetailRouteProp>();
     const item = route.params.item
     const navigation = useNavigation();
+
+    function formatTimeFromMinutes(totalMinutes: number): string {
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = Math.floor(totalMinutes % 60);
+        const seconds = Math.round((totalMinutes - Math.floor(totalMinutes)) * 60);
+      
+        const formattedHours = hours < 10 ? `0${hours}` : `${hours}`;
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+        const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+      
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    }
 
     return (
         <View>
@@ -28,8 +40,12 @@ const JournalDetail = () => {
                 <Text style={{width: "15%"}}></Text>
             </View>
             <Text style={styles.detailsText}>
-                <Text style={styles.detailsHeader}>Music ID: </Text>
-                <Text>{item.musicID[0]}</Text>
+                <Text style={styles.detailsHeader}>Piece Title: </Text>
+                <Text>{item.title}</Text>
+            </Text>
+            <Text style={styles.detailsText}>
+                <Text style={styles.detailsHeader}>Composer: </Text>
+                <Text>{item.composer}</Text>
             </Text>
             <Text style={styles.detailsText}>
                 <Text style={styles.detailsHeader}>Instrument: </Text>
@@ -37,14 +53,14 @@ const JournalDetail = () => {
             </Text>
             <Text style={styles.detailsText}>
                 <Text style={styles.detailsHeader}>Date: </Text>
-                <Text>{item.date.toDate().toDateString()}</Text>
+                <Text>{item.practiceDate.toDate().toDateString()}</Text>
             </Text>
             <Text style={styles.detailsText}>
                 <Text style={styles.detailsHeader}>Duration: </Text>
-                <Text>{item.duration.toString()}</Text>
+                <Text>{formatTimeFromMinutes(item.duration)}</Text>
             </Text>
             <Text style={{fontSize: 16, fontWeight: "bold", margin: 10}}>Notes: </Text>
-            <Text style={styles.detailsText}>{item.note}</Text>
+            <Text style={styles.detailsText}>{item.notes}</Text>
             <StatusBar style="auto" />
         </View>
     );
