@@ -1,37 +1,56 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
-import { db } from '../../config/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db, getAuth } from '../../config/firebase';
+import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+
+import { JournalStackParamList } from './app_navigation';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+
+type journalScreenProp = StackNavigationProp<JournalStackParamList, 'Journal'>;
 
 const Journal: React.FC = () => {
   const [practiceLogs, setPracticeLogs] = useState([] as any);
   const [filteredLogs, setFilteredLogs] = useState([] as any);
   const [markedDates, setMarkedDates] = useState<{ [date: string]: any }>({});
-  //let markedDates = {};
+ 
   let currMonth = new Date().getMonth() + 1;
+
+  const navigation = useNavigation<journalScreenProp>();
 
   // Load data when user opens screen
   useEffect(() => {
     const loadData = async () => {
-      // use authentication, then user.uid
-      const users = collection(db, "users/52N76v6p9F7bsg4WLfqF/practiceLogs");
-      const querySnapshot = await getDocs(users);
-      
+      // Get the userID of the current user
+      const auth = getAuth();
+      const user = auth.currentUser!
+      if (user == null) {
+        console.log("Error fetching practice logs.")
+        return;
+      }
       const dates: { [date: string]: any } = {};
-      // Format the dates properly
-      querySnapshot.forEach((doc) => {
-        const date = doc.data().date.toDate().toISOString().split('T')[0]; // Adjust this to your data structure
-        dates[date] = { marked: true, dotColor: "red" };
-      });
 
-      // All practice logs
-      setPracticeLogs(querySnapshot.docs.map(doc => doc.data()));
+      // Get the user's completed practice log collection
+      const q = query(collection(db, "users/" + user.uid + "/practiceData"), where("status", "==", "Completed"));
 
-      // Initially the filtered logs should be the same as the practice
-      setFilteredLogs(querySnapshot.docs.map(doc => doc.data()).filter((log: any) => 
-        log.date.toDate().toISOString().split('-')[1] == currMonth));
+      // Listen for changes in firestore
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const date = doc.data().practiceDate.toDate().toISOString().split('T')[0]; // Adjust this to your data structure
+          dates[date] = { marked: true, dotColor: "red" };
+        });
+        // All practice logs
+        setPracticeLogs(querySnapshot.docs.map(doc => doc.data()));
+
+        // Get the logs for the current month only
+        setFilteredLogs(querySnapshot.docs
+          .sort((a, b) => a.data().practiceDate - b.data().practiceDate)
+          .map(doc => doc.data()).filter((log: any) => 
+          log.practiceDate.toDate().toISOString().split('-')[1] == currMonth).sort());
+      });      
+      
       setMarkedDates(dates);
       
     }
@@ -46,21 +65,23 @@ const Journal: React.FC = () => {
         onMonthChange={(month) => {
           currMonth = month.month;
 
-          // Filter practice logs based on the current month
-          setFilteredLogs(practiceLogs.filter((log: any) => 
-            log.date.toDate().toISOString().split('-')[1] == month.month))
+          // Filter practice logs based on the current month, sort ascending
+          setFilteredLogs(practiceLogs
+            .filter((log: any) => 
+            log.practiceDate.toDate().toISOString().split('-')[1] == month.month)
+            .sort((a: any, b: any) => a.practiceDate - b.practiceDate))
           }}
       />
-        <FlatList
-          data={filteredLogs}
-          extraData={filteredLogs}
-          renderItem={({item}) => (
-            <TouchableOpacity style={styles.item}>
+      <Text style={{marginHorizontal: 10, marginVertical: 5, fontSize: 18, fontWeight: '500'}}>Entries</Text>
+      <ScrollView>
+        {filteredLogs.map((item: any, index: any) => (
+          <TouchableOpacity style={styles.item} key={index} onPress={() => navigation.navigate('JournalDetail', {item})}>
               <Ionicons name='musical-note' size={25}></Ionicons>
-              <Text key={item.id}>{item.date.toDate().toDateString()}</Text>
-            </TouchableOpacity>
-          )}
-        />
+              <Text key={item.id}>{item.practiceDate.toDate().toDateString()}</Text>
+              <Text key={item.id} numberOfLines={1} ellipsizeMode="tail" style={{flex: 1}}> - {item.title}</Text>
+        </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };

@@ -15,6 +15,7 @@ import Progress from './Progress';
 import Journal from './Journal';
 import Profile from './Profile';
 import EditProfile from './EditProfile';
+import JournalDetail from './JournalDetail';
 
 const Tab = createBottomTabNavigator();
 
@@ -24,6 +25,11 @@ export type ProfileStackParamList = {
 };
 const ProfileStack = createNativeStackNavigator();
 
+export type JournalStackParamList = {
+    Journal: undefined;
+    JournalDetail: {item: any};
+};
+const JournalStack = createNativeStackNavigator();
 
 function AppNavigation()
 {
@@ -33,6 +39,13 @@ function AppNavigation()
             <ProfileStack.Screen name="EditProfile" component={EditProfile}/>
         </ProfileStack.Navigator>
     );
+
+    const JournalNavigationStack = () => (
+        <JournalStack.Navigator screenOptions={{ headerShown: false }}>
+            <JournalStack.Screen name="Journal" component={Journal}/>
+            <JournalStack.Screen name="JournalDetail" component={JournalDetail}/>
+        </JournalStack.Navigator>
+    )
 
     return (
         <NavigationContainer>
@@ -52,7 +65,7 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Progress"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="Journal" component={Journal}
+                <Tab.Screen name="JournalPage" component={JournalNavigationStack}
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                               headerTitle: () => <AppHeader name="Journal"/>, 
                               headerStyle: styles.header,
