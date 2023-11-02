@@ -6,6 +6,7 @@ import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'rea
 import AddPlanDetails from './add_plan_details';
 import ViewPlanDetails from './view_plan_details';
 import { getPracticeDataByDate } from '../helpers';
+import { getPlansByDate, hoursAndMinutesToHours, savePlan } from '../helpers/touch_firestore_data';
 
 interface PlannerProp {
     userId: string;
@@ -50,6 +51,12 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
 
     async function handleAddPlan() {
         setAddPlanVisible(true);
+
+        // console.log(hoursAndMinutesToHours(1, 30));
+        // console.log(hoursAndMinutesToHours(0, 30));
+        // savePlan("8tyvHxZJCaS6gI1tYhxEz1W2CgA2", "testTitle", "testPiece", "testComposer", "testInstrument", "Test Tempo");
+        // console.log(await getPlansByDate("8tyvHxZJCaS6gI1tYhxEz1W2CgA2"));
+        // console.log("updated");
     };
 
     const [editable, setEditable] = useState<boolean>(false);

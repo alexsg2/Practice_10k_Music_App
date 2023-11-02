@@ -3,7 +3,7 @@
  */
 
 import { db } from '../config/firebase';
-import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc, addDoc} from 'firebase/firestore';
 
 import { STATUS } from '../assets/constants';
 
@@ -201,23 +201,22 @@ export const hoursAndMinutesToHours = (hours: number, minutes: number) => {
     return hours + minutes / 60;
 }
 
-export const savePlan = async (userId: string, planName: string, planData: any) => {
-    // TODO validate planData
-    // TODO do we want to have a planName or just a auto generated id?
+export const savePlan = async (userId: string, planName: string, pieceTitle: string, composer: string, instrument: string, notes: string) => {
     const userDocRef = doc(db, 'users', userId);
     const planCollection = collection(userDocRef, 'plans');
+    const planData = { planName, pieceTitle, composer, instrument, notes};
     try{
-        await setDoc(doc(planCollection, planName), planData);
+        await addDoc(planCollection, planData);
     }
     catch(e){
         console.log("not saving plan, because of: " + e);
     }
 }
 
-export const getPlansByDate = async (userId: string, dateStart: Date, dateEnd: Date) => {
+export const getPlansByDate = async (userId: string) => {
     const userDocRef = doc(db, 'users', userId);
     const planCollection = collection(userDocRef, 'plans');
-    const planQuery = query(planCollection, where('startDate', ">=", dateStart), where('startDate', '<=', dateEnd));
+    const planQuery = query(planCollection);
     try {
         const querySnap = await getDocs(planQuery);
         const plans: any[] = [];
