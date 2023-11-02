@@ -134,7 +134,7 @@ export const getMostPracticedComposersByDate = async (userId: string, dateStart:
                                          }
                                      }
         });
-        const sortedComposers = Array.from(composersMap, ([composer, hours]) => ({ composer, hours })).sort((a, b) => b.hours - a.hours);
+        const sortedComposers = Array.from(composersMap, ([artist, duration]) => ({ artist, duration })).sort((a, b) => b.duration - a.duration);
 
         return sortedComposers.slice(0, 5);
     }
