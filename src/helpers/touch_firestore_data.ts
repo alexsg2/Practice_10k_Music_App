@@ -190,3 +190,42 @@ export const deletePracticeData = async (userId: string, practiceId: string) => 
         // Handle rest in main code
     }
 }
+
+export const hoursToHoursAndMinutes = (hours: number) => {
+    const hoursInt = Math.floor(hours);
+    const minutes = Math.round((hours - hoursInt) * 60);
+    return [hoursInt, minutes];
+}
+
+export const hoursAndMinutesToHours = (hours: number, minutes: number) => {
+    return hours + minutes / 60;
+}
+
+export const savePlan = async (userId: string, planName: string, planData: any) => {
+    // TODO validate planData
+    // TODO do we want to have a planName or just a auto generated id?
+    const userDocRef = doc(db, 'users', userId);
+    const planCollection = collection(userDocRef, 'plans');
+    try{
+        await setDoc(doc(planCollection, planName), planData);
+    }
+    catch(e){
+        console.log("not saving plan, because of: " + e);
+    }
+}
+
+export const getPlansByDate = async (userId: string, dateStart: Date, dateEnd: Date) => {
+    const userDocRef = doc(db, 'users', userId);
+    const planCollection = collection(userDocRef, 'plans');
+    const planQuery = query(planCollection, where('startDate', ">=", dateStart), where('startDate', '<=', dateEnd));
+    try {
+        const querySnap = await getDocs(planQuery);
+        const plans: any[] = [];
+        querySnap.forEach((doc) => { plans.push({ id: doc.id, ...doc.data() }); });
+        return plans;
+    }
+    catch (e) {
+        console.log("not getting plans (by date), because of: " + e);
+        // Handle rest in main code
+    }
+}
