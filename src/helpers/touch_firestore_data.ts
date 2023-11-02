@@ -3,7 +3,7 @@
  */
 
 import { db } from '../config/firebase';
-import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc, addDoc} from 'firebase/firestore';
 
 import { STATUS } from '../assets/constants';
 
@@ -187,6 +187,44 @@ export const deletePracticeData = async (userId: string, practiceId: string) => 
     }
     catch (e) {
         console.log("not deleting practice data, because of: " + e);
+        // Handle rest in main code
+    }
+}
+
+export const hoursToHoursAndMinutes = (hours: number) => {
+    const hoursInt = Math.floor(hours);
+    const minutes = Math.round((hours - hoursInt) * 60);
+    return [hoursInt, minutes];
+}
+
+export const hoursAndMinutesToHours = (hours: number, minutes: number) => {
+    return hours + minutes / 60;
+}
+
+export const savePlan = async (userId: string, planName: string, pieceTitle: string, composer: string, instrument: string, notes: string) => {
+    const userDocRef = doc(db, 'users', userId);
+    const planCollection = collection(userDocRef, 'plans');
+    const planData = { planName, pieceTitle, composer, instrument, notes};
+    try{
+        await addDoc(planCollection, planData);
+    }
+    catch(e){
+        console.log("not saving plan, because of: " + e);
+    }
+}
+
+export const getPlansByDate = async (userId: string) => {
+    const userDocRef = doc(db, 'users', userId);
+    const planCollection = collection(userDocRef, 'plans');
+    const planQuery = query(planCollection);
+    try {
+        const querySnap = await getDocs(planQuery);
+        const plans: any[] = [];
+        querySnap.forEach((doc) => { plans.push({ id: doc.id, ...doc.data() }); });
+        return plans;
+    }
+    catch (e) {
+        console.log("not getting plans (by date), because of: " + e);
         // Handle rest in main code
     }
 }
