@@ -104,7 +104,7 @@ export const addPracticeData = async (userId: string, title: string, piece: stri
         const userDocRef = doc(db, 'users', userId);
         const practiceCollection = collection(userDocRef, 'practiceData');
         await setDoc(doc(practiceCollection), { title, piece, composer, instrument, practiceDate, duration: 0, status: STATUS[0], notes });
-        saveMusicPieces(userId,title, piece, composer, instrument, notes);
+        await saveMusicPieces(userId,title, piece, composer, instrument, notes);
     }
     catch (e) {
         console.log("not adding practice data, because of: " + e);

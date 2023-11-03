@@ -1,23 +1,25 @@
 import React from 'react';
+import { View, Text } from 'react-native';
 import PieChart from 'react-native-pie-chart';
-import { View, Text, StyleSheet } from 'react-native';
 
+
+import { totalDurationInHoursAndMinutes } from '../helpers';
 
 interface MusicDistributionProps {
   date: string;
-  hours_amount: string;
-  minutes_amount: string;
   composers: { composer: string, hour: number }[];
 }
 
 
-const MusicDistribution: React.FC<MusicDistributionProps> = ({ date, hours_amount, minutes_amount, composers }) =>
+const MusicDistribution: React.FC<MusicDistributionProps> = ({ date, composers }) =>
 {
   const composersArray = composers.map(item => item.hour);
+  const [totalHours, totalMinutes] = totalDurationInHoursAndMinutes(composersArray);
   
   const colorOptions = ['#3E98FF', '#FCC235', '#B42A43', '#079D94', '#222425'];
   const seriesColor = composers.map((_, index) => { return index < colorOptions.length ? colorOptions[index] : 'black'; });
 
+  
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: 18, marginBottom: '7%' }}>{date}</Text>
@@ -32,7 +34,7 @@ const MusicDistribution: React.FC<MusicDistributionProps> = ({ date, hours_amoun
           />
         </View>
         <View style={{ position: 'absolute', alignItems: 'center' }}>
-          <Text style={{ fontSize: 28 }}>{`${hours_amount} : ${minutes_amount}`}</Text>
+          <Text style={{ fontSize: 28 }}>{`${totalHours} : ${totalMinutes}`}</Text>
           <Text style={{ fontSize: 10 }}>hours : minutes</Text>
         </View>
       </View>

@@ -27,7 +27,7 @@ const Home = () =>
                     return unsubscribe;
     }, [uid]);
 
-    useFocusEffect(React.useCallback(() => { fetchPracticeData(); }, [uid]));
+    useFocusEffect(React.useCallback(() => { fetchGoalData(); }, [uid]));
     const [reloadData, setReloadData] = useState(false);
     useFocusEffect(React.useCallback(() => { setReloadData(true); }, [uid, selectedDateAbbr]));
 
@@ -35,7 +35,7 @@ const Home = () =>
     const [totalPieces, setTotalPieces] = useState<number>(0);
 
     const [loading, setLoading] = useState<boolean>(true);
-    async function fetchPracticeData() {
+    async function fetchGoalData() {
         try {
             setLoading(true);
 
