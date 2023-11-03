@@ -39,7 +39,6 @@ const Progress = () =>
                         if (user) {
                             setUid(user.uid);
                         }
-                        fetchProgressData();
                     });
                     return unsubscribe;
     }, [uid]);
