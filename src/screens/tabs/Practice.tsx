@@ -5,6 +5,7 @@ import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation
 
 
 import { Planner } from '../../components';
+import { getDailyDateRanges } from '../../helpers';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export type PracticeStackParamList = {
@@ -31,24 +32,17 @@ const Practice = () =>
 
     const [reloadData, setReloadData] = useState(false);
     useFocusEffect(React.useCallback(() => { setReloadData(true); }, [uid]));
-
-    const getDateRange = () => {
-        const start = new Date();
-        start.setHours(-4, 0, 0, 0);
-        const end = new Date(start);
-        end.setHours(43, 59, 59, 999);
-        return [start, end];
-    };
     
     const handleStartTimer = () => {
         // TODO : navigate to corresponding screen - Alex's
     };
 
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>Today's Plans</Text>
-                <Planner userId={uid} date={getDateRange()} reload={reloadData} setReload={setReloadData}/>
+                <Planner userId={uid} date={getDailyDateRanges()} reload={reloadData} setReload={setReloadData}/>
                 <TouchableOpacity onPress={handleStartTimer}
                                   style={{ width: '50%', padding: '5%', marginVertical: '5%', borderRadius: 10, alignSelf: 'center', alignItems: 'center', flexDirection: 'row', justifyContent: 'center', backgroundColor: '#7BC3E9' }}>
                     <Ionicons name="play" size={25} color="black"/>

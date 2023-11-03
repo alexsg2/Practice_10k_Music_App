@@ -1,30 +1,22 @@
 import Swiper from 'react-native-swiper';
 import React, { useEffect, useState } from 'react';
+import { LineChart } from "react-native-chart-kit";
 import { useFocusEffect } from '@react-navigation/native';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { ScrollView, ActivityIndicator, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, ActivityIndicator, View, Text, StyleSheet, Dimensions } from 'react-native';
 
 
-import GoalTracker from '../../components/GoalTracker';
-import MusicDistribution from '../../components/MusicDistribution';
-import { getMostPracticedComposersByDate, getPracticePiecesAndHoursByDate } from '../../helpers';
+import { colorPallete } from '../../assets/design_library';
+import { GoalTracker, MusicDistribution } from '../../components';
+import { getMostPracticedComposersByDate, getPracticeDataByDate, getPracticePiecesAndHoursByDate,
+         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
+         totalDurationInHoursAndMinutes, formatWeeklyDateRange } from '../../helpers';
 
 const auth = getAuth();
 
 
 const Progress = () =>
 {
-    const [uid, setUid] = useState<string>('');
-    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            setUid(user.uid);
-                        }
-                    });
-                    return unsubscribe;
-    }, [uid]);
-
-    useFocusEffect(React.useCallback(() => { fetchProgressData(); }, [uid]));
-
     const [dailyHours, setDailyHours] = useState<number>(0);
     const [weeklyHours, setWeeklyHours] = useState<number>(0);
     const [monthlyHours, setMonthlyHours] = useState<number>(0);
@@ -35,55 +27,58 @@ const Progress = () =>
     const [monthlyPieces, setMonthlyPieces] = useState<number>(0);
     const [totalPieces, setTotalPieces] = useState<number>(0);
 
-    const [composersData, setComposersData] = useState<{ artist: string; duration: number }[]>([]);
-    // TODO : hardcoded for now until I get Rahul's conversion functions
-    const totalComposerHours = 12;
-    const totalComposerMinutes = 48;
+    const [trendData, setTrendData] = useState<number[]>([]);
+
+    const [weeklyRange, setWeeklyRange] = useState<string>('');
+    const [composersData, setComposersData] = useState<{ composer: string; hour: number }[]>([]);
+    const [composerHours, setComposerHours] = useState<number>(0);
+    const [composerMinutes, setComposerMinutes] = useState<number>(0);
+
+    const [uid, setUid] = useState<string>('');
+    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            setUid(user.uid);
+                        }
+                        fetchProgressData();
+                    });
+                    return unsubscribe;
+    }, [uid]);
+
+    useFocusEffect(React.useCallback(() => { fetchProgressData(); }, [uid]));
 
     const [loading, setLoading] = useState<boolean>(true);
     async function fetchProgressData() {
-        const startTotalDate = new Date(2023, 9, 29, -4, 0, 0);
-        const endTotalDate = new Date();
-        endTotalDate.setHours(19, 59, 59, 999);
-
-        const startMonthlyDate = new Date();
-        startMonthlyDate.setDate(1);
-        startMonthlyDate.setHours(-4, 0, 0, 0);
-        const endMonthlyDate = new Date();
-        endMonthlyDate.setMonth(endMonthlyDate.getMonth() + 1, 1);
-        endMonthlyDate.setDate(endMonthlyDate.getDate() - 1);
-        endMonthlyDate.setHours(18, 59, 59, 999);
-
-        const startWeeklyDate = new Date();
-        startWeeklyDate.setHours(-4, 0, 0, 0);
-        startWeeklyDate.setDate(startWeeklyDate.getDate() - startWeeklyDate.getDay() - 1);
-        const endWeeklyDate = new Date();
-        endWeeklyDate.setDate(endWeeklyDate.getDate() + (6 - endWeeklyDate.getDay()));
-        endWeeklyDate.setHours(19, 59, 59, 999);
-
-        const startDailyDate = new Date();
-        startDailyDate.setHours(-4, 0, 0, 0);
-        const endDailyDate = new Date();
-        endDailyDate.setHours(19, 59, 59, 999);
+        const dailyDates = getDailyDateRanges();
+        const weeklyDates = getWeeklyDateRanges();
+        const monthlyDates = getMonthlyDateRanges();
+        const overallDates = getOverallDateRanges();
     
         try {
             setLoading(true);
 
-            const [tPieces, tHours] = await getPracticePiecesAndHoursByDate(uid, startTotalDate, endTotalDate);
+            const [tPieces, tHours] = await getPracticePiecesAndHoursByDate(uid, overallDates[0], overallDates[1]);
             setTotalPieces(tPieces);
             setTotalHours(tHours);
-            const [dPieces, dHours] = await getPracticePiecesAndHoursByDate(uid, startDailyDate, endDailyDate);
+            const [dPieces, dHours] = await getPracticePiecesAndHoursByDate(uid, dailyDates[0], dailyDates[1]);
             setDailyPieces(dPieces);
             setDailyHours(dHours);
-            const [wPieces, wHours] = await getPracticePiecesAndHoursByDate(uid, startWeeklyDate, endWeeklyDate);
+            const [wPieces, wHours] = await getPracticePiecesAndHoursByDate(uid, weeklyDates[0], weeklyDates[1]);
             setWeeklyPieces(wPieces);
             setWeeklyHours(wHours);
-            const [mPieces, mHours] = await getPracticePiecesAndHoursByDate(uid, startMonthlyDate, endMonthlyDate);
+            const [mPieces, mHours] = await getPracticePiecesAndHoursByDate(uid, monthlyDates[0], monthlyDates[1]);
             setMonthlyPieces(mPieces);
             setMonthlyHours(mHours);
 
-            const weeklyComposersInfo = await getMostPracticedComposersByDate(uid, startWeeklyDate, endWeeklyDate);
+            const monthlyData = await getPracticeDataByDate(uid, overallDates[0], overallDates[1]);
+            setTrendData(monthlyData.map(item => item.duration));
+
+            setWeeklyRange(formatWeeklyDateRange(weeklyDates[0], weeklyDates[1]));
+            const weeklyComposersInfo = await getMostPracticedComposersByDate(uid, weeklyDates[0], weeklyDates[1]);
             setComposersData(weeklyComposersInfo);
+            const allHours = composersData.map(item => item.hour);
+            const [tComposerHours, tComposerMinutes] = totalDurationInHoursAndMinutes(allHours);
+            setComposerHours(tComposerHours);
+            setComposerMinutes(tComposerMinutes);
         }
         catch (e) {
             // Handle in any way
@@ -95,36 +90,71 @@ const Progress = () =>
 
 
     return (
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }} showsVerticalScrollIndicator={false}>
+        <ScrollView style={{ flex: 1, backgroundColor: '#ECF1F7' }} showsVerticalScrollIndicator={false}>
             {loading ? (
                 <ActivityIndicator size="large" color='black' style={{ marginVertical: '70%' }}/>
             ) : (
                 <>
-                <View style={styles.topContainer}>
-                    <Text style={{ marginTop: 15, marginBottom: 15, marginLeft: 20, fontSize: 20 }}>Activity</Text>
-                    <Swiper showsButtons={false} showsPagination={true} style={styles.swiperContainer}>
+                <View style={{ width: '100%' }}>
+                    <Text style={{ fontSize: 20, marginVertical: '5%', marginLeft: '5%' }}>Activity</Text>
+                    <Swiper showsButtons={false} showsPagination={true} style={{ height: 260 }}>
                         <View style={styles.goalContainer}>
-                            <GoalTracker title="Daily Hours" goal_amount={10} hours_amount={dailyHours} pieces_amount={dailyPieces} />
+                            <GoalTracker title="Daily Hours" goal_amount={'2'} hours_amount={dailyHours} pieces_amount={dailyPieces} />
                         </View>
                         <View style={styles.goalContainer}>
-                            <GoalTracker title="Weekly Hours" goal_amount={20} hours_amount={weeklyHours} pieces_amount={weeklyPieces} />
+                            <GoalTracker title="Weekly Hours" goal_amount={'14'} hours_amount={weeklyHours} pieces_amount={weeklyPieces} />
                         </View>
                         <View style={styles.goalContainer}>
-                            <GoalTracker title="Monthly Hours" goal_amount={50} hours_amount={monthlyHours} pieces_amount={monthlyPieces} />
+                            <GoalTracker title="Monthly Hours" goal_amount={'56'} hours_amount={monthlyHours} pieces_amount={monthlyPieces} />
                         </View>
                         <View style={styles.goalContainer}>
-                            <GoalTracker title="Overall Hours" goal_amount={10000} hours_amount={totalHours} pieces_amount={totalPieces} />
+                            <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
                         </View>
                     </Swiper>
-                    {/* <Text style={{ marginBottom: 15, marginLeft: 20, fontSize: 20, fontWeight: 'bold' }}>Trends</Text> */}
                 </View>
-                <View style={styles.distributionContainer}>
-                    <MusicDistribution
-                        date="October 23-27"
-                        hours_amount={totalComposerHours.toString()}
-                        minutes_amount={totalComposerMinutes.toString()}
-                        songs={composersData}
-                    />
+                <View style={{ width: '100%' }}>
+                    <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Trend</Text>
+                    <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
+                        {trendData.length > 0 ? (
+                            <LineChart
+                                data={{ labels: [],
+                                        datasets: [{ data: trendData,
+                                                    strokeWidth: 2,
+                                                    color: (opacity: any) => colorPallete.blue_gradiant["60%"],
+                                                    },],
+                                    }}
+                                yAxisSuffix=' hrs'
+                                width={Dimensions.get('window').width * 0.95}
+                                height={200}
+                                chartConfig={{ decimalPlaces: 0,
+                                               style: { alignItems: 'center', borderWidth: 1, borderRadius: 16 },
+                                               color: (opacity) => colorPallete.black_gradiant["default"],
+                                               labelColor: (opacity) => colorPallete.black_gradiant["default"],
+                                               backgroundGradientTo: '#ECF1F7',
+                                               backgroundGradientFrom: '#ECF1F7',
+                                               backgroundGradientToOpacity: 0,
+                                            }}
+                                withInnerLines={false}
+                            />
+                        ) : (
+                            <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center' }}>No trend available.</Text>
+                        )}
+                    </View>
+                </View>
+                <View style={{ width: '100%' }}>
+                    <Text style={{ fontSize: 20, marginVertical: '7%', marginLeft: '5%' }}>Distribution</Text>
+                    <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
+                        {composersData.length > 0 ? (
+                            <MusicDistribution
+                                date={weeklyRange}
+                                hours_amount={composerHours.toString()}
+                                minutes_amount={composerMinutes.toString()}
+                                composers={composersData}
+                            />
+                        ) : (
+                            <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
+                        )}
+                    </View>
                 </View>
                 </>
             )}
@@ -135,23 +165,8 @@ const Progress = () =>
 export default Progress;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    topContainer: {
-        width: "100%",
-        backgroundColor: '#ECF1F7',
-    },
     goalContainer: {
+        width: '100%',
         alignItems: 'center',
-        width: "100%",
-    },
-    distributionContainer: {
-        width: "100%",
-        marginTop: 20,
-    },
-    swiperContainer: {
-        height: 260,
     },
 });
