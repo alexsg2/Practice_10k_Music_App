@@ -1,70 +1,139 @@
-import React from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import GoalTracker from '../../components/GoalTracker';
-import MusicDistribution from '../../components/MusicDistribution';
 import Swiper from 'react-native-swiper';
-import { DesignLibrary } from '../../assets/DesignLibrary';
+import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { ScrollView, ActivityIndicator, View, Text, StyleSheet } from 'react-native';
 
-const songs = [
-    { artist: 'Bach', duration: 100 },
-    { artist: 'Jessie Montgomery', duration: 80 },
-    { artist: 'Dvorak', duration: 50 },
-    { artist: 'Beethoven', duration: 20 },
-    { artist: 'Artist 5', duration: 10 },
-  ];
-  
-export default function Progress() {
+
+import { GoalTracker, MusicDistribution } from '../../components';
+import { getMostPracticedComposersByDate, getPracticePiecesAndHoursByDate,
+         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
+         formatWeeklyDateRange } from '../../helpers';
+
+const auth = getAuth();
+
+
+const Progress = () =>
+{
+    const [uid, setUid] = useState<string>('');
+    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, async (user) => {
+                        if (user) {
+                            setUid(user.uid);
+                        }
+                    });
+                    return unsubscribe;
+    }, [uid]);
+    useFocusEffect(React.useCallback(() => { fetchGoalData(); fetchDistributionData();}, [uid]));
+
+
+    const [dailyPieces, setDailyPieces] = useState<number>(0);
+    const [dailyHours, setDailyHours] = useState<number>(0);
+    const [weeklyHours, setWeeklyHours] = useState<number>(0);
+    const [weeklyPieces, setWeeklyPieces] = useState<number>(0);
+    const [monthlyHours, setMonthlyHours] = useState<number>(0);
+    const [monthlyPieces, setMonthlyPieces] = useState<number>(0);
+    const [totalHours, setTotalHours] = useState<number>(0);
+    const [totalPieces, setTotalPieces] = useState<number>(0);
+
+    const [goalLoading, setGoalLoading] = useState<boolean>(true);
+    async function fetchGoalData() {
+        const dailyDates = getDailyDateRanges();
+        const weeklyDates = getWeeklyDateRanges();
+        const monthlyDates = getMonthlyDateRanges();
+        const overallDates = getOverallDateRanges();
+    
+        try {
+            setGoalLoading(true);
+            const [dPieces, dHours] = await getPracticePiecesAndHoursByDate(uid, dailyDates[0], dailyDates[1]);
+            setDailyPieces(dPieces);
+            setDailyHours(dHours);
+            const [wPieces, wHours] = await getPracticePiecesAndHoursByDate(uid, weeklyDates[0], weeklyDates[1]);
+            setWeeklyPieces(wPieces);
+            setWeeklyHours(wHours);
+            const [mPieces, mHours] = await getPracticePiecesAndHoursByDate(uid, monthlyDates[0], monthlyDates[1]);
+            setMonthlyPieces(mPieces);
+            setMonthlyHours(mHours);
+            const [tPieces, tHours] = await getPracticePiecesAndHoursByDate(uid, overallDates[0], overallDates[1]);
+            setTotalPieces(tPieces);
+            setTotalHours(tHours);
+        }
+        catch (e) {
+            // Handle in any way
+        }
+        finally {
+            setGoalLoading(false);
+        }
+    };
+
+    const [weeklyRange, setWeeklyRange] = useState<string>('');
+    const [composersData, setComposersData] = useState<{ composer: string; hour: number }[]>([]);
+    const [distributionLoading, setDistributionLoading] = useState<boolean>(true);
+    async function fetchDistributionData() {
+        try {
+            setDistributionLoading(true);
+            const weeklyDates = getWeeklyDateRanges();
+            setWeeklyRange(formatWeeklyDateRange(weeklyDates[0], weeklyDates[1]));
+            const weeklyComposersInfo = await getMostPracticedComposersByDate(uid, weeklyDates[0], weeklyDates[1]);
+            setComposersData(weeklyComposersInfo);
+        }
+        catch (e) {
+            // Handle in any way
+        }
+        finally {
+            setDistributionLoading(false);
+        }
+    }
+
+
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-            <View style={styles.topContainer}>
-                <Text style={{ marginTop: 15, marginBottom: 15, marginLeft: 20, fontSize: 20 }}>Activity</Text>
-                <Swiper showsButtons={false} showsPagination={true} style={styles.swiperContainer}>
-                    <View style={styles.goalContainer}>
-                        <GoalTracker title="Daily Hours" goal_amount={10} hours_amount={7} pieces_amount={2} />
+        <ScrollView style={{ flex: 1, backgroundColor: '#ECF1F7' }} showsVerticalScrollIndicator={false}>
+            {goalLoading ? (
+                <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
+            ) : (
+                <View style={{ width: '100%' }}>
+                    <Text style={{ fontSize: 20, marginVertical: '5%', marginLeft: '5%' }}>Activity</Text>
+                    <Swiper showsButtons={false} showsPagination={true} style={{ height: 260 }}>
+                        <View style={styles.goalContainer}>
+                            <GoalTracker title="Daily Hours" goal_amount={'2'} hours_amount={dailyHours} pieces_amount={dailyPieces} />
+                        </View>
+                        <View style={styles.goalContainer}>
+                            <GoalTracker title="Weekly Hours" goal_amount={'14'} hours_amount={weeklyHours} pieces_amount={weeklyPieces} />
+                        </View>
+                        <View style={styles.goalContainer}>
+                            <GoalTracker title="Monthly Hours" goal_amount={'56'} hours_amount={monthlyHours} pieces_amount={monthlyPieces} />
+                        </View>
+                        <View style={styles.goalContainer}>
+                            <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
+                        </View>
+                    </Swiper>
+                </View>
+            )}
+            {distributionLoading ? (
+                <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
+            ) : (
+                <View style={{ width: '100%' }}>
+                    <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Distribution</Text>
+                    <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
+                        {composersData.length > 0 ? (
+                            <MusicDistribution
+                                date={weeklyRange}
+                                composers={composersData}
+                            />
+                        ) : (
+                            <Text style={{ fontSize: 16, marginBottom: '7%', fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
+                        )}
                     </View>
-                    <View style={styles.goalContainer}>
-                        <GoalTracker title="Weekly Hours" goal_amount={20} hours_amount={12} pieces_amount={26} />
-                    </View>
-                    <View style={styles.goalContainer}>
-                        <GoalTracker title="Monthly Hours" goal_amount={50} hours_amount={24} pieces_amount={55} />
-                    </View>
-                    <View style={styles.goalContainer}>
-                        <GoalTracker title="Overall Hours" goal_amount={520} hours_amount={490} pieces_amount={75} />
-                    </View>
-                </Swiper>
-                {/* <Text style={{ marginBottom: 15, marginLeft: 20, fontSize: 20, fontWeight: 'bold' }}>Trends</Text> */}
-
-            </View>
-            <View style={styles.distributionContainer}>
-                <MusicDistribution
-                    date="October 23-27"
-                    hours_amount={"10"}
-                    minutes_amount={"59"}
-                    songs={songs}
-                />
-            </View>
+                </View>
+            )}
         </ScrollView>
     );
 }
 
+export default Progress;
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
-    topContainer: {
-        width: "100%",
-        backgroundColor: '#ECF1F7',
-    },
     goalContainer: {
+        width: '100%',
         alignItems: 'center',
-        width: "100%",
-    },
-    distributionContainer: {
-        width: "100%",
-        marginTop: 20,
-    },
-    swiperContainer: {
-        height: 260,
     },
 });

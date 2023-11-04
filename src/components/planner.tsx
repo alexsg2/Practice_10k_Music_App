@@ -99,7 +99,7 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
                         </TouchableOpacity>
                     ))
                 ) : (
-                    <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center', marginTop: '7%' }}>Nothing planned for this date.</Text>
+                    <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center', marginTop: '7%' }}>No plans for date.</Text>
                 )}
             {selection >= curr ? (
                 <TouchableOpacity style={styles.item} onPress={handleAddPlan}>
