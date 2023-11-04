@@ -41,7 +41,7 @@ const Practice = () =>
     };
     
     const handleStartTimer = () => {
-        // TODO : navigate to corresponding screen - Alex's
+        navigation.navigate("PracticeTimer")
     };
 
     return (

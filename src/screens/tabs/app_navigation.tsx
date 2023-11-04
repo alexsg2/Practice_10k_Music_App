@@ -11,6 +11,7 @@ import { AppHeader, EditHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
+import PracticeTimer from './PracticeTimer';
 import Progress from './Progress';
 import Journal from './Journal';
 import Profile from './Profile';
@@ -31,6 +32,12 @@ export type JournalStackParamList = {
 };
 const JournalStack = createNativeStackNavigator();
 
+export type PracticeStackParamList = {
+    Practice: undefined;
+    PracticeTimer: undefined;
+};
+const PracticeStack = createNativeStackNavigator();
+
 function AppNavigation()
 {
     const ProfileNavigationStack = () => (
@@ -42,10 +49,17 @@ function AppNavigation()
 
     const JournalNavigationStack = () => (
         <JournalStack.Navigator screenOptions={{ headerShown: false }}>
-            <JournalStack.Screen name="Journal" component={Journal}/>
+            <JournalStack.Screen name="JournalScreen" component={Journal}/>
             <JournalStack.Screen name="JournalDetail" component={JournalDetail}/>
         </JournalStack.Navigator>
     )
+
+    const PracticeNavigationStack = () => (
+        <PracticeStack.Navigator screenOptions={{ headerShown: false }}>
+            <PracticeStack.Screen name="PracticeScreen" component={Practice}/>
+            <PracticeStack.Screen name="PracticeTimer" component={PracticeTimer}/>
+        </PracticeStack.Navigator>
+    );
 
     return (
         <NavigationContainer>
@@ -55,7 +69,7 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Home"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="Practice" component={Practice} 
+                <Tab.Screen name="Practice" component={PracticeNavigationStack} 
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
                               headerTitle: () => <AppHeader name="Practice"/>, 
                               headerStyle: styles.header,
