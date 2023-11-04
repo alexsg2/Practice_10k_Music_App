@@ -77,7 +77,6 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
     curr.setHours(-4, 0, 0, 0);
     const selection = new Date(date[1]);
     selection.setHours(-4, 0, 1, 0);
-
     return (
         <View style={{ flex: 1, paddingHorizontal: '3%' }}>
             {loading ? (
@@ -108,7 +107,7 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
                 </TouchableOpacity>
             ) : null}
             {addPlanVisible ? (
-                <AddPieceContainer plans={plans} view={addPlanVisible} setView={setAddPlanVisible} reload={reload} setReloadData={setReload} date={date}/>
+                <AddPieceContainer plans={plans} view={addPlanVisible} setView={setAddPlanVisible} reload={reload} setReloadData={setReload} date={date} userId={userId}/>
             ) : null}
             {viewPlanVisible ? (
                 <ViewPlanDetails uid={userId} date={date[1]} plan={selectedPlan}

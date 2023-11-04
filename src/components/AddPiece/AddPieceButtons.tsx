@@ -8,7 +8,7 @@ import { RootState } from '../../redux/store';
 import DropdownSelector from '../dropdown_selector';
 import { validatePracticePlan, addPracticeData } from '../../helpers';
 import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
-import AddPlanDeatails from './add_plan_details'
+import AddPlanDetails from './AddPlanDetails'
 
 interface AddPieceContainerProps {
   openAddNewView: () => void;
