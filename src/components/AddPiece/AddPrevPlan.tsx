@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import { View, Text, ActivityIndicator, TouchableOpacity, StyleSheet } from 'react-native';
+import { getPracticeDataByDate } from '../../helpers';
 
-
-import AddPieceContainer from './AddPiece/AddPieceContainer';
-import ViewPlanDetails from './view_plan_details';
-import { getPracticeDataByDate } from '../helpers';
-
-interface PlannerProp {
+interface AddPrevPlanProps {
     userId: string;
     date: Date[];
     reload: boolean;
     setReload: (selected: boolean) => void;
+    plans: any[];
 }
 
 
-const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
+const AddPrevPlan: React.FC<AddPrevPlanProps> = ({plans, userId, date, reload, setReload }) =>
 {
-    const [loading, setLoading] = useState(true);
-    
     const [selectedPlan, setSelectedPlan] = useState<{ id: string; title: string; piece: string;
                                                        composer: string; instrument: string;
                                                        practiceDate: Date; duration: number;
@@ -27,31 +22,6 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
                                                                                            duration: 0, status: '', notes: '' });
     const [addPlanVisible, setAddPlanVisible] = useState(false);
     const [viewPlanVisible, setViewPlanVisible] = useState(false);
-
-    const [plans, setPlans] = useState<any[]>([]);
-    useEffect(() => { async function fetchPlans() {
-                        try {
-                            setLoading(true);
-                            const practiceData = await getPracticeDataByDate(userId, date[0], date[1]);
-                            setPlans(practiceData || []);
-                        }
-                        catch (e: any) {
-                            // Handle in any way
-                        }
-                        finally {
-                            setLoading(false);
-                        }
-                    }
-                    if (reload) {
-                        fetchPlans();
-                        setReload(false);
-                    }
-                }, [userId, date, reload]);
-
-    async function handleAddPlan() {
-        setAddPlanVisible(true);
-    };
-
     const [editable, setEditable] = useState<boolean>(false);
     
     async function handleViewPlan(plan: any) {
@@ -80,9 +50,7 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
 
     return (
         <View style={{ flex: 1, paddingHorizontal: '3%' }}>
-            {loading ? (
-                <ActivityIndicator size='large' color='black' style={{ marginTop: '5%'}} />
-            ) : plans.length > 0 ? (
+            { plans.length > 0 ? (
                     plans.map((plan, index) => (
                         <TouchableOpacity
                             key={index}
@@ -101,25 +69,11 @@ const Planner: React.FC<PlannerProp> = ({ userId, date, reload, setReload }) =>
                 ) : (
                     <Text style={{ fontSize: 16, fontStyle: 'italic', alignSelf: 'center', marginTop: '7%' }}>Nothing planned for this date.</Text>
                 )}
-            {selection >= curr ? (
-                <TouchableOpacity style={styles.item} onPress={handleAddPlan}>
-                    <Ionicons name="add-sharp" size={30} color="black"/>
-                    <Text style={styles.itemText}>Add Piece</Text>
-                </TouchableOpacity>
-            ) : null}
-            {addPlanVisible ? (
-                <AddPieceContainer plans={plans} view={addPlanVisible} setView={setAddPlanVisible} reload={reload} setReloadData={setReload} date={date}/>
-            ) : null}
-            {viewPlanVisible ? (
-                <ViewPlanDetails uid={userId} date={date[1]} plan={selectedPlan}
-                                 view={viewPlanVisible} setView={setViewPlanVisible}
-                                 isEditable={editable} setReloadData={setReload}/>
-            ) : null}
         </View>
     );
 };
 
-export default Planner;
+export default AddPrevPlan;
 
 const styles = StyleSheet.create(
 {
