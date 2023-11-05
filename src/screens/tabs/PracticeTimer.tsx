@@ -8,11 +8,15 @@ const PracticeTimer: React.FC = () => {
   const [timerVisible, setTimerVisible] = useState(true);
   const [currentColorIndex, setCurrentColorIndex] = useState(0);
   const colors = ['#5982C2', '#7BC3E9'];
-  const [stoppedTime, setStoppedTime] = useState<number | null>(null); // Stopped time in minutes
+
+
+  // This is the amount of time spent on the practice this should go to fire base.
+  const [stoppedTime, setStoppedTime] = useState<number | null>(null); 
 
 
   let interval: NodeJS.Timeout | null = null;
 
+  //This is the list of peices that should be gather from firebase
   const pieces = [
     {
       songtitle: 'Sonata in a minor',
@@ -116,6 +120,7 @@ const PracticeTimer: React.FC = () => {
       </View>
 
       {/* Display stopped time temporarily */}
+      {/* USE THIS WHEN WE WANT TO SEND INFORMATION AFTER END OF SCESSION ALONG WITH UPDATING PRACTICE SCHEDULE */}
       {stoppedTime !== null && (
         <Text style={{ fontSize: 18, color: 'red' }}>
           Timer Stopped: {stoppedTime} minutes
