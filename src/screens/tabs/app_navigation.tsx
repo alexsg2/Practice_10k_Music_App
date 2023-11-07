@@ -11,6 +11,7 @@ import { AppHeader, EditHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
+// import PracticeTimer from './PracticeTimer';
 import Progress from './Progress';
 import Journal from './Journal';
 import JournalDetail from './JournalDetail';
