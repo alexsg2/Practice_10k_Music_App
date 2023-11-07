@@ -19,23 +19,27 @@ const PracticeTimer: React.FC = () => {
   //This is the list of peices that should be gather from firebase
   const pieces = [
     {
-      songtitle: 'Sonata in a minor',
-      artisttitle: 'Bach',
+      peice: 'Sonata in a minor',
+      composer: 'Bach',
+      instrument: 'Bach',
       notes: 'Here is the things I have written it will be long and say a lot of things so I can check if this works'
     },
     {
-      songtitle: 'Example Song Title',
-      artisttitle: 'Example Artist',
+      peice: 'Example Song Title',
+      composer: 'Example Artist',
+      instrument: 'Bach',
       notes: 'Example Notes'
     },
     {
-      songtitle: 'Example 2 Song Title',
-      artisttitle: 'Example Artist',
+      peice: 'Example 2 Song Title',
+      composer: 'Example Artist',
+      instrument: 'Bach',
       notes: 'Example Notes'
     },
     {
-      songtitle: 'Example 3 Song Title',
-      artisttitle: 'Example Artist',
+      peice: 'Example 3 Song Title',
+      composer: 'Example Artist',
+      instrument: 'Bach',
       notes: 'Example Notes'
     },
     // Add more pieces as needed
@@ -68,27 +72,35 @@ const PracticeTimer: React.FC = () => {
     setTimerOn(prevState => !prevState);
   };
 
+  const toggleTimerVisibility = () => {
+    setTimerVisible(!timerVisible);
+  };
+
   const stopTimer = () => {
     if (timerOn) {
       setTimerOn(false);
     }
     const stoppedMinutes = Math.floor(time / 60);
     setStoppedTime(stoppedMinutes);
-  };
-
-  const toggleTimerVisibility = () => {
-    setTimerVisible(!timerVisible);
+    //Send back to the practice page
   };
 
   const handleNextPiece = () => {
     const nextIndex = (currentPieceIndex + 1) % pieces.length;
 
     if (nextIndex === 0) {
+      const stoppedMinutes = Math.floor(time / 60);
+      setStoppedTime(stoppedMinutes);
       stopTimer();
+      //Send back to practice page
     } else {
       const nextColorIndex = (currentColorIndex + 1) % colors.length;
+      const stoppedMinutes = Math.floor(time / 60);
+      setStoppedTime(stoppedMinutes);
       setCurrentPieceIndex(nextIndex);
       setCurrentColorIndex(nextColorIndex);
+      setTime(0); 
+      setTimerOn(false);
     }
   };
 
@@ -99,7 +111,7 @@ const PracticeTimer: React.FC = () => {
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
         <View style={{ marginRight: 20 }}>
           <Text style={{ fontSize: 8 }}>Now Playing:</Text>
-          <Text style={{ fontSize: 12 }}>{currentPiece.artisttitle} - {currentPiece.songtitle}</Text>
+          <Text style={{ fontSize: 12 }}>{currentPiece.composer} - {currentPiece.peice}</Text>
         </View>
         {/* Timer visibility logic */}
         {timerVisible && (
@@ -139,10 +151,12 @@ const PracticeTimer: React.FC = () => {
           marginTop: 10,
         }}
       >
-        <Text style={{ fontSize: 32, margin: 40 }}>{currentPiece.songtitle}</Text>
-        <Text style={{ fontSize: 28, marginBottom: 10 }}>Artist:</Text>
-        <Text style={{ fontSize: 24, marginBottom: 20 }}>{currentPiece.artisttitle}</Text>
-        <Text style={{ fontSize: 28, marginBottom: 10 }}>Notes:</Text>
+        <Text style={{ fontSize: 32, margin: 20, fontWeight: 'bold'  }}>{currentPiece.peice}</Text>
+        <Text style={{ fontSize: 28, marginBottom: 5, fontWeight: 'bold' }}>Artist:</Text>
+        <Text style={{ fontSize: 24, marginBottom: 20 }}>{currentPiece.composer}</Text>
+        <Text style={{ fontSize: 28, marginBottom: 10, fontWeight: 'bold' }}>Instrument:</Text>
+        <Text style={{ fontSize: 24, marginBottom: 20 }}>{currentPiece.instrument}</Text>
+        <Text style={{ fontSize: 28, marginBottom: 10, fontWeight: 'bold' }}>Notes:</Text>
         <Text style={{
           fontSize: 20,
           width: '85%',
