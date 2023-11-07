@@ -50,7 +50,7 @@ function AppNavigation()
     
     const JournalNavigationStack = () => (
         <JournalStack.Navigator screenOptions={{ headerShown: false }}>
-            <JournalStack.Screen name="Journal" component={Journal}/>
+            <JournalStack.Screen name="JournalScreen" component={Journal}/>
             <JournalStack.Screen name="JournalDetail" component={JournalDetail}/>
         </JournalStack.Navigator>
     )
