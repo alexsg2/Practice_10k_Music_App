@@ -2,6 +2,7 @@ import { SET_PROFILE } from './actions';
 
 
 export interface IProfileProps {
+  email: string;
   profilePicture: string | number | null;
   name: string,
   dateOfBirth: string,
@@ -10,6 +11,7 @@ export interface IProfileProps {
 }
 
 const initialState: IProfileProps = {
+  email: '',
   profilePicture: null,
   name: '',
   dateOfBirth: '',

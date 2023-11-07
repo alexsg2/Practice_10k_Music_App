@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TouchableOpacity } from 'react-native';
 
-import { validatePracticePlan, addPracticeData } from '../../helpers';
-import AddPlanDetails from './AddPlanDetails'
-import AddPieceButtons from './AddPieceButtons'
-import AddPrevPlan from './AddPrevPlan'
 
-interface AddPieceContainerProps {
-    plans: any[];
+import AddNewPlan from './add_new_plan';
+import AddPrevPlan from './add_prev_plan';
+import AddPlanButtons from './add_plan_buttons';
+
+import { validatePracticePlanDetails } from '../../../helpers';
+import { FirestoreAPI } from '../../../services/firestore_api';
+
+interface AddPlanContainerProps {
+    date: Date;
     view: boolean;
     setView: (selected: boolean) => void;
     setReloadData: (selected: boolean) => void;
-    date: Date[];
-    reload: boolean;
-    userId: string;
 }
 
 
-const AddPieceContainer: React.FC<AddPieceContainerProps> = ({plans, view, setView, setReloadData, date, reload, userId}) =>
+const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ date, view, setView, setReloadData }) =>
 {
     const [showAddNewView, setShowAddNewView] = useState<boolean>(false);
     const [showAddPrevView, setShowAddPrevView] = useState<boolean>(false);
@@ -34,23 +34,25 @@ const AddPieceContainer: React.FC<AddPieceContainerProps> = ({plans, view, setVi
       setShowAddPrevView(true);
     }
     
+    date.setUTCHours(23, 59, 58, 0);
+
     async function handleSave(plan: any) {
-        const detailsError = validatePracticePlan(plan?.title, plan?.piece, plan?.composer, plan?.instrument);
+        const detailsError = validatePracticePlanDetails(plan.title, plan.piece, plan.composer, plan.instrument);
         if (detailsError) {
-            Alert.alert('Invalid Details', detailsError, [ {text: 'OK'} ]);
+            Alert.alert('Invalid Details', detailsError, [{ text: 'OK' }]);
         }
         else {
             try {
-                date[1].setHours(19, 59, 58, 998);
-                await addPracticeData(userId, plan?.title, plan?.piece, plan?.composer, plan?.instrument, date[1], plan?.notes);
+                await FirestoreAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument, date, plan.notes);
                 setReloadData(true);
                 setView(false);
             }
-            catch (e) {
-                Alert.alert('Practice Plan Addition Failed', 'Unable to add plan. Please try again later.', [{ text: 'OK' }]);
+            catch (e: any) {
+                Alert.alert('Practice Plan Addition Failed', 'Please try again later: ' + e.code, [{ text: 'OK' }]);
             }
         }
     }
+
     
     return (
         <Modal animationType="fade" transparent={true} visible={view}>
@@ -62,12 +64,12 @@ const AddPieceContainer: React.FC<AddPieceContainerProps> = ({plans, view, setVi
                                 <TouchableOpacity onPress={() => setView(false)} style={{ alignItems: 'flex-end', marginTop: 10 }}>
                                     <Ionicons name="close" size={40} color='black'/>
                                 </TouchableOpacity>
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', left: '-95%', alignItems: 'center', }}>Add Piece</Text>
+                                <Text style={{ fontSize: 25, fontWeight: 'bold', left: '-120%', alignItems: 'center', }}>Add Piece</Text>
                             </View>
                         </View>
-                        {showInitialView && <AddPieceButtons openAddNewView={openAddNewView} openAddPrevView={openAddPrevView}/>}
-                        {showAddNewView && <AddPlanDetails date={date[1]} handleSave={handleSave}/>}
-                        {showAddPrevView && <AddPrevPlan plans={plans} handleSave={handleSave}/>}
+                        {showInitialView && <AddPlanButtons openAddNewView={openAddNewView} openAddPrevView={openAddPrevView}/>}
+                        {showAddNewView && <AddNewPlan date={date} handleSave={handleSave}/>}
+                        {showAddPrevView && <AddPrevPlan handleSave={handleSave}/>}
                     </ScrollView>
                 </SafeAreaView>
             </View>
@@ -75,4 +77,4 @@ const AddPieceContainer: React.FC<AddPieceContainerProps> = ({plans, view, setVi
     );
 };
 
-export default AddPieceContainer;
+export default AddPlanContainer;

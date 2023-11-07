@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
+
+import { AuthenticationAPI } from '../../services/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
-const auth = getAuth();
 import { AuthStackParamList} from './auth_navigation';
 type resetPasswordScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
 
@@ -22,23 +22,22 @@ const ResetPassword = () =>
     async function handleReset() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email || !emailRegex.test(email)) {
-            Alert.alert('Invalid Request', 'Please check the format of your email.', [ {text: 'OK'} ]);
+            Alert.alert('Invalid Email', 'Please check the format of your email.', [{ text: 'OK' }]);
         }
         else {
             try {
-                await sendPasswordResetEmail(auth, email);
-                Alert.alert('Password Reset Email Sent', 'Check your email for instructions.',
-                            [ {text: 'OK', onPress: () => navigation.navigate('Login')} ]
+                await AuthenticationAPI.resetPassword(email);
+                Alert.alert('Reset Email Sent', 'Check your email for instructions.',
+                            [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
                 );
             }
-            catch (e) {
-                Alert.alert('Request Failed', 'Unable to reset password. Please try again later.',
-                            [ {text: 'OK'} ]
-                );
+            catch (e: any) {
+                Alert.alert('Request Failed', 'Please check email or try again later: ' + e.code, [{ text: 'OK' }]);
             }
         }        
     };
 
+    
     return (
         <SafeAreaView style={containerStyles.safeContainer}>
             <ScrollView showsVerticalScrollIndicator={false}>

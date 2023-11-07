@@ -3,18 +3,18 @@ import { useSelector } from 'react-redux';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
-import { RootState } from '../../redux/store';
-import DropdownSelector from '../dropdown_selector';
-import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
+import { RootState } from '../../../redux/store';
 
+import DropdownSelector from '../../dropdowns/dropdown_selector';
+import { bottomStyles, componentStyles, inputStyles } from '../../../assets/styles/auth_and_profile_styles';
 
-interface AddPlanDetailsProp {
+interface AddNewPlanProp {
     date: Date;
     handleSave: (plan: any) => void;
 }
 
 
-const AddPlanDetails: React.FC<AddPlanDetailsProp> = ({ handleSave, date }) =>
+const AddNewPlan: React.FC<AddNewPlanProp> = ({ date, handleSave }) =>
 {
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
     const instruments = currentUserProfile.instruments;
@@ -24,8 +24,10 @@ const AddPlanDetails: React.FC<AddPlanDetailsProp> = ({ handleSave, date }) =>
     const [composer, setComposer] = useState<string>('');
     const [instrument, setInstrument] = useState<string[]>([]);
     const [notes, setNotes] = useState<string>('');
+
+
     return (
-        <View style={{ flex: 1, paddingHorizontal: '3%' }}>
+        <View style={{ flex: 1, paddingHorizontal: '5%' }}>
             <View>
                 <Text style={inputStyles.profileLabelText}>Title</Text>
                 <TextInput
@@ -65,14 +67,15 @@ const AddPlanDetails: React.FC<AddPlanDetailsProp> = ({ handleSave, date }) =>
                 <Text style={inputStyles.profileLabelText}>Notes</Text>
                 <TextInput
                     style={inputStyles.profileInputBox}
-                    placeholder={'Enter any notes'}
+                    placeholder={'(Optional) Enter any notes'}
                     placeholderTextColor='#CCCCCC'
                     onChangeText={(text) => setNotes(text)}
                     value={notes}
                 />
             </View>
-            <View style={{ width: '70%', alignSelf: 'center' }}>
-                <TouchableOpacity onPress={() => handleSave({title, piece, notes, composer, instrument})} style={bottomStyles.redButton}>
+            <View style={{ width: '70%', marginBottom: '5%', alignSelf: 'center' }}>
+                <TouchableOpacity onPress={() => handleSave({ title, piece, notes, composer, instrument })}
+                                  style={bottomStyles.redButton}>
                     <Text style={bottomStyles.buttonText}>Save</Text>
                 </TouchableOpacity>
             </View>
@@ -80,4 +83,4 @@ const AddPlanDetails: React.FC<AddPlanDetailsProp> = ({ handleSave, date }) =>
     );
 };
 
-export default AddPlanDetails;
+export default AddNewPlan;

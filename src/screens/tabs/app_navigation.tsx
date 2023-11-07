@@ -13,17 +13,17 @@ import Home from './Home';
 import Practice from './Practice';
 import Progress from './Progress';
 import Journal from './Journal';
+import JournalDetail from './JournalDetail';
 import Profile from './Profile';
 import EditProfile from './EditProfile';
-import JournalDetail from './JournalDetail';
 
 const Tab = createBottomTabNavigator();
 
-export type ProfileStackParamList = {
-    Profile: undefined;
-    EditProfile: undefined;
+export type PracticeStackParamList = {
+    Practice: undefined;
+    PracticeTimer: undefined;
 };
-const ProfileStack = createNativeStackNavigator();
+const PracticeStack = createNativeStackNavigator();
 
 export type JournalStackParamList = {
     Journal: undefined;
@@ -31,15 +31,22 @@ export type JournalStackParamList = {
 };
 const JournalStack = createNativeStackNavigator();
 
+export type ProfileStackParamList = {
+    Profile: undefined;
+    EditProfile: undefined;
+};
+const ProfileStack = createNativeStackNavigator();
+
+
 function AppNavigation()
 {
-    const ProfileNavigationStack = () => (
-        <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
-            <ProfileStack.Screen name="ProfileScreen" component={Profile}/>
-            <ProfileStack.Screen name="EditProfile" component={EditProfile}/>
-        </ProfileStack.Navigator>
-    );
-
+    const PracticeNavigationStack = () => (
+        <PracticeStack.Navigator screenOptions={{ headerShown: false }}>
+            <PracticeStack.Screen name="PracticeScreen" component={Practice}/>
+            {/* <PracticeStack.Screen name="PracticeTimer" component={PracticeTimer}/> */}
+        </PracticeStack.Navigator>
+    )
+    
     const JournalNavigationStack = () => (
         <JournalStack.Navigator screenOptions={{ headerShown: false }}>
             <JournalStack.Screen name="Journal" component={Journal}/>
@@ -47,6 +54,14 @@ function AppNavigation()
         </JournalStack.Navigator>
     )
 
+    const ProfileNavigationStack = () => (
+        <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
+            <ProfileStack.Screen name="ProfileScreen" component={Profile}/>
+            <ProfileStack.Screen name="EditProfile" component={EditProfile}/>
+        </ProfileStack.Navigator>
+    );
+
+    
     return (
         <NavigationContainer>
             <Tab.Navigator>
@@ -55,7 +70,7 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Home"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="Practice" component={Practice} 
+                <Tab.Screen name="Practice" component={PracticeNavigationStack} 
                     options={{tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
                               headerTitle: () => <AppHeader name="Practice"/>, 
                               headerStyle: styles.header,

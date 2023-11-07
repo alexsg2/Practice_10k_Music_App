@@ -1,67 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { SafeAreaView, ScrollView, View, ActivityIndicator, StatusBar, Text, TouchableHighlight } from 'react-native';
 
 
-import { Planner, GoalTracker } from '../../components';
+import { GoalTracker, Planner } from '../../components';
 import { colorPallete } from '../../assets/design_library';
-import { getOverallDateRanges, getPracticePiecesAndHoursByDate } from '../../helpers';
+import { getDailyDateRanges, getOverallDateRanges } from '../../helpers';
 
-const auth = getAuth();
+import { FirestoreAPI } from '../../services/firestore_api';
 
 
 const Home = () =>
 {
-    const dateOptions = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const [selectedDate, setSelectedDate] = useState(dateOptions[(new Date()).getDay()]);
-    const dateOptionsAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const [selectedDateAbbr, setSelectedDateAbbr] = useState(dateOptionsAbbr[(new Date()).getDay()]);
-
-    const [uid, setUid] = useState<string>('');
-    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            setUid(user.uid);
-                        }
-                    });
-                    return unsubscribe;
-    }, [uid]);
-
-    useFocusEffect(React.useCallback(() => { fetchGoalData(); }, [uid]));
-    const [reloadData, setReloadData] = useState(false);
-    useFocusEffect(React.useCallback(() => { setReloadData(true); }, [uid, selectedDateAbbr]));
-
-    const [totalHours, setTotalHours] = useState<number>(0);
-    const [totalPieces, setTotalPieces] = useState<number>(0);
-
+    const [totHours, setTotHours] = useState<number>(0);
+    const [totPieces, setTotPieces] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     async function fetchGoalData() {
+        setLoading(true);
         try {
-            setLoading(true);
-
-            const overall = getOverallDateRanges();
-            const [pieces, hours] = await getPracticePiecesAndHoursByDate(uid, overall[0], overall[1]);
-            setTotalPieces(pieces);
-            setTotalHours(hours);
+            const dates = getOverallDateRanges();
+            const [hours, pieces] = await FirestoreAPI.getPracticeHoursAndPiecesByDate(dates[0], dates[1]);
+            setTotHours(hours);
+            setTotPieces(pieces);
         }
         catch (e) {
             // Handle in any way
         }
-        finally {
-            setLoading(false);
-        }
+        setLoading(false);
     };
+    useFocusEffect(React.useCallback(() => { fetchGoalData(); }, []));
 
-    const getDateRange = () => {
-        const curr = new Date();
-        const daysUntilSelectedDay = dateOptionsAbbr.indexOf(selectedDateAbbr) - curr.getDay();
-        const start = new Date();
-        start.setDate(curr.getDate() + daysUntilSelectedDay);
-        start.setHours(-4, 0, 0, 0);
-        const end = new Date(start);
-        end.setHours(43, 59, 59, 999);
-        return [start, end];
-    };
+    const dayOfWeek = new Date().getDay();
+    const dateOptions = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const [selectedDate, setSelectedDate] = useState(dateOptions[dayOfWeek]);
+    const dateOptionsAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const [selectedDateAbbr, setSelectedDateAbbr] = useState(dateOptionsAbbr[dayOfWeek]);
+    const daysUntilSelectedDay = dateOptionsAbbr.indexOf(selectedDateAbbr) - dayOfWeek;
+
+    const dateRange = getDailyDateRanges();
+    dateRange[0].setDate(dateRange[0].getDate() + daysUntilSelectedDay);
+    dateRange[1].setDate(dateRange[1].getDate() + daysUntilSelectedDay);
+
+    const [reloadData, setReloadData] = useState(false);
+    useFocusEffect(React.useCallback(() => { setReloadData(true);}, [selectedDateAbbr]));
 
 
     return (
@@ -71,7 +52,7 @@ const Home = () =>
                     {loading ? (
                         <ActivityIndicator size="large" color='black'/>
                     ) : (
-                        <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
+                        <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totHours} pieces_amount={totPieces} />
                     )}
                 </View>
                 <View style={{ width: "100%", paddingVertical: '2.5%', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
@@ -91,7 +72,7 @@ const Home = () =>
                 </View>
                 <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>{selectedDateAbbr === dateOptionsAbbr[(new Date()).getDay()] ? "Today's Plans" : `${selectedDate}'s Plans`}</Text>
                 <View style={{ marginBottom: '5%' }}>
-                    <Planner userId={uid} date={getDateRange()} reload={reloadData} setReload={setReloadData}/>
+                    <Planner date={dateRange} reload={reloadData} setReload={setReloadData}/>
                 </View>
             </ScrollView>
             <StatusBar/>

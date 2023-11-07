@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import PieChart from 'react-native-pie-chart';
 
 
-import { totalDurationInHoursAndMinutes } from '../helpers';
+import { totalDurationInHoursAndMinutes } from '../../helpers';
 
 interface MusicDistributionProps {
   date: string;

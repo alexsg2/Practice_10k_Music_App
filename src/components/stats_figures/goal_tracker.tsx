@@ -4,7 +4,7 @@ import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CircularProgress } from 'react-native-circular-progress';
 
 
-import { DesignLibrary } from '../assets/DesignLibrary';
+import { DesignLibrary } from '../../assets/DesignLibrary';
 
 interface ProgressProps {
   title: string;

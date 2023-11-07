@@ -4,7 +4,7 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Alert, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { colorPallete, fontSizes } from '../assets/design_library';
+import { colorPallete, fontSizes } from '../../assets/design_library';
 
 export type EditHeaderStackParamList = {
     ProfileScreen: undefined;

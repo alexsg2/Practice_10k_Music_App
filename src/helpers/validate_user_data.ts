@@ -45,7 +45,7 @@ export function validateRegistrationFormat(name: string, dob: string, instrument
     return null; // No validation errors
 }
 
-export function validateEdits(name: string, dob: string, instruments: string[], level: string, oldPassword: string, newPassword: string, confPassword: string): string | null
+export function validateProfileEdits(name: string, dob: string, instruments: string[], level: string, oldPassword: string, newPassword: string, confPassword: string): string | null
 {
     if (!name || !dob || !instruments || !level) {
         return 'All fields, except the ones related to passwords, are required.';
@@ -73,7 +73,7 @@ export function validateEdits(name: string, dob: string, instruments: string[], 
     return null; // No validation errors
 }
 
-export function validatePracticePlan(title: string, piece: string, composer: string, instrument: string): string | null
+export function validatePracticePlanDetails(title: string, piece: string, composer: string, instrument: string): string | null
 {
     if (!title || !piece || !composer || !instrument) {
         return 'All editable fields are required.';
