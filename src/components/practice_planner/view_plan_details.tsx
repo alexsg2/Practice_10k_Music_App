@@ -4,17 +4,17 @@ import { Ionicons } from '@expo/vector-icons';
 import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
-import { RootState } from '../redux/store';
-import DropdownSelector from './dropdown_selector';
-import { bottomStyles, componentStyles, inputStyles } from '../assets/styles/auth_and_profile_styles';
-import { validatePracticePlan, updatePracticeDataByFields, deletePracticeData } from '../helpers';
+import { RootState } from '../../redux/store';
+import { validatePracticePlanDetails } from '../../helpers';
+import { DataManagementAPI } from '../../services/data_management_api';
 
+import DropdownSelector from '../dropdowns/dropdown_selector';
+import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
+
+import { PlanProp } from './planner';
 interface ViewPlanDetailsProp {
-    uid: string;
     date: Date;
-    plan: { id: string; title: string; piece: string;
-            composer: string; instrument: string, practiceDate: Date;
-            duration: number; status: string; notes: string; };
+    plan: PlanProp;
     view: boolean;
     setView: (selected: boolean) => void;
     isEditable: boolean;
@@ -22,46 +22,47 @@ interface ViewPlanDetailsProp {
 }
 
 
-const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ uid, date, plan, view, setView, isEditable, setReloadData }) =>
+const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setView, isEditable, setReloadData }) =>
 {
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
     const instruments = currentUserProfile.instruments;
 
-    const pId = plan.id;
     const [title, setTitle] = useState<string>(plan.title);
     const [piece, setPiece] = useState<string>(plan.piece);
     const [composer, setComposer] = useState<string>(plan.composer);
     const [instrument, setInstrument] = useState<string[]>([plan.instrument]);
+    const [notes, setNotes] = useState<string>(plan.notes);
     const duration = plan.duration;
     const status = plan.status;
-    const [notes, setNotes] = useState<string>(plan.notes);
 
     async function handleSave() {
-        const detailsError = validatePracticePlan(title, piece, instrument[0], composer);
+        const detailsError = validatePracticePlanDetails(title, piece, instrument[0], composer);
         if (detailsError) {
-            Alert.alert('Invalid Details', detailsError, [ {text: 'OK'} ]);
+            Alert.alert('Invalid Details', detailsError, [{ text: 'OK' }]);
         }
         else {
             try {
                 const updates = { title, piece, composer, instrument: instrument[0], notes};
-                await updatePracticeDataByFields(uid, pId, updates);
+                await DataManagementAPI.updatePracticeDataByField(plan.id, updates);
                 setView(false);
                 setReloadData(true);
             }
-            catch (e) {
-                Alert.alert('Practice Plan Update Failed', 'Unable to update plan. Please try again later.', [{ text: 'OK' }]);
+            catch (e: any) {
+                Alert.alert('Practice Plan Update Failed', 'Please try again later: ' + e.code, [{ text: 'OK' }]);
             }
         }
     }
 
     async function handleDelete() {
         Alert.alert('Practice Plan Deletion','Are you sure you want to delete this plan?',
-                [{ text: 'Yes', onPress: async () => { await deletePracticeData(uid, pId); 
-                                                       setView(false);
-                                                       setReloadData(true); }},
-                 { text: 'Cancel' }]
+                   [{ text: 'Yes', onPress: async () => { await DataManagementAPI.deletePracticeData(plan.id); 
+                                                          setView(false);
+                                                          setReloadData(true);
+                                                        }},
+                    { text: 'No' }]
         );
     }
+
 
     return (
         <Modal animationType="fade" transparent={true} visible={view}>

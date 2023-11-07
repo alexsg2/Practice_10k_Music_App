@@ -4,7 +4,7 @@ import DatePicker from 'react-native-modern-datepicker';
 import { StyleProp, ViewStyle, View, Text, TouchableOpacity } from 'react-native';
 
 
-import { colorPallete } from '../assets/design_library';
+import { colorPallete } from '../../assets/design_library';
 
 interface DropDownProp {
     input: string,

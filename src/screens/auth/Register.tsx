@@ -2,26 +2,28 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
+import { validateRegistrationFormat } from '../../helpers';
+import { AuthenticationAPI } from '../../services/authentication_api';
+
 import { INSTRUMENTS, LEVELS } from '../../assets/constants';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
-const auth = getAuth();
 import { AuthStackParamList } from './auth_navigation';
-import { validateRegistrationFormat, addUserAccount } from '../../helpers';
 type registerScreenProp = StackNavigationProp<AuthStackParamList, 'Register'>;
+
 
 const Register = () =>
 {
     const dispatch = useDispatch();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
-    
+
+    const [profilePicture, setProfilePicture] = useState('');
     const [name, setName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [instruments, setInstruments] = useState<string[]>([]);
@@ -35,29 +37,28 @@ const Register = () =>
     async function handleRegister() {
         const registerError = validateRegistrationFormat(name, dateOfBirth, instruments, level, email, password, confPassword);
         if (registerError) {
-            Alert.alert('Invalid Registration', registerError, [ {text: 'OK'} ]);
+            Alert.alert('Invalid Registration', registerError, [{ text: 'OK' }]);
         }
         else {
             try {
-                const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
-                
-                const userUid = userCredentials.user.uid;
-                await addUserAccount({ userId: userUid, name, dateOfBirth, instruments, level: level[0] })
-                dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level: level[0]}));
+                await AuthenticationAPI.register(profilePicture, name, dateOfBirth, instruments, level[0], email, confPassword);
+                dispatch(setProfile({ ...currentUserProfile, email, profilePicture, name, dateOfBirth, instruments, level: level[0] }));
             }
-            catch (e) {
-                Alert.alert('Registration Failed', 'Unable to register account. Please check your provided information or try again later.',
+            catch (e: any) {
+                Alert.alert('Registration Failed', 'Please check provided information or try again later: ' + e.code,
                             [{ text: 'OK' }]);
             }
         }
     }
+
+    
     return (
         <SafeAreaView style={containerStyles.safeContainer}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection title={''} profile={true}
+                            <ProfileLogoSection title={''} profile={true} picture={profilePicture} setPicture={setProfilePicture}
                                                 altStyle={[componentStyles.authTitleText, componentStyles.authChangePictureButton, componentStyles.authChangeText]}
                             />
                             <View style={containerStyles.inputContainer}>

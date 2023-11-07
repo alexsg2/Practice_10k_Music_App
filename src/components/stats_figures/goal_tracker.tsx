@@ -1,24 +1,31 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { CircularProgress } from 'react-native-circular-progress';
-import { DesignLibrary } from '../assets/DesignLibrary';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
 
 
-const ProgressTracker = ({ title = "", goal_amount = 0, hours_amount = 0, pieces_amount = 0 }) => {
-  const goal = goal_amount;
+import { DesignLibrary } from '../../assets/DesignLibrary';
+
+interface ProgressProps {
+  title: string;
+  goal_amount: string;
+  hours_amount: number;
+  pieces_amount: number;
+}
+
+
+const ProgressTracker: React.FC<ProgressProps> = ({ title, goal_amount, hours_amount, pieces_amount }) =>
+{
+  const goal = parseInt(goal_amount.replace(/,/g, ''));
   const hours_done = hours_amount;
-  const hoursRemaining = goal - hours_done;
-  const pieces = pieces_amount;
+  const hoursRemaining = goal - hours_done > 0 ? goal - hours_done : 0;
+  const pieces_done = pieces_amount;
 
   return (
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        
         <Text style={{ fontSize: 24 }}>{title}</Text>
         <Text style={{ marginBottom: 15, fontSize: 10 }}>Remaining = Goal - Hours</Text>
-
         <View style={styles.progressContainer}>
           <CircularProgress
             size={100}
@@ -44,7 +51,7 @@ const ProgressTracker = ({ title = "", goal_amount = 0, hours_amount = 0, pieces
           </View>
           <View style={styles.textContainer}>
             <Text style={{ fontSize: 16, fontWeight: '300' }}>Goal</Text>
-            <Text style={{ marginBottom: 20, fontSize: 16, fontWeight: '600' }}>{goal} hours</Text>
+            <Text style={{ marginBottom: 20, fontSize: 16, fontWeight: '600' }}>{goal_amount} hours</Text>
           </View>
         </View>
         <View style={styles.iconTextContainer}>
@@ -53,7 +60,7 @@ const ProgressTracker = ({ title = "", goal_amount = 0, hours_amount = 0, pieces
           </View>
           <View style={styles.textContainer}>
             <Text style={{ fontSize: 16, fontWeight: '300' }}>Pieces</Text>
-            <Text style={{ fontSize: 16, fontWeight: '600' }}>{pieces}</Text>
+            <Text style={{ fontSize: 16, fontWeight: '600' }}>{pieces_done}</Text>
           </View>
         </View>
       </View>
@@ -61,7 +68,8 @@ const ProgressTracker = ({ title = "", goal_amount = 0, hours_amount = 0, pieces
   );
 };
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(
+{
   container: {
     width: '90%',
     height: 200,
@@ -82,7 +90,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   rightContainer: {
-    flex: 2,
+    flex: 2.5,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
