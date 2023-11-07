@@ -1,31 +1,18 @@
+import React, { useState } from 'react';
 import Swiper from 'react-native-swiper';
-import React, { useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { ScrollView, ActivityIndicator, View, Text, StyleSheet } from 'react-native';
 
 
 import { GoalTracker, MusicDistribution } from '../../components';
-import { getMostPracticedComposersByDate, getPracticePiecesAndHoursByDate,
-         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
+import { getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
          formatWeeklyDateRange } from '../../helpers';
 
-const auth = getAuth();
+import { DataManagementAPI } from '../../services/data_management_api';
 
 
 const Progress = () =>
 {
-    const [uid, setUid] = useState<string>('');
-    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            setUid(user.uid);
-                        }
-                    });
-                    return unsubscribe;
-    }, [uid]);
-    useFocusEffect(React.useCallback(() => { fetchGoalData(); fetchDistributionData();}, [uid]));
-
-
     const [dailyPieces, setDailyPieces] = useState<number>(0);
     const [dailyHours, setDailyHours] = useState<number>(0);
     const [weeklyHours, setWeeklyHours] = useState<number>(0);
@@ -34,60 +21,56 @@ const Progress = () =>
     const [monthlyPieces, setMonthlyPieces] = useState<number>(0);
     const [totalHours, setTotalHours] = useState<number>(0);
     const [totalPieces, setTotalPieces] = useState<number>(0);
-
     const [goalLoading, setGoalLoading] = useState<boolean>(true);
     async function fetchGoalData() {
-        const dailyDates = getDailyDateRanges();
-        const weeklyDates = getWeeklyDateRanges();
-        const monthlyDates = getMonthlyDateRanges();
-        const overallDates = getOverallDateRanges();
-    
+        setGoalLoading(true);
         try {
-            setGoalLoading(true);
-            const [dPieces, dHours] = await getPracticePiecesAndHoursByDate(uid, dailyDates[0], dailyDates[1]);
+            const dailyDates = getDailyDateRanges();
+            const [dPieces, dHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dailyDates[0], dailyDates[1]);
             setDailyPieces(dPieces);
             setDailyHours(dHours);
-            const [wPieces, wHours] = await getPracticePiecesAndHoursByDate(uid, weeklyDates[0], weeklyDates[1]);
+            const weeklyDates = getWeeklyDateRanges();
+            const [wPieces, wHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(weeklyDates[0], weeklyDates[1]);
             setWeeklyPieces(wPieces);
             setWeeklyHours(wHours);
-            const [mPieces, mHours] = await getPracticePiecesAndHoursByDate(uid, monthlyDates[0], monthlyDates[1]);
+            const monthlyDates = getMonthlyDateRanges();
+            const [mPieces, mHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(monthlyDates[0], monthlyDates[1]);
             setMonthlyPieces(mPieces);
             setMonthlyHours(mHours);
-            const [tPieces, tHours] = await getPracticePiecesAndHoursByDate(uid, overallDates[0], overallDates[1]);
+            const overallDates = getOverallDateRanges();
+            const [tPieces, tHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(overallDates[0], overallDates[1]);
             setTotalPieces(tPieces);
             setTotalHours(tHours);
         }
         catch (e) {
             // Handle in any way
         }
-        finally {
-            setGoalLoading(false);
-        }
+        setGoalLoading(false);
     };
 
     const [weeklyRange, setWeeklyRange] = useState<string>('');
     const [composersData, setComposersData] = useState<{ composer: string; hour: number }[]>([]);
     const [distributionLoading, setDistributionLoading] = useState<boolean>(true);
     async function fetchDistributionData() {
+        setDistributionLoading(true);
         try {
-            setDistributionLoading(true);
             const weeklyDates = getWeeklyDateRanges();
             setWeeklyRange(formatWeeklyDateRange(weeklyDates[0], weeklyDates[1]));
-            const weeklyComposersInfo = await getMostPracticedComposersByDate(uid, weeklyDates[0], weeklyDates[1]);
+            const weeklyComposersInfo = await DataManagementAPI.getMostPracticedComposersByDate(weeklyDates[0], weeklyDates[1]);
             setComposersData(weeklyComposersInfo);
         }
         catch (e) {
             // Handle in any way
         }
-        finally {
-            setDistributionLoading(false);
-        }
+        setDistributionLoading(false);
     }
+
+    useFocusEffect(React.useCallback(() => { fetchGoalData(); fetchDistributionData();}, []));
 
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#ECF1F7' }} showsVerticalScrollIndicator={false}>
-            {goalLoading ? (
+            {goalLoading || distributionLoading ? (
                 <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
             ) : (
                 <View style={{ width: '100%' }}>
@@ -106,22 +89,18 @@ const Progress = () =>
                             <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
                         </View>
                     </Swiper>
-                </View>
-            )}
-            {distributionLoading ? (
-                <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
-            ) : (
-                <View style={{ width: '100%' }}>
-                    <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Distribution</Text>
-                    <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
-                        {composersData.length > 0 ? (
-                            <MusicDistribution
-                                date={weeklyRange}
-                                composers={composersData}
-                            />
-                        ) : (
-                            <Text style={{ fontSize: 16, marginBottom: '7%', fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
-                        )}
+                    <View style={{ width: '100%' }}>
+                        <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Distribution</Text>
+                        <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
+                            {composersData.length > 0 ? (
+                                <MusicDistribution
+                                    date={weeklyRange}
+                                    composers={composersData}
+                                />
+                            ) : (
+                                <Text style={{ fontSize: 16, marginBottom: '7%', fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
+                            )}
+                        </View>
                     </View>
                 </View>
             )}

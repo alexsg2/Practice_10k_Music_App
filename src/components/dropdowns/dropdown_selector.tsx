@@ -3,7 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { StyleProp, ViewStyle, ScrollView, View, Text, TouchableOpacity } from 'react-native';
 
 
-import { colorPallete, fontSizes } from '../assets/design_library';
+import { colorPallete, fontSizes } from '../../assets/design_library';
 
 interface DropDownProp {
     input: string,

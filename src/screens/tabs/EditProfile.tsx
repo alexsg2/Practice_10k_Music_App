@@ -1,44 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { getAuth, onAuthStateChanged, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from 'firebase/auth';
-import { Alert, SafeAreaView, ActivityIndicator, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
 
 
 import { RootState } from '../../redux/store';
+import { validateProfileEdits } from '../../helpers';
 import { setProfile } from '../../redux/actions';
-import { INSTRUMENTS, LEVELS } from '../../assets/constants';
-import { validateEdits, updateUserProfile } from '../../helpers';
-import { DropdownSelector, DropdownCalendar } from '../../components';
+import { AuthenticationAPI } from '../../services/authentication_api';
 
+import { INSTRUMENTS, LEVELS } from '../../assets/constants';
+import { DropdownSelector, DropdownCalendar } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from '../../assets/styles/auth_and_profile_styles';
 
-const auth = getAuth();
-const user = auth.currentUser!
 import { ProfileStackParamList } from './app_navigation';
-type editProfileScreenProp = StackNavigationProp<ProfileStackParamList, 'EditProfile'>;
-
+type EditProfileScreenProp = StackNavigationProp<ProfileStackParamList, 'EditProfile'>;
 
 
 const EditProfile = () =>
 {
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
-    const navigation = useNavigation<editProfileScreenProp>();
-    const currentUserProfile = useSelector((state: RootState) => state?.profile);
 
-    const [uid, setUid] = useState<string>('');
-    const [email, setEmail] = useState<string | null>(null);
-    useEffect(() => { const unsubscribe = onAuthStateChanged(auth, (user) => {
-                        if (user) {
-                            setUid(user.uid);
-                            setEmail(user.email);
-                        }
-                        setLoading(false);
-                    });
-                    return unsubscribe;
-    }, [uid, email]);
+    const currentUserProfile = useSelector((state: RootState) => state?.profile);
+    const email = currentUserProfile.email;
     const [name, setName] = useState(currentUserProfile.name);
     const [dateOfBirth, setDateOfBirth] = useState(currentUserProfile.dateOfBirth);
     const [instruments, setInstruments] = useState<string[]>(currentUserProfile.instruments);
@@ -48,47 +33,26 @@ const EditProfile = () =>
     const [newPassword, setNewPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
 
-    async function change_password(password: string) {
-        if (password) {
-            const cred = EmailAuthProvider.credential(email!, password);
-            try {
-                await reauthenticateWithCredential(user, cred);
-                await updatePassword(user, newPassword);
-            }
-            catch (e: any) {
-                Alert.alert('Password Change Failed', 'Could not change password. Please make sure old password is correct or try again later: ' + e.message,
-                            [ {text: 'OK'} ]
-                );
-            }
-        }
-    }
-    
+    const navigation = useNavigation<EditProfileScreenProp>();
+
     async function handleSave() {
-        const editsError = validateEdits(name, dateOfBirth, instruments, level[0], oldPassword, newPassword, confPassword);
+        const editsError = validateProfileEdits(name, dateOfBirth, instruments, level[0], oldPassword, newPassword, confPassword);
         if (editsError) {
-            Alert.alert('Invalid Edits', editsError, [ {text: 'OK'} ]);
+            Alert.alert('Invalid Edits', editsError, [{ text: 'OK' }]);
         }
         else {
             try {
-                await updateUserProfile({userId: uid, name, dateOfBirth, instruments, level: level[0]});
-                await change_password(oldPassword);
+                await AuthenticationAPI.updateProfile(name, email, dateOfBirth, instruments, level[0], oldPassword, confPassword);
                 dispatch(setProfile({...currentUserProfile, name, dateOfBirth, instruments, level: level[0]}));
                 navigation.goBack();
             }
             catch (e: any) {
-                Alert.alert('Profile Update Failed', 'Unable to update profile. Please try again later: ' + e.message, [{ text: 'OK' }]);
+                Alert.alert('Profile Update Failed', 'Please verify old password or try again later: ' + e.code, [{ text: 'OK' }]);
             }
         }
     }
 
-    if (loading) {
-        return (
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7', justifyContent: 'center' }}>
-                <ActivityIndicator size="large" color='black'/>
-            </SafeAreaView>
-        );
-    }
-    
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -106,17 +70,17 @@ const EditProfile = () =>
                                 />
                                 <Text style={inputStyles.profileLabelText}>Date of Birth</Text>
                                 <DropdownCalendar input={dateOfBirth} selectedDate={dateOfBirth} setDate={setDateOfBirth}
-                                                altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
+                                                  altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.profileLabelText}>Instrument(s)</Text>
                                 <DropdownSelector input={instruments.length > 0 ? instruments.join(', ') : instruments[0]} dataList={INSTRUMENTS}
-                                                multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
-                                                altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
+                                                  multiselect={true} selectedItems={instruments} setSelectedItems={setInstruments}
+                                                  altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.profileLabelText}>Musical Level</Text>
                                 <DropdownSelector input={level[0]} dataList={LEVELS}
-                                                multiselect={false} selectedItems={level} setSelectedItems={setLevel}
-                                                altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
+                                                  multiselect={false} selectedItems={level} setSelectedItems={setLevel}
+                                                  altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                 />
                                 <Text style={inputStyles.profileLabelText}>Old Password</Text>
                                 <TextInput

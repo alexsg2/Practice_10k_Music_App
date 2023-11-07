@@ -37,9 +37,9 @@ export function totalDurationInHoursAndMinutes(allHours: number[]): [number, num
 export function getDailyDateRanges(): [Date, Date]
 {
     const start = new Date();
-    start.setHours(-4, 0, 0, 0);
+    start.setUTCHours(0, 0, 0, 0);
     const end = new Date(start);
-    end.setHours(43, 59, 59, 999);
+    end.setUTCHours(23, 59, 59, 999);
     return [start, end];
 }
 
@@ -49,10 +49,10 @@ export function getWeeklyDateRanges(): [Date, Date]
     const today = new Date();
     const start = new Date(today);
     start.setDate(today.getDate() - today.getDay());
-    start.setHours(-4, 0, 0, 0);
+    start.setUTCHours(0, 0, 0, 0);
     const end = new Date(today);
     end.setDate(today.getDate() + (6 - today.getDay()));
-    end.setHours(19, 59, 59, 999);
+    end.setUTCHours(23, 59, 59, 999);
     return [start, end];
 }
 
@@ -61,11 +61,11 @@ export function getMonthlyDateRanges(): [Date, Date]
     const today = new Date();
     const start= new Date(today);
     start.setDate(1);
-    start.setHours(-4, 0, 0, 0);
+    start.setUTCHours(0, 0, 0, 0);
     const end = new Date(today);
     end.setMonth(end.getMonth() + 1, 1);
     end.setDate(end.getDate() - 1);
-    end.setHours(18, 59, 59, 999);
+    end.setUTCHours(23, 59, 59, 999);
     return [start, end];
 }
 
@@ -84,8 +84,9 @@ export function formatWeeklyDateRange(start: Date, end: Date): string
 
 export function getOverallDateRanges(): [Date, Date]
 {
-    const start = new Date(2023, 9, 29, -4, 0, 0); // arbitrary date set to Oct 29, 2023 at 00h:00min:00s
+    const start = new Date(2023, 9, 29);
+    start.setUTCHours(0, 0, 0, 0);  // arbitrary date set to Oct 29, 2023 at 00h:00min:00s
     const end = new Date();
-    end.setHours(19, 59, 59, 999);
+    end.setUTCHours(23, 59, 59, 999);
     return [start, end];
 }

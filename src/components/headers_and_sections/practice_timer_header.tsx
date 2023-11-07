@@ -4,40 +4,41 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { Alert, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { colorPallete, fontSizes } from '../assets/design_library';
+import { colorPallete, fontSizes } from '../../assets/design_library';
 
-export type EditHeaderStackParamList = {
-    ProfileScreen: undefined;
-    EditProfile: undefined;
+export type PracticeHeaderStackParamList = {
+    PracticeScreen: undefined;
+    PracticeTimer: undefined;
 };
-type EditHeaderNavigationProp = NavigationProp<EditHeaderStackParamList, 'ProfileScreen' | 'EditProfile'>;
+type PracticeHeaderNavigationProp = NavigationProp<PracticeHeaderStackParamList, 'PracticeScreen' | 'PracticeTimer'>;
 
 
-const EditHeader: React.FC = () =>
+const PracticeTimerHeader: React.FC = () =>
 {
-    async function handleBackToProfile() {
-        Alert.alert('Exiting Edit Mode', 'No changes will be saved. Are you sure you want to go back to the profile page?',
-                  [ {text: 'Yes', onPress: () => navigation.navigate('ProfileScreen')}, {text: 'No'} ]
+    const navigation = useNavigation<PracticeHeaderNavigationProp>();
+
+    async function handleBackToPractice() {
+        Alert.alert('Exiting Practice Mode', 'Some plans may still be incomplete. Are you sure you want to go back to the practice page?',
+                   [{text: 'Yes', onPress: () => navigation.navigate('PracticeScreen')}, {text: 'No'} ]
         );
     }
-    
-    const navigation = useNavigation<EditHeaderNavigationProp>();
+
 
     return (
         <View style={styles.container}>
             <View style={styles.backContainer}>
-                <TouchableOpacity onPress={handleBackToProfile}>
+                <TouchableOpacity onPress={handleBackToPractice}>
                     <Ionicons name="arrow-back" size={40} color='black' left="5%"/>
                 </TouchableOpacity>
             </View>
             <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>Edit Profile</Text>
+                <Text style={styles.nameText}>Practicing</Text>
             </View>
         </View>
     );
 };
 
-export default EditHeader;
+export default PracticeTimerHeader;
 
 const styles = StyleSheet.create(
 {
