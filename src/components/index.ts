@@ -1,9 +1,9 @@
-import AppHeader from './headers/app_header';
-import EditHeader from './headers/edit_header';
-import PracticeTimerHeader from './headers/practice_timer_header';
-import JournalDetailsHeader from './headers/journal_details_header';
+import AppHeader from './headers_and_sections/app_header';
+import EditHeader from './headers_and_sections/edit_header';
+import PracticeTimerHeader from './headers_and_sections/practice_timer_header';
+import JournalDetailsHeader from './headers_and_sections/journal_details_header';
 
-import ProfileLogoSection from './profile_logo_section';
+import ProfileLogoSection from './headers_and_sections/profile_logo_section';
 import DropdownCalendar from './dropdowns/dropdown_calendar';
 import DropdownSelector from './dropdowns/dropdown_selector';
 

@@ -26,6 +26,7 @@ const Profile = () =>
     const [password, setPassword] = useState('');
     const dateOfBirth = currentUserProfile.dateOfBirth;
     const instruments = currentUserProfile.instruments;
+    const profilePicture = currentUserProfile.profilePicture;
 
     const navigation = useNavigation<ProfileScreenProp>();
     const [modalVisible, setModalVisible] = useState(false);
@@ -59,7 +60,7 @@ const Profile = () =>
         <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={containerStyles.innerContainer}>
-                    <ProfileLogoSection title={name} profile={true}
+                    <ProfileLogoSection title={name} profile={true} picture={profilePicture}
                                         altStyle={[componentStyles.profileTitleText, componentStyles.profileChangePictureButton, componentStyles.profileChangeText]}
                     />
                     <View style={{ flex: 1, width: '90%', marginBottom: '2%', borderRadius: 10, alignItems: 'flex-end', justifyContent: 'flex-end' }}>

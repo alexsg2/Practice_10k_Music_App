@@ -22,7 +22,8 @@ const Register = () =>
 {
     const dispatch = useDispatch();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
-    
+
+    const [profilePicture, setProfilePicture] = useState('');
     const [name, setName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [instruments, setInstruments] = useState<string[]>([]);
@@ -40,8 +41,8 @@ const Register = () =>
         }
         else {
             try {
-                await AuthenticationAPI.register(name, dateOfBirth, instruments, level[0], email, password);
-                dispatch(setProfile({ ...currentUserProfile, email, name, dateOfBirth, instruments, level: level[0] }));
+                await AuthenticationAPI.register(profilePicture, name, dateOfBirth, instruments, level[0], email, confPassword);
+                dispatch(setProfile({ ...currentUserProfile, email, profilePicture, name, dateOfBirth, instruments, level: level[0] }));
             }
             catch (e: any) {
                 Alert.alert('Registration Failed', 'Please check provided information or try again later: ' + e.code,
@@ -57,7 +58,7 @@ const Register = () =>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection title={''} profile={true}
+                            <ProfileLogoSection title={''} profile={true} picture={profilePicture} setPicture={setProfilePicture}
                                                 altStyle={[componentStyles.authTitleText, componentStyles.authChangePictureButton, componentStyles.authChangeText]}
                             />
                             <View style={containerStyles.inputContainer}>

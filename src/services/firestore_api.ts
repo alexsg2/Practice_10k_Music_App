@@ -19,12 +19,12 @@ const auth = getAuth();
 
 export const FirestoreAPI =
 {
-    async addUserProfile({ email, name, dateOfBirth, instruments, level }: IUserDataProps)
+    async addUserProfile({ email, profilePicture, name, dateOfBirth, instruments, level }: IProfileProps)
     {
         const currentUser = auth.currentUser;
         if (currentUser) {
             const userDocRef = doc(db, 'users', currentUser.uid);
-            return await setDoc(userDocRef, { email, name, dateOfBirth, instruments, level });
+            return await setDoc(userDocRef, { email, profilePicture, name, dateOfBirth, instruments, level });
         }
         else {
             throw new Error('User is not undefined. Cannot add user profile.');
@@ -37,6 +37,18 @@ export const FirestoreAPI =
         if (currentUser) {
             const userDocRef = doc(db, 'users', currentUser.uid);
             return await setDoc(userDocRef, { email, name, dateOfBirth, instruments, level }, { merge: true });
+        }
+        else {
+            throw new Error('User is undefined. Cannot update user profile.');
+        }
+    },
+
+    async updateUserProfilePicture(profilePicture: string)
+    {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+            const userDocRef = doc(db, 'users', currentUser.uid);
+            return await setDoc(userDocRef, { profilePicture }, { merge: true });
         }
         else {
             throw new Error('User is undefined. Cannot update user profile.');

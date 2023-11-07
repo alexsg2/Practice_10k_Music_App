@@ -28,10 +28,10 @@ export const AuthenticationAPI =
     },
 
 
-    async register(name: string, dateOfBirth: string, instruments: string[], level: string, email: string, password: string)
+    async register(profilePicture: string, name: string, dateOfBirth: string, instruments: string[], level: string, email: string, password: string)
     {
         await createUserWithEmailAndPassword(auth, email, password);
-        return await FirestoreAPI.addUserProfile({ email, name, dateOfBirth, instruments, level });
+        return await FirestoreAPI.addUserProfile({ email, profilePicture, name, dateOfBirth, instruments, level });
     },
 
     async logIn(email: string, password: string)
