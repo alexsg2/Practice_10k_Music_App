@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-import { AppHeader, EditHeader } from '../../components';
+import { AppHeader, PracticeTimerHeader, JournalDetailsHeader, EditHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
@@ -72,10 +72,17 @@ function AppNavigation()
                               headerStyle: styles.header,
                             }}/>
                 <Tab.Screen name="Practice" component={PracticeNavigationStack} 
-                    options={{tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
-                              headerTitle: () => <AppHeader name="Practice"/>, 
-                              headerStyle: styles.header,
-                            }}/>
+                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
+                                              headerTitle: () => {
+                                                    const routeName = getFocusedRouteNameFromRoute(route);
+                                                    if (routeName === 'PracticeTimer') {
+                                                        return <PracticeTimerHeader/>;
+                                                    } else {
+                                                        return <AppHeader name="Practice"/>;
+                                                    }
+                                             },
+                                             headerStyle: styles.header,
+                                            })}/>
                 <Tab.Screen name="Progress" component={Progress} 
                     options={{tabBarIcon: (tabInfo) => (<AntDesign name="barschart" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
                               headerTitle: () => <AppHeader name="Progress"/>, 
@@ -86,6 +93,18 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Journal"/>, 
                               headerStyle: styles.header,
                             }}/>
+                {/* <Tab.Screen name="Journal" component={JournalNavigationStack}
+                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
+                                              headerTitle: () => {
+                                                    const routeName = getFocusedRouteNameFromRoute(route);
+                                                    if (routeName === 'JournalDetails') {
+                                                        return <JournalDetailsHeader/>;
+                                                    } else {
+                                                        return <AppHeader name="Journal"/>;
+                                                    }
+                                             },
+                                             headerStyle: styles.header,
+                                            })}/> */}
                 <Tab.Screen name="Profile" component={ProfileNavigationStack}
                     options={({ route }) => ({tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                                               headerTitle: () => {

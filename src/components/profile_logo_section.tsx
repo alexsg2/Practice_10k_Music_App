@@ -1,10 +1,12 @@
 import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { useSelector, useDispatch } from 'react-redux';
-import { StyleProp, ViewStyle, View, Image, TouchableOpacity, Text, Alert, ImageSourcePropType } from 'react-native';
+import { StyleProp, ViewStyle, Alert, View, Image, Text, TouchableOpacity } from 'react-native';
+
 
 import { RootState } from '../redux/store';
 import { setProfile } from '../redux/actions';
+
 import { colorPallete } from '../assets/design_library';
 
 
@@ -29,18 +31,19 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, altStyl
             }
         }
         else {
-            Alert.alert('Access Denied', 'Access to photo library denied. Check your settings.', [{ text: 'OK' }]);
+            Alert.alert('Access Denied', 'Check settings for access to photo library.', [{ text: 'OK' }]);
         }
     };
+
 
     return (
         <View style={{ flex: 1, width: '80%', alignItems: 'center', justifyContent: 'center' }}>
             {profile ? (
-                <Image source={picture ? typeof picture === 'string' ? { uri: picture } : picture : require('../assets/images/blank-profile-picture.png')}
+                <Image source={ picture ? { uri: picture } : require('../assets/images/blank-profile-picture.png') }
                        style={{ width: 150, height: 150, marginTop: '10%', borderWidth: 1, borderRadius: 75, borderColor: colorPallete.black_gradiant["40%"] }}
                 />
             ) : (
-                <Image source={require('../assets/images/med-white-logo.png')} style={{ aspectRatio: 1, marginTop: '10%' }}/>
+                <Image source={ require('../assets/images/med-white-logo.png')} style={{ aspectRatio: 1, marginTop: '10%' }}/>
             )}
             {title !== '' ? (
                 <Text style={altStyle[0]}>{title}</Text>

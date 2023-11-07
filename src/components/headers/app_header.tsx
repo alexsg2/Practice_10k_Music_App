@@ -37,7 +37,9 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
             </View>
             <View style={styles.profileContainer}>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Image source={picture ? typeof picture === 'string' ? { uri: picture } : picture : require('../../assets/images/blank-profile-picture.png')} style={styles.profile} />
+                    <Image source={ picture ? { uri: picture } : require('../../assets/images/blank-profile-picture.png') }
+                           style={styles.profile}
+                    />
                 </TouchableOpacity>
             </View>
         </View>

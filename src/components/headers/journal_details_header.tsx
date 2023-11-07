@@ -1,44 +1,38 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Alert, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
 import { colorPallete, fontSizes } from '../../assets/design_library';
 
-export type EditHeaderStackParamList = {
-    ProfileScreen: undefined;
-    EditProfile: undefined;
+export type JournalDetailsHeaderStackParamList = {
+    JournalScreen: undefined;
+    JournalDetails: undefined;
 };
-type EditHeaderNavigationProp = NavigationProp<EditHeaderStackParamList, 'ProfileScreen' | 'EditProfile'>;
+type JournalDetailsHeaderNavigationProp = NavigationProp<JournalDetailsHeaderStackParamList, 'JournalScreen' | 'JournalDetails'>;
 
 
-const EditHeader: React.FC = () =>
+const JournalDetailsHeader: React.FC = () =>
 {
-    const navigation = useNavigation<EditHeaderNavigationProp>();
+    const navigation = useNavigation<JournalDetailsHeaderNavigationProp>();
 
-    async function handleBackToProfile() {
-        Alert.alert('Exiting Edit Mode', 'No changes will be saved. Are you sure you want to go back to the profile page?',
-                   [{ text: 'Yes', onPress: () => navigation.navigate('ProfileScreen')}, {text: 'No' }]
-        );
-    }
     
-
     return (
         <View style={styles.container}>
             <View style={styles.backContainer}>
-                <TouchableOpacity onPress={handleBackToProfile}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={40} color='black' left="5%"/>
                 </TouchableOpacity>
             </View>
             <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>Edit Profile</Text>
+                <Text style={styles.nameText}>Plan Details</Text>
             </View>
         </View>
     );
 };
 
-export default EditHeader;
+export default JournalDetailsHeader;
 
 const styles = StyleSheet.create(
 {
