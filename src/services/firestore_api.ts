@@ -7,12 +7,13 @@ import { STATUS } from '../assets/constants';
 import { IProfileProps } from '../redux/reducers';
 interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
 
-// TODO : Implement in redux to make fetching practice data for the week (and today)
-//        easier!! --> Bailey
-// import { IPracticeProps } from '../redux/reducers';
-// interface IPracticeDataProps {
-//     practiceId: string;
-// }
+// TODO : Bailey --> Implement the following in redux to avoid reloading multiple times
+//                      - array of practice plans for the week (i.e., from Sunday to Saturday)
+//                              * use getWeeklyDateRanges() in helpers/utils, if necessary.
+//                      - total hours and pieces for each day of the week (i.e., from Sunday to Saturday)
+//                              * use getPracticeHoursAndPiecesByDate() in this file, when necessary.
+//                      - total hours and pieces for the entire week (i.e., from Sunday to Saturday)
+//                              * should be the sum of above.
 
 const auth = getAuth();
 
