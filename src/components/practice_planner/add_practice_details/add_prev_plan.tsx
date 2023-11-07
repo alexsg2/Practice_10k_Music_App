@@ -45,6 +45,7 @@ const AddPrevPlan: React.FC<AddPrevPlanProps> = ({ handleSave }) =>
                 <ActivityIndicator size='large' color='black' style={{ marginTop: '5%'}} />
             ) : (
                 <>
+                <Text style={{ flex: 1, alignSelf: 'center', marginVertical: '5%', fontWeight: 'bold', fontSize: 18 }}>Options:</Text>
                 {previousPlans.length > 0 ? (
                     previousPlans.map((plan, index) => (
                         <TouchableOpacity
