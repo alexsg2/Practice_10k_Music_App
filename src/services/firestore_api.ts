@@ -8,12 +8,22 @@ import { IProfileProps } from '../redux/reducers';
 interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
 
 // TODO : Bailey --> Implement the following in redux to avoid reloading multiple times
-//                      - array of practice plans for the week (i.e., from Sunday to Saturday)
+//                      Practice Data Prop {
+//                          - array of practice plans for each day of the week (i.e., from Sunday to Saturday)
 //                              * use getWeeklyDateRanges() in helpers/utils, if necessary.
-//                      - total hours and pieces for each day of the week (i.e., from Sunday to Saturday)
+//                          - total hours and pieces for each day of the week (i.e., from Sunday to Saturday)
 //                              * use getPracticeHoursAndPiecesByDate() in this file, when necessary.
-//                      - total hours and pieces for the entire week (i.e., from Sunday to Saturday)
+//                          - total hours and pieces for the entire week (i.e., from Sunday to Saturday)
 //                              * should be the sum of above.
+//
+//                          - !! Need to be able to add, edit and/or remove a plan from prop !!
+//                      }
+//                      Music Pieces Prop {
+//                          - array of all saved music pieces
+//                              * use getAllMusicPieces() in this file, if necessary.
+//
+//                          - !! Need to be able to add, edit and/or remove a piece from prop !!
+//                      }
 
 const auth = getAuth();
 
