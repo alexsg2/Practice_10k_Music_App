@@ -6,7 +6,7 @@ import { StyleProp, ViewStyle, Alert, View, Image, Text, TouchableOpacity } from
 
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
-import { FirestoreAPI } from '../../services/firestore_api';
+import { DataManagementAPI } from '../../services/data_management_api';
 
 import { colorPallete } from '../../assets/design_library';
 
@@ -34,7 +34,7 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, picture
                 }
                 else {
                     try {
-                        await FirestoreAPI.updateUserProfilePicture(result.assets[0].uri);
+                        await DataManagementAPI.updateUserProfilePicture(result.assets[0].uri);
                         dispatch(setProfile({ ...currentUserProfile, profilePicture: result.assets[0].uri }));
                     }
                     catch (e: any) {

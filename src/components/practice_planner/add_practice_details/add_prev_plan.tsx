@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { View, ActivityIndicator, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { FirestoreAPI } from '../../../services/firestore_api';
+import { DataManagementAPI } from '../../../services/data_management_api';
 
 interface AddPrevPlanProps {
     handleSave: (plan: any) => void;
@@ -25,7 +25,7 @@ const AddPrevPlan: React.FC<AddPrevPlanProps> = ({ handleSave }) =>
     async function fetchPreviousPlans() {
         setLoading(true);
         try {
-            const plans = await FirestoreAPI.getAllMusicPieces();
+            const plans = await DataManagementAPI.getAllMusicPieces();
             setPreviousPlans(plans);
         }
         catch (e) {

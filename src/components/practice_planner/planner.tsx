@@ -3,7 +3,7 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { View, ActivityIndicator, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { FirestoreAPI } from '../../services/firestore_api';
+import { DataManagementAPI } from '../../services/data_management_api';
 
 import ViewPlanDetails from './view_plan_details';
 import AddPlanContainer from './add_practice_details/add_plan_container'
@@ -34,7 +34,7 @@ const Planner: React.FC<PlannerProp> = ({ date, reload, setReload }) =>
     async function fetchPlans() {
         setLoading(true);
         try {
-            const plans = await FirestoreAPI.getAllPracticeDataByDate(date[0], date[1]);
+            const plans = await DataManagementAPI.getAllPracticeDataByDate(date[0], date[1]);
             setPracticePlans(plans);
         }
         catch (e) {

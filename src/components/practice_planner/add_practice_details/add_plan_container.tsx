@@ -8,7 +8,7 @@ import AddPrevPlan from './add_prev_plan';
 import AddPlanButtons from './add_plan_buttons';
 
 import { validatePracticePlanDetails } from '../../../helpers';
-import { FirestoreAPI } from '../../../services/firestore_api';
+import { DataManagementAPI } from '../../../services/data_management_api';
 
 interface AddPlanContainerProps {
     date: Date;
@@ -43,7 +43,7 @@ const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ date, view, setView
         }
         else {
             try {
-                await FirestoreAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument, date, plan.notes);
+                await DataManagementAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument, date, plan.notes);
                 setReloadData(true);
                 setView(false);
             }

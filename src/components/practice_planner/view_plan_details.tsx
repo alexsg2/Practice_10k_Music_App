@@ -6,7 +6,7 @@ import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TextInput, Touchabl
 
 import { RootState } from '../../redux/store';
 import { validatePracticePlanDetails } from '../../helpers';
-import { FirestoreAPI } from '../../services/firestore_api';
+import { DataManagementAPI } from '../../services/data_management_api';
 
 import DropdownSelector from '../dropdowns/dropdown_selector';
 import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
@@ -43,7 +43,7 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
         else {
             try {
                 const updates = { title, piece, composer, instrument: instrument[0], notes};
-                await FirestoreAPI.updatePracticeDataByField(plan.id, updates);
+                await DataManagementAPI.updatePracticeDataByField(plan.id, updates);
                 setView(false);
                 setReloadData(true);
             }
@@ -55,7 +55,7 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
 
     async function handleDelete() {
         Alert.alert('Practice Plan Deletion','Are you sure you want to delete this plan?',
-                   [{ text: 'Yes', onPress: async () => { await FirestoreAPI.deletePracticeData(plan.id); 
+                   [{ text: 'Yes', onPress: async () => { await DataManagementAPI.deletePracticeData(plan.id); 
                                                           setView(false);
                                                           setReloadData(true);
                                                         }},

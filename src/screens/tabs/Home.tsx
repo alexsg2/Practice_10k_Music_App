@@ -7,7 +7,7 @@ import { GoalTracker, Planner } from '../../components';
 import { colorPallete } from '../../assets/design_library';
 import { getDailyDateRanges, getOverallDateRanges } from '../../helpers';
 
-import { FirestoreAPI } from '../../services/firestore_api';
+import { DataManagementAPI } from '../../services/data_management_api';
 
 
 const Home = () =>
@@ -19,7 +19,7 @@ const Home = () =>
         setLoading(true);
         try {
             const dates = getOverallDateRanges();
-            const [hours, pieces] = await FirestoreAPI.getPracticeHoursAndPiecesByDate(dates[0], dates[1]);
+            const [hours, pieces] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dates[0], dates[1]);
             setTotHours(hours);
             setTotPieces(pieces);
         }

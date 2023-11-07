@@ -28,7 +28,7 @@ interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
 const auth = getAuth();
 
 
-export const FirestoreAPI =
+export const DataManagementAPI =
 {
     async addUserProfile({ email, profilePicture, name, dateOfBirth, instruments, level }: IProfileProps)
     {

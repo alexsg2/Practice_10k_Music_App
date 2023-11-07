@@ -8,7 +8,7 @@ import { GoalTracker, MusicDistribution } from '../../components';
 import { getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
          formatWeeklyDateRange } from '../../helpers';
 
-import { FirestoreAPI } from '../../services/firestore_api';
+import { DataManagementAPI } from '../../services/data_management_api';
 
 
 const Progress = () =>
@@ -26,19 +26,19 @@ const Progress = () =>
         setGoalLoading(true);
         try {
             const dailyDates = getDailyDateRanges();
-            const [dPieces, dHours] = await FirestoreAPI.getPracticeHoursAndPiecesByDate(dailyDates[0], dailyDates[1]);
+            const [dPieces, dHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dailyDates[0], dailyDates[1]);
             setDailyPieces(dPieces);
             setDailyHours(dHours);
             const weeklyDates = getWeeklyDateRanges();
-            const [wPieces, wHours] = await FirestoreAPI.getPracticeHoursAndPiecesByDate(weeklyDates[0], weeklyDates[1]);
+            const [wPieces, wHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(weeklyDates[0], weeklyDates[1]);
             setWeeklyPieces(wPieces);
             setWeeklyHours(wHours);
             const monthlyDates = getMonthlyDateRanges();
-            const [mPieces, mHours] = await FirestoreAPI.getPracticeHoursAndPiecesByDate(monthlyDates[0], monthlyDates[1]);
+            const [mPieces, mHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(monthlyDates[0], monthlyDates[1]);
             setMonthlyPieces(mPieces);
             setMonthlyHours(mHours);
             const overallDates = getOverallDateRanges();
-            const [tPieces, tHours] = await FirestoreAPI.getPracticeHoursAndPiecesByDate(overallDates[0], overallDates[1]);
+            const [tPieces, tHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(overallDates[0], overallDates[1]);
             setTotalPieces(tPieces);
             setTotalHours(tHours);
         }
@@ -56,7 +56,7 @@ const Progress = () =>
         try {
             const weeklyDates = getWeeklyDateRanges();
             setWeeklyRange(formatWeeklyDateRange(weeklyDates[0], weeklyDates[1]));
-            const weeklyComposersInfo = await FirestoreAPI.getMostPracticedComposersByDate(weeklyDates[0], weeklyDates[1]);
+            const weeklyComposersInfo = await DataManagementAPI.getMostPracticedComposersByDate(weeklyDates[0], weeklyDates[1]);
             setComposersData(weeklyComposersInfo);
         }
         catch (e) {

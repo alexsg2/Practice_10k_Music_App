@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged,
          EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser } from 'firebase/auth';
 
 
-import { FirestoreAPI } from './firestore_api';
+import { DataManagementAPI } from './data_management_api';
 
 const auth = getAuth();
 
@@ -31,7 +31,7 @@ export const AuthenticationAPI =
     async register(profilePicture: string, name: string, dateOfBirth: string, instruments: string[], level: string, email: string, password: string)
     {
         await createUserWithEmailAndPassword(auth, email, password);
-        return await FirestoreAPI.addUserProfile({ email, profilePicture, name, dateOfBirth, instruments, level });
+        return await DataManagementAPI.addUserProfile({ email, profilePicture, name, dateOfBirth, instruments, level });
     },
 
     async logIn(email: string, password: string)
@@ -69,7 +69,7 @@ export const AuthenticationAPI =
     {
         const currentUser = auth.currentUser;
         if (currentUser) {
-            await FirestoreAPI.updateUserProfile({ email, name, dateOfBirth, instruments, level });
+            await DataManagementAPI.updateUserProfile({ email, name, dateOfBirth, instruments, level });
             return await this.changePassword(email, oldPassword, newPassword); // nothing happens if newPassword is empty
         }
         else {
@@ -83,7 +83,7 @@ export const AuthenticationAPI =
         if (currentUser) {
             const cred = EmailAuthProvider.credential(email, password);
             await reauthenticateWithCredential(currentUser, cred);
-            await FirestoreAPI.deleteUserProfile();
+            await DataManagementAPI.deleteUserProfile();
             await deleteUser(currentUser);
             return await signOut(auth);
         }
