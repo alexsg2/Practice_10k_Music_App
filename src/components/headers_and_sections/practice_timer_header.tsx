@@ -9,7 +9,7 @@ const PracticeTimerHeader: React.FC = () =>
 {
     return (
         <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', borderBottomColor: colorPallete.black_gradiant["default"] }}>
-            <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{ alignItems: 'center' }}>
                 <Text style={{ fontWeight: 'bold', fontSize: fontSizes.name }}>Practicing</Text>
             </View>
         </View>
