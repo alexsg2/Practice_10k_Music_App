@@ -9,7 +9,7 @@ import { Ionicons } from '@expo/vector-icons'
 
 type JournalParamList = {
     JournalDetail: { item: { composer: string; duration: number; instrument: string; notes: string; piece: string; practiceDate: Timestamp; status: string; title: string; } };
-};
+  };
 
 type JournalDetailRouteProp = RouteProp<JournalParamList, 'JournalDetail'>;
 
