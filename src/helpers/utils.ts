@@ -9,9 +9,10 @@ export function convertToHoursAndMinutes(hours: number): [number, number]
     return [hoursInt, minutes];
 }
 
-export function convertToHours(hours: number, minutes: number): number
+export function convertToHours(time: number): number
 {
-    return hours + (minutes / 60);
+    const hours = time / 60;
+    return Number(hours.toFixed(2));
 }
 
 

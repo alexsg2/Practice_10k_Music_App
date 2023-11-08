@@ -104,8 +104,6 @@ export const DataManagementAPI =
         }
     },
 
-    // TODO : Rahul --> Figure out a way to update a music piece without the musicID – if possible
-
     async getAllMusicPieces()
     {
         const currentUser = auth.currentUser;
@@ -246,12 +244,14 @@ export const DataManagementAPI =
             const querySnap = await getDocs(practiceQuery);
             const composersMap = new Map<string, number>();
             querySnap.forEach((doc) => { const practiceDoc = doc.data();
-                                         const composer = practiceDoc.composer;
-                                         if (composersMap.has(composer)) {
-                                             composersMap.set(composer, composersMap.get(composer) + practiceDoc.duration);
-                                         }
-                                         else {
-                                             composersMap.set(composer, practiceDoc.duration);
+                                         if (practiceDoc.duration > 0) {
+                                             const composer = practiceDoc.composer;
+                                             if (composersMap.has(composer)) {
+                                                 composersMap.set(composer, composersMap.get(composer) + practiceDoc.duration);
+                                             }
+                                             else {
+                                                 composersMap.set(composer, practiceDoc.duration);
+                                             }
                                          }
                                        });
             const sortedComposers = Array.from(composersMap, ([composer, hour]) => ({ composer, hour })).sort((a, b) => b.hour - a.hour);

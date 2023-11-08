@@ -7,11 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
+import { PlanProp } from '../../components/practice_planner/planner';
+
 import { AppHeader, PracticeTimerHeader, JournalDetailsHeader, EditHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
-// import PracticeTimer from './PracticeTimer';
+import PracticeTimer from './PracticeTimer';
 import Progress from './Progress';
 import Journal from './Journal';
 import JournalDetail from './JournalDetail';
@@ -22,7 +24,7 @@ const Tab = createBottomTabNavigator();
 
 export type PracticeStackParamList = {
     Practice: undefined;
-    PracticeTimer: undefined;
+    PracticeTimer: { item: PlanProp[] };
 };
 const PracticeStack = createNativeStackNavigator();
 
@@ -44,7 +46,7 @@ function AppNavigation()
     const PracticeNavigationStack = () => (
         <PracticeStack.Navigator screenOptions={{ headerShown: false }}>
             <PracticeStack.Screen name="PracticeScreen" component={Practice}/>
-            {/* <PracticeStack.Screen name="PracticeTimer" component={PracticeTimer}/> */}
+            <PracticeStack.Screen name="PracticeTimer" component={PracticeTimer}/>
         </PracticeStack.Navigator>
     )
     

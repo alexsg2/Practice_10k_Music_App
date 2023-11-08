@@ -72,7 +72,7 @@ const Home = () =>
                 </View>
                 <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>{selectedDateAbbr === dateOptionsAbbr[(new Date()).getDay()] ? "Today's Plans" : `${selectedDate}'s Plans`}</Text>
                 <View style={{ marginBottom: '5%' }}>
-                    <Planner date={dateRange} reload={reloadData} setReload={setReloadData}/>
+                    <Planner date={dateRange} practicing={false} reload={reloadData} setReload={setReloadData}/>
                 </View>
             </ScrollView>
             <StatusBar/>

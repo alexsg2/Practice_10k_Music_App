@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Ionicons, AntDesign } from '@expo/vector-icons'; 
 import { View, ActivityIndicator, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-
+import { STATUS } from '../../assets/constants';
 import { DataManagementAPI } from '../../services/data_management_api';
 
 import ViewPlanDetails from './view_plan_details';
@@ -10,6 +10,7 @@ import AddPlanContainer from './add_practice_details/add_plan_container'
 
 interface PlannerProp {
     date: Date[];
+    practicing: boolean;
     reload: boolean;
     setReload: (selected: boolean) => void;
 }
@@ -27,7 +28,7 @@ export interface PlanProp {
 }
 
 
-const Planner: React.FC<PlannerProp> = ({ date, reload, setReload }) =>
+const Planner: React.FC<PlannerProp> = ({ date, practicing, reload, setReload }) =>
 {
     const [practicePlans, setPracticePlans] = useState<PlanProp[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -35,7 +36,13 @@ const Planner: React.FC<PlannerProp> = ({ date, reload, setReload }) =>
         setLoading(true);
         try {
             const plans = await DataManagementAPI.getAllPracticeDataByDate(date[0], date[1]);
-            setPracticePlans(plans);
+            if (practicing) {
+                const filteredPlans = plans.filter((plan) => plan.status !== STATUS[2]);
+                setPracticePlans(filteredPlans);
+            }
+            else {
+                setPracticePlans(plans);
+            }
         }
         catch (e) {
             // Handle in any way
@@ -90,7 +97,11 @@ const Planner: React.FC<PlannerProp> = ({ date, reload, setReload }) =>
                         </TouchableOpacity>
                     ))
                 ) : (
-                    <Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: '20%' }}>No plans.</Text>
+                    practicing ? (
+                        <Text style={{ fontSize: 20, textAlign: 'center', alignSelf: 'center', marginVertical: '20%' }}>No plans to practice.</Text>
+                    ) : (
+                        <Text style={{ fontSize: 20, alignSelf: 'center', marginVertical: '20%' }}>No plans scheduled.</Text>
+                    )
                 )}
             {date[1] >= today ? (
                 <TouchableOpacity style={styles.item} onPress={handleAddPlan}>
