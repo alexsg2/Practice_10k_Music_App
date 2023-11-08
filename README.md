@@ -5,7 +5,7 @@
 - Dr. Mohamed Farag (mmagdy@vt.edu)
 - Cesar Smokowski (cesar8800@vt.edu)
 
-## Clients : 
+## Clients 
 - Dr. John Irrera (jirrera@vt.edu)
 - Dr. Annie Stevens (ajs@vt.edu)
 
