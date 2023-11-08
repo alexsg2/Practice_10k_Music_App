@@ -3,7 +3,7 @@
  */
 
 import { db } from '../config/firebase';
-import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc, addDoc} from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, deleteDoc, query, where, and, updateDoc, addDoc, onSnapshot} from 'firebase/firestore';
 
 import { STATUS } from '../assets/constants';
 
@@ -127,6 +127,42 @@ export const getPracticeDataByDate = async (userId: string, dateStart: Date, dat
     }
     catch (e) {
         console.log("not getting practice data (by date), because of: " + e);
+        // Handle rest in main code
+        return [];
+    }
+}
+
+export const getCompletedPracticeLogs = async (userId: string, dateStart: Date, dateEnd: Date) => {
+    try {
+        const practiceData: any[] = [];
+        const practiceCollection = collection(db, "users/" + userId + "/practiceData");
+        const practiceQuery = query(practiceCollection, where("status", "==", "Completed"), 
+            where('practiceDate', ">=", dateStart), where('practiceDate', '<=', dateEnd));
+        const querySnap = await getDocs(practiceQuery);
+        querySnap.forEach((doc) =>{ practiceData.push({ id: doc.id, ...doc.data() }); }); 
+
+        return practiceData;
+    }
+    catch (e) {
+        console.log("not getting completed practice logs (by date), because of: " + e);
+        // Handle rest in main code
+        return [];
+    }
+}
+
+export const getMarkedDates = async (userId: string) => {
+    try {
+        const dates: { [date: string]: any } = {};
+        const practiceCollection = collection(db, "users/" + userId + "/practiceData");
+        const practiceQuery = query(practiceCollection, where("status", "==", "Completed"));
+        const querySnap = await getDocs(practiceQuery);
+        querySnap.forEach((doc) => {
+            const date = doc.data().practiceDate.toDate().toISOString().split('T')[0]; // Adjust this to your data structure
+            dates[date] = { marked: true, dotColor: "red" };
+        });
+        return dates;
+    } catch (e) {
+        console.log("Could not get marked dates because: " + e);
         // Handle rest in main code
         return [];
     }

@@ -7,78 +7,67 @@ import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestor
 
 import { JournalStackParamList } from './app_navigation';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { getCompletedPracticeLogs, getMarkedDates } from '../../helpers/touch_firestore_data';
 
 type journalScreenProp = StackNavigationProp<JournalStackParamList, 'Journal'>;
 
 const Journal: React.FC = () => {
-  const [practiceLogs, setPracticeLogs] = useState([] as any);
-  const [filteredLogs, setFilteredLogs] = useState([] as any);
   const [markedDates, setMarkedDates] = useState<{ [date: string]: any }>({});
+  const [plans, setPlans] = useState<any[]>([]);
  
-  let currMonth = new Date().getMonth() + 1;
+  let currMonth = new Date().getMonth();
+  let currYear = new Date().getFullYear();
+  const userId = getAuth().currentUser?.uid || "";
 
   const navigation = useNavigation<journalScreenProp>();
 
+  const loadData = async () => {
+    // Get the userID of the current user
+    const auth = getAuth();
+    const user = auth.currentUser!
+    if (user == null) {
+      console.log("Error fetching practice logs.")
+      return;
+    }
+    
+    // Get the logs for the current month only
+    const practiceData = await getCompletedPracticeLogs(user.uid, new Date(currYear, currMonth, 1), 
+    currMonth == 12 ? new Date(currYear + 1, 1, 1) : new Date(currYear, currMonth + 1, 1));
+
+    setPlans(practiceData.sort((a: any, b: any) => a.practiceDate - b.practiceDate) || []);
+
+    const tempDates = await getMarkedDates(user.uid);
+    setMarkedDates(tempDates);    
+  }
+
   // Load data when user opens screen
   useEffect(() => {
-    const loadData = async () => {
-      // Get the userID of the current user
-      const auth = getAuth();
-      const user = auth.currentUser!
-      if (user == null) {
-        console.log("Error fetching practice logs.")
-        return;
-      }
-      const dates: { [date: string]: any } = {};
-
-      // Get the user's completed practice log collection
-      const q = query(collection(db, "users/" + user.uid + "/practiceData"), where("status", "==", "Completed"));
-
-      // Listen for changes in firestore
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const date = doc.data().practiceDate.toDate().toISOString().split('T')[0]; // Adjust this to your data structure
-          dates[date] = { marked: true, dotColor: "red" };
-        });
-        // All practice logs
-        setPracticeLogs(querySnapshot.docs.map(doc => doc.data()));
-
-        // Get the logs for the current month only
-        setFilteredLogs(querySnapshot.docs
-          .sort((a, b) => a.data().practiceDate - b.data().practiceDate)
-          .map(doc => doc.data()).filter((log: any) => 
-          log.practiceDate.toDate().toISOString().split('-')[1] == currMonth).sort());
-      });      
-      
-      setMarkedDates(dates);
-      
-    }
     loadData();
   }, []);
+
+  useFocusEffect(React.useCallback(() => { loadData(); }, []));
     
   return (
     <View style={{flex:1}}>
       <Calendar
         markedDates={markedDates}
-        markingType="period"
-        onMonthChange={(month) => {
-          currMonth = month.month;
+        onMonthChange={async (date) => {
+          currMonth = date.month;
+          currYear = date.year;
+          const practiceData = await getCompletedPracticeLogs(userId, new Date(currYear, currMonth - 1, 1), 
+            currMonth == 12 ? new Date(currYear + 1, 0, 1) : new Date(currYear, currMonth, 1));
 
-          // Filter practice logs based on the current month, sort ascending
-          setFilteredLogs(practiceLogs
-            .filter((log: any) => 
-            log.practiceDate.toDate().toISOString().split('-')[1] == month.month)
-            .sort((a: any, b: any) => a.practiceDate - b.practiceDate))
+          setPlans(practiceData.sort((a: any, b: any) => a.practiceDate - b.practiceDate) || []);
           }}
       />
       <Text style={{marginHorizontal: 10, marginVertical: 5, fontSize: 18, fontWeight: '500'}}>Entries</Text>
       <ScrollView>
-        {filteredLogs.map((item: any, index: any) => (
+        {plans.map((item: any, index: any) => (
           <TouchableOpacity style={styles.item} key={index} onPress={() => navigation.navigate('JournalDetail', {item})}>
               <Ionicons name='musical-note' size={25}></Ionicons>
-              <Text key={item.id}>{item.practiceDate.toDate().toDateString()}</Text>
-              <Text key={item.id} numberOfLines={1} ellipsizeMode="tail" style={{flex: 1}}> - {item.title}</Text>
+              <Text>{item.practiceDate.toDate().toDateString()}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={{flex: 1}}> - {item.title}</Text>
         </TouchableOpacity>
         ))}
       </ScrollView>
