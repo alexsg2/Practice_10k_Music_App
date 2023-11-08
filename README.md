@@ -1,18 +1,23 @@
 ### Practice 10k Music App – Multimedia/Hypertext Capstone Project (Fall 2023)
 (For the full documentation, please visit the corresponding page at https://vtechworks.lib.vt.edu)
 
-# Professor                                   & Teaching Assisstance
-- Dr. Mohamed Farag (mmagdy@vt.edu)           - Cesar Smokowski (cesar8800@vt.edu)
+# Professor & Teaching Assisstance
+- Dr. Mohamed Farag (mmagdy@vt.edu)
+- Cesar Smokowski (cesar8800@vt.edu)
 
 # Clients : 
-- Dr. John Irrera (jirrera@vt.edu)            - Dr. Annie Stevens (ajs@vt.edu)
+- Dr. John Irrera (jirrera@vt.edu)
+- Dr. Annie Stevens (ajs@vt.edu)
 
-# Technical Consultant                        & Wireframe Designer
-- Ben Winters (ben@blwinters.com)             - Rachael Quan (rachaelquan@vt.edu)
+# Technical Consultant & Wireframe Designer
+- Ben Winters (ben@blwinters.com)
+- Rachael Quan (rachaelquan@vt.edu)
 
 # Team Members
-- Alexander Georgiev (alexandersg@vt.edu)     - Bailey McKelway (baileymckelway@vt.edu)
-- Claire Holmes (ceholmes@vt.edu)             - Mahlet Zemui (mtzemui@vt.edu)
+- Alexander Georgiev (alexandersg@vt.edu)
+- Bailey McKelway (baileymckelway@vt.edu)
+- Claire Holmes (ceholmes@vt.edu)
+- Mahlet Zemui (mtzemui@vt.edu)
 - Rahul Aneja (rahulaneja@vt.edu)
 
 
