@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons'; 
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Alert, SafeAreaView, ScrollView, TouchableOpacity, Text } from 'react-native';
 
@@ -17,6 +17,11 @@ type PracticeScreenProp = StackNavigationProp<PracticeStackParamList, 'Practice'
 
 const Practice = () =>
 {
+    const isFocused = useIsFocused();
+    useEffect(() => { if (isFocused) { 
+                      // focusing to refresh planner data
+                      } 
+                    }, [isFocused]);
     const currDay = new Date().getDay();
     const navigation = useNavigation<PracticeScreenProp>();
     const currentPracticeData = useSelector((state: RootState) => state?.practice);

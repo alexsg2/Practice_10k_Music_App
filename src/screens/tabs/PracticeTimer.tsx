@@ -19,7 +19,7 @@ type PracticeTimerRouteProp = RouteProp<PracticeTimerParamList, 'PracticeTimer'>
 const PracticeTimer = () =>
 {
     const route = useRoute<PracticeTimerRouteProp>();
-    const toPractice = route.params.item
+    const toPractice = route.params.item;
 
     const [currPlanIndex, setCurrPlanIndex] = useState(0);
     const currPlan = toPractice[currPlanIndex];
@@ -47,12 +47,15 @@ const PracticeTimer = () =>
     async function handleStopSession() {
         try {
             setTimerOn(false);
+            console.log(time);
             const totalHours = convertToHours(time);
+            console.log(totalHours);
             if (totalHours !== 0) {
                 const updates = { status: STATUS[1], duration: totalHours };
                 await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
                 // TODO : is this valid ?? --> does it actually change redux
-                { currPlan.status = STATUS[1], currPlan.duration = totalHours }
+                { currPlan.status = STATUS[1], currPlan.duration = totalHours };
+                console.log(currPlan);
             }
             navigation.goBack();
         }
@@ -64,16 +67,16 @@ const PracticeTimer = () =>
     async function handleNextPiece() {
         try {
             setTimerOn(false);
+            console.log(time);
             const updates = { status: STATUS[2], duration: convertToHours(time) };
+            console.log(convertToHours(time));
             await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
-            // TODO : is this valid ?? --> does it actually change redux
-            { currPlan.status = STATUS[2], currPlan.duration = convertToHours(time) }
+            { currPlan.status = STATUS[2], currPlan.duration = convertToHours(time) };
+            toPractice.splice(0, 1);
             setTime(0);
-
-            const nextIndex = (currPlanIndex + 1) % toPractice.length;
-            setCurrPlanIndex(nextIndex);
-            if (nextIndex === 0) {
-                handleStopSession();
+            
+            if (toPractice.length === 0) {
+                navigation.goBack();
             }
         }
         catch (e: any) {
@@ -87,7 +90,8 @@ const PracticeTimer = () =>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: '2.5%', paddingHorizontal: '5%' }}>
                     <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                        <Text style={{ fontSize: 14 }}>Now Playing:</Text>
+                        <Text style={{ fontSize: 12 }}>Now Playing:</Text>
+                        <Text style={{ fontSize: 10, marginTop: 5 }}>{currPlan.composer} - {currPlan.piece}</Text>
                     </View>
                     {timerVisible && (
                         <View style={{ flex: 1, alignItems: 'center' }}>
@@ -106,26 +110,27 @@ const PracticeTimer = () =>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', marginBottom: '2%', paddingBottom: '2.5%' }}>
-                    { !timerOn && (<Text style={{ color: 'red', fontSize: 16 }}>Timer Paused</Text>) }
-                </View>
-                <View style={{ width: '90%', flexDirection: 'column', alignSelf: 'center', alignItems: 'center', borderRadius: 10, padding: '5%', backgroundColor: '#5982C2' }}>
-                    <Text style={{ fontSize: 36, fontWeight: 'bold', textAlign: 'center', paddingBottom: '7%' }}>{currPlan.title}</Text>
-                    <View style={styles.planDetailsContainer}>
-                        <Text style={styles.planTitleText}>Piece: </Text>
-                        <Text style={styles.planValueText}>{currPlan.piece}</Text>
+                {!currPlan ? (
+                    <Text>No More Plans</Text>
+                ) : (
+                    <View style={{ width: '90%', minHeight: '55%', flexDirection: 'column', alignSelf: 'center', alignItems: 'center', borderRadius: 10, padding: '5%', backgroundColor: '#5982C2' }}>
+                        <Text style={{ fontSize: 36, fontWeight: 'bold', textAlign: 'center', paddingBottom: '7%' }}>{currPlan.title}</Text>
+                        <View style={styles.planDetailsContainer}>
+                            <Text style={styles.planTitleText}>Piece: </Text>
+                            <Text style={styles.planValueText}>{currPlan.piece}</Text>
+                        </View>
+                        <View style={styles.planDetailsContainer}>
+                            <Text style={styles.planTitleText}>Composer: </Text>
+                            <Text style={styles.planValueText}>{currPlan.composer}</Text>
+                        </View>
+                        <View style={styles.planDetailsContainer}>
+                            <Text style={styles.planTitleText}>Instrument: </Text>
+                            <Text style={styles.planValueText}>{currPlan.instrument}</Text>
+                        </View>
+                        <Text style={{ fontSize: 26, fontWeight: 'bold', alignSelf: 'flex-start', padding: '2%' }}>Notes: </Text>
+                        <Text style={{ fontStyle: 'italic', fontSize: 24, paddingHorizontal: '7%' }}>{currPlan.notes}</Text>
                     </View>
-                    <View style={styles.planDetailsContainer}>
-                        <Text style={styles.planTitleText}>Composer: </Text>
-                        <Text style={styles.planValueText}>{currPlan.composer}</Text>
-                    </View>
-                    <View style={styles.planDetailsContainer}>
-                        <Text style={styles.planTitleText}>Instrument: </Text>
-                        <Text style={styles.planValueText}>{currPlan.instrument}</Text>
-                    </View>
-                    <Text style={{ fontSize: 26, fontWeight: 'bold', alignSelf: 'flex-start', padding: '2%' }}>Notes: </Text>
-                    <Text style={{ fontStyle: 'italic', fontSize: 24, paddingHorizontal: '7%' }}>{currPlan.notes}</Text>
-                </View>
+                )}
                 <View style={{ width: '100%', alignItems: 'center', marginVertical: '5%' }}>
                     <TouchableOpacity onPress={() => setTimerOn(prevState => !prevState)}
                                         style={{ width: '90%', borderRadius: 10, padding: '6%', marginVertical: '3%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#7BC3E9' }}

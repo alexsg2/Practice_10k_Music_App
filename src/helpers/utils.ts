@@ -11,7 +11,7 @@ export function convertToHoursAndMinutes(hours: number): [number, number]
 
 export function convertToHours(time: number): number
 {
-    const hours = time / 60;
+    const hours = time / 3600;
     return Number(hours.toFixed(2));
 }
 

@@ -21,6 +21,7 @@ const Progress = () =>
     
     const dFilteredData = currentPracticeData.weeklyPracticeData.filter((plan) => plan.practiceDate === new Date().getDay());                                        
     const dailyHours = dFilteredData.reduce((sum, plan) => sum + plan.duration, 0);
+    console.log(dailyHours);
     const dailyPieces = dFilteredData.filter((plan) => plan.status === STATUS[2]).length;
 
     const weeklyHours = currentPracticeData.weeklyPracticeData.reduce((sum, plan) => sum + plan.duration, 0);
