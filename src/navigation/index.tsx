@@ -6,9 +6,23 @@ import { ActivityIndicator, View, Text } from 'react-native';
 import AppNavigation from '../screens/tabs/app_navigation';
 import AuthNavigation from '../screens/auth/auth_navigation';
 
-import { setProfile } from '../redux/actions';
+import { setProfile, setMusicPieces, setPracticeData } from '../redux/actions';
 import { useAuthentication } from '../services/hooks/use_authentication';
+import { DataManagementAPI } from '../services/data_management_api';
+import { getDailyDateRanges } from '../helpers';
 
+const initialSet = async (dispatch: any) => {
+    const date = getDailyDateRanges();
+    try{
+        const musicPieces = await DataManagementAPI.getAllMusicPieces();
+        const practiceData = await DataManagementAPI.getAllPracticeDataByDate(date[0], date[1]);
+        dispatch(setMusicPieces(musicPieces))
+        dispatch(setPracticeData(practiceData))
+    } catch(err){
+        
+    }
+
+}
 
 export default function RootNavigation() {
     const dispatch = useDispatch();
@@ -17,6 +31,7 @@ export default function RootNavigation() {
     useEffect(() => {
         if (userData) {
             dispatch(setProfile(userData));
+            initialSet(dispatch)
         }
     }, [userData, dispatch]);
     

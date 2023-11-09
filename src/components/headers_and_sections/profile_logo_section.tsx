@@ -23,7 +23,6 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, picture
 {
     const dispatch = useDispatch();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
-
     async function changeProfilePicture() {
         const status = await ImagePicker.getMediaLibraryPermissionsAsync();
         if (status.granted) {
