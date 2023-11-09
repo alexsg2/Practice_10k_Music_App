@@ -31,7 +31,7 @@ const Journal = () =>
         // Handle in any way
     }
   }
-  useFocusEffect(React.useCallback(() => { loadData(new Date());}, []));
+  useFocusEffect(React.useCallback(() => { loadData(new Date()); }, []));
 
     
   return (
@@ -40,7 +40,7 @@ const Journal = () =>
         markedDates={markedDates}
         onMonthChange={(date) => { loadData(new Date(date.dateString)) }}
       />
-      <Text style={{marginHorizontal: 10, marginVertical: 5, fontSize: 18, fontWeight: '500'}}>Entries</Text>
+      <Text style={{paddingVertical: '2.5%', marginHorizontal: 10, marginVertical: 5, fontSize: 18, fontWeight: '500'}}>Entries</Text>
       <ScrollView>
         {plans.map((item: any, index: any) => (
           <TouchableOpacity style={styles.item} key={index} onPress={() => navigation.navigate('JournalDetail', {item})}>

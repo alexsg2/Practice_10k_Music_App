@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { ActivityIndicator, View, Text } from 'react-native';
 
@@ -35,18 +35,19 @@ export default function RootNavigation()
 {
     const dispatch = useDispatch();
     const { user, userData, loading } = useAuthentication();
-    
+
+    const [reduxLoading, setReduxLoading] = useState<boolean>(true);
     useEffect(() => { if (userData) {
                           dispatch(setProfile(userData));
-                          initialSet(dispatch)
+                          initialSet(dispatch);
+                          setReduxLoading(false);
                       }
     }, [userData, dispatch]);
 
 
-    // TODO : add a loading effect until redux is initilized.
     return (
         <>
-        {loading ? (
+        {loading && reduxLoading ? (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#5982C2' }}>
                 <Text style={{ color: 'white', fontSize: 20, fontStyle: 'italic', fontWeight: 'bold', paddingBottom: '1.5%' }}>Loading Data.</Text>
                 <Text style={{ color: 'white', fontSize: 20, fontStyle: 'italic', fontWeight: 'bold', paddingBottom: '5%' }}>Please Be Patient.</Text>
