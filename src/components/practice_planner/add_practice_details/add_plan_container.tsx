@@ -6,7 +6,7 @@ import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TouchableOpacity } 
 
 import { RootState } from '../../../redux/store';
 import { STATUS } from '../../../assets/constants';
-import { IPracticeDataProps } from '../../../redux/reducers';
+import { IMusicPiecesProps, IPracticeDataProps } from '../../../redux/reducers';
 
 import AddNewPlan from './add_new_plan';
 import AddPrevPlan from './add_prev_plan';
@@ -25,6 +25,7 @@ interface AddPlanContainerProps {
 const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ weekDay, view, setView }) =>
 {
     const currentPracticeData = useSelector((state: RootState) => state?.practice);
+    const currentMusicPieces = useSelector((state: RootState) => state?.music);
 
     const [showAddNewView, setShowAddNewView] = useState<boolean>(false);
     const [showAddPrevView, setShowAddPrevView] = useState<boolean>(false);
@@ -57,6 +58,13 @@ const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ weekDay, view, setV
                 // TODO : is this valid ?? --> does it actually change redux
                 currentPracticeData.weeklyPracticeData.push({ id: practiceId, title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument,
                                                               practiceDate: weekDay, duration: 0, status: STATUS[0], notes: plan.notes } as IPracticeDataProps);
+                const musicPiece = { title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument, notes: plan.notes } as IMusicPiecesProps;
+                const existing = currentMusicPieces.musicPieces.find(item => item.title === musicPiece.title && item.piece === musicPiece.piece &&
+                                                                     item.composer === musicPiece.composer && item.instrument === musicPiece.instrument &&
+                                                                     item.notes === musicPiece.notes);                                              
+                if (!existing) {
+                    currentMusicPieces.musicPieces.push(musicPiece);
+                }
                 setView(false);
             }
             catch (e: any) {
