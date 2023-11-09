@@ -1,7 +1,7 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 
 import { colorPallete, fontSizes } from '../../assets/design_library';
