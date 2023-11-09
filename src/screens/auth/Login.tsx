@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform, View, Text, TextInput, TouchableOpacity } from 'react-native';
+
+
+import { validateLoginFormat } from '../../helpers';
+import { AuthenticationAPI } from '../../services/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
 
-const auth = getAuth();
-import { validateLoginFormat } from '../../helpers';
 import { AuthStackParamList } from './auth_navigation';
 type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -23,18 +24,19 @@ const Login = () =>
     async function handleLogin() {
         const loginError = validateLoginFormat(email, password);
         if (loginError) {
-            Alert.alert('Invalid Login', loginError, [ {text: 'OK'} ]);
+            Alert.alert('Invalid Login', loginError, [{ text: 'OK' }]);
         }
         else {
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                await AuthenticationAPI.logIn(email, password);
             }
-            catch (e) {
-                Alert.alert('Login Failed', 'Unable to login. Please check your credentials or try again later.',
+            catch (e: any) {
+                Alert.alert('Login Failed', 'Please check credentials or try again later: ' + e.code,
                             [{ text: 'OK' }]);
             }
         }
     }
+    
     
     return (
         <SafeAreaView style={containerStyles.safeContainer}>

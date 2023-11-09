@@ -274,3 +274,4 @@ export const deletePracticeData = async (userId: string, practiceId: string) =>
         // Handle rest in main code
     }
 }
+

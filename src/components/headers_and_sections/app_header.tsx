@@ -4,8 +4,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { RootState } from '../redux/store';
-import { colorPallete, fontSizes } from '../assets/design_library';
+import { RootState } from '../../redux/store';
+import { colorPallete, fontSizes } from '../../assets/design_library';
 
 export type AppHeaderStackParamList = {
     Home: undefined;
@@ -29,7 +29,7 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
         <View style={styles.container}>
             <View style={styles.logoContainer}>
                 <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-                    <Image source={require('../assets/images/small-black-logo.png')} style={styles.logo} />
+                    <Image source={require('../../assets/images/small-black-logo.png')} style={styles.logo} />
                 </TouchableOpacity>
             </View>
             <View style={styles.nameContainer}>
@@ -37,7 +37,9 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
             </View>
             <View style={styles.profileContainer}>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Image source={picture ? typeof picture === 'string' ? { uri: picture } : picture : require('../assets/images/blank-profile-picture.png')} style={styles.profile} />
+                    <Image source={ picture ? { uri: picture } : require('../../assets/images/blank-profile-picture.png') }
+                           style={styles.profile}
+                    />
                 </TouchableOpacity>
             </View>
         </View>
