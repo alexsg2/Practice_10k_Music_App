@@ -1,17 +1,20 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Calendar, DateData } from 'react-native-calendars';
-import { Ionicons } from '@expo/vector-icons'
-import { db, getAuth } from '../../services/configs/firebase';
-import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import React, { useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { Calendar } from 'react-native-calendars';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+
+
+import { getMonthlyDateRangeFromDate } from '../../helpers';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 import { JournalStackParamList } from './app_navigation';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
-
 type journalScreenProp = StackNavigationProp<JournalStackParamList, 'Journal'>;
 
-const Journal: React.FC = () => {
+
+const Journal = () =>
+{
   const [practiceLogs, setPracticeLogs] = useState([] as any);
   const [filteredLogs, setFilteredLogs] = useState([] as any);
   const [markedDates, setMarkedDates] = useState<{ [date: string]: any }>({});
