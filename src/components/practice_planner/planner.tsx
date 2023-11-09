@@ -3,7 +3,7 @@ import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { View, ActivityIndicator, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { STATUS } from '../../assets/constants';
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 import ViewPlanDetails from './view_plan_details';
 import AddPlanContainer from './add_practice_details/add_plan_container'

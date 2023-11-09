@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import { Ionicons } from '@expo/vector-icons'
-import { db, getAuth } from '../../config/firebase';
+import { db, getAuth } from '../../services/config/firebase';
 import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 
 import { JournalStackParamList } from './app_navigation';

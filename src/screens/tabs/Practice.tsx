@@ -9,7 +9,7 @@ import { Planner } from '../../components';
 import { STATUS } from '../../assets/constants';
 
 import { getDailyDateRanges } from '../../helpers';
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 import { PracticeStackParamList } from './app_navigation';
 type PracticeScreenProp = StackNavigationProp<PracticeStackParamList, 'Practice'>;

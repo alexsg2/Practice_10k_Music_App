@@ -8,7 +8,7 @@ import { STATUS } from '../../assets/constants';
 import { PlanProp } from '../../components/practice_planner/planner';
 
 import { convertToHours } from '../../helpers';
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 type PracticeTimerParamList = {
     PracticeTimer: { item: PlanProp[] };

@@ -3,7 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { View, ActivityIndicator, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { DataManagementAPI } from '../../../services/data_management_api';
+import { DataManagementAPI } from '../../../services/apis/data_management_api';
 
 interface AddPrevPlanProps {
     handleSave: (plan: any) => void;

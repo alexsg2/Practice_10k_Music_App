@@ -8,7 +8,7 @@ import AddPrevPlan from './add_prev_plan';
 import AddPlanButtons from './add_plan_buttons';
 
 import { validatePracticePlanDetails } from '../../../helpers';
-import { DataManagementAPI } from '../../../services/data_management_api';
+import { DataManagementAPI } from '../../../services/apis/data_management_api';
 
 interface AddPlanContainerProps {
     date: Date;

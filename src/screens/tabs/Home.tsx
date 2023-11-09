@@ -7,7 +7,7 @@ import { GoalTracker, Planner } from '../../components';
 import { colorPallete } from '../../assets/design_library';
 import { getDailyDateRanges, getOverallDateRanges } from '../../helpers';
 
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 
 const Home = () =>

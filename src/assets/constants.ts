@@ -8,5 +8,6 @@ const INSTRUMENTS = ['Accordion', 'Banjo', 'Bass Guitar', 'Cello',
 const LEVELS = ['Beginner/Amateur', 'Intermediate', 'Pre-collegiate',
                 'University/Conservatory', 'Professional'];
 
+const STATUS = ['Not Started', 'In Progress', 'Completed'];
 
-export { INSTRUMENTS, LEVELS };
+export { INSTRUMENTS, LEVELS, STATUS };

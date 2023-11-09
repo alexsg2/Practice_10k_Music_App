@@ -5,7 +5,7 @@ import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithout
 
 
 import { validateLoginFormat } from '../../helpers';
-import { AuthenticationAPI } from '../../services/authentication_api';
+import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";

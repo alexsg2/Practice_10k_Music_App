@@ -4,7 +4,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 
 
-import { AuthenticationAPI } from '../../services/authentication_api';
+import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
 import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";

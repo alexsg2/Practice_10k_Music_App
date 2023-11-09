@@ -8,7 +8,7 @@ import { GoalTracker, MusicDistribution } from '../../components';
 import { getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
          formatWeeklyDateRange } from '../../helpers';
 
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 
 const Progress = () =>

@@ -6,7 +6,7 @@ import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TextInput, Touchabl
 
 import { RootState } from '../../redux/store';
 import { validatePracticePlanDetails } from '../../helpers';
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 import DropdownSelector from '../dropdowns/dropdown_selector';
 import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';

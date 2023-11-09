@@ -1,10 +1,10 @@
-import { getAuth } from 'firebase/auth';
 import { db } from '../config/firebase';
+import { getAuth } from 'firebase/auth';
 import { doc, setDoc, getDocs, collection, deleteDoc, query, where } from 'firebase/firestore';
 
 
-import { STATUS } from '../assets/constants';
-import { IProfileProps } from '../redux/reducers';
+import { STATUS } from '../../assets/constants';
+import { IProfileProps } from '../../redux/reducers';
 interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
 
 // TODO : Bailey --> Implement the following in redux to avoid reloading multiple times
@@ -66,7 +66,7 @@ export const DataManagementAPI =
         }
     },
 
-    async deleteUserProfile()
+    async deleteUserData()
     {
         const currentUser = auth.currentUser;
         if (currentUser) {
