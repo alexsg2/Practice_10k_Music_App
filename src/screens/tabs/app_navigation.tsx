@@ -90,23 +90,18 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Progress"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="JournalPage" component={JournalNavigationStack}
-                    options={{tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
-                              headerTitle: () => <AppHeader name="Journal"/>, 
-                              headerStyle: styles.header,
-                            }}/>
-                {/* <Tab.Screen name="Journal" component={JournalNavigationStack}
+                <Tab.Screen name="Journal" component={JournalNavigationStack}
                     options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                                               headerTitle: () => {
                                                     const routeName = getFocusedRouteNameFromRoute(route);
-                                                    if (routeName === 'JournalDetails') {
+                                                    if (routeName === 'JournalDetail') {
                                                         return <JournalDetailsHeader/>;
                                                     } else {
                                                         return <AppHeader name="Journal"/>;
                                                     }
                                              },
                                              headerStyle: styles.header,
-                                            })}/> */}
+                                            })}/>
                 <Tab.Screen name="Profile" component={ProfileNavigationStack}
                     options={({ route }) => ({tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                                               headerTitle: () => {
