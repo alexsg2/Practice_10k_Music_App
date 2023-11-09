@@ -175,7 +175,7 @@ export const DataManagementAPI =
         }
     },
 
-    async getStartedPracticeDataByDate(dateStart: Date, dateEnd: Date)
+    async getCompletedPracticeDataByDate(dateStart: Date, dateEnd: Date)
     {
         const currentUser = auth.currentUser;
         if (currentUser) {
@@ -185,12 +185,15 @@ export const DataManagementAPI =
                                                      where('practiceDate', '<=', dateEnd));
             const querySnap = await getDocs(practiceQuery);
             const practiceData: any[] = [];
+            const practiceDataDates: { [date: string]: any } = {};
             querySnap.forEach((doc) => { const practiceDoc = doc.data();
-                                         if (practiceDoc.status !== STATUS[0]) {
+                                         if (practiceDoc.status === STATUS[2]) {
                                              practiceData.push({ id: doc.id, ...doc.data() });
+                                             const date = practiceDoc.practiceDate.toDate().toISOString().split('T')[0];
+                                             practiceDataDates[date] = { marked: true, dotColor: 'red' };
                                          }
                                        });
-            return practiceData;
+            return [practiceData, practiceDataDates];
         }
         else {
             throw new Error('User is undefined. Cannot get practice data.');
