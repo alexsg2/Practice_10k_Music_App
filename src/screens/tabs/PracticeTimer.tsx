@@ -65,8 +65,6 @@ const PracticeTimer = () =>
         try {
             setTimerOn(false);
             const updates = { status: STATUS[2], duration: convertToHours(time) };
-            console.log(currPlan);
-            console.log('-->' + currPlan.id);
             await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
             // TODO : is this valid ?? --> does it actually change redux
             { currPlan.status = STATUS[2], currPlan.duration = convertToHours(time) }
