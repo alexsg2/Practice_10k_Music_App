@@ -3,25 +3,26 @@ import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, ScrollView, View, ActivityIndicator, StatusBar, Text, TouchableHighlight } from 'react-native';
 
 
+import { DAYS } from '../../assets/constants';
 import { GoalTracker, Planner } from '../../components';
 import { colorPallete } from '../../assets/design_library';
-import { getDailyDateRanges, getOverallDateRanges } from '../../helpers';
 
-import { DataManagementAPI } from '../../services/data_management_api';
+import { getOverallDateRanges } from '../../helpers';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 
 const Home = () =>
 {
-    const [totHours, setTotHours] = useState<number>(0);
-    const [totPieces, setTotPieces] = useState<number>(0);
+    const [totalHours, setTotalHours] = useState<number>(0);
+    const [totalPieces, setTotalPieces] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     async function fetchGoalData() {
         setLoading(true);
         try {
             const dates = getOverallDateRanges();
             const [hours, pieces] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dates[0], dates[1]);
-            setTotHours(hours);
-            setTotPieces(pieces);
+            setTotalHours(hours);
+            setTotalPieces(pieces);
         }
         catch (e) {
             // Handle in any way
@@ -30,19 +31,12 @@ const Home = () =>
     };
     useFocusEffect(React.useCallback(() => { fetchGoalData(); }, []));
 
-    const dayOfWeek = new Date().getDay();
-    const dateOptions = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const [selectedDate, setSelectedDate] = useState(dateOptions[dayOfWeek]);
+    const currDay = new Date().getDay();
+    const [selectedDate, setSelectedDate] = useState(DAYS[currDay]);
     const dateOptionsAbbr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const [selectedDateAbbr, setSelectedDateAbbr] = useState(dateOptionsAbbr[dayOfWeek]);
-    const daysUntilSelectedDay = dateOptionsAbbr.indexOf(selectedDateAbbr) - dayOfWeek;
-
-    const dateRange = getDailyDateRanges();
-    dateRange[0].setDate(dateRange[0].getDate() + daysUntilSelectedDay);
-    dateRange[1].setDate(dateRange[1].getDate() + daysUntilSelectedDay);
-
-    const [reloadData, setReloadData] = useState(false);
-    useFocusEffect(React.useCallback(() => { setReloadData(true);}, [selectedDateAbbr]));
+    const [selectedDateAbbr, setSelectedDateAbbr] = useState(dateOptionsAbbr[currDay]);
+    
+    const selectedDay = dateOptionsAbbr.indexOf(selectedDateAbbr);
 
 
     return (
@@ -52,7 +46,7 @@ const Home = () =>
                     {loading ? (
                         <ActivityIndicator size="large" color='black'/>
                     ) : (
-                        <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totHours} pieces_amount={totPieces} />
+                        <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
                     )}
                 </View>
                 <View style={{ width: "100%", paddingVertical: '2.5%', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', backgroundColor: 'white' }}>
@@ -63,7 +57,7 @@ const Home = () =>
                             underlayColor="#D3D3D3"
                             onPress={() => {
                                 setSelectedDateAbbr(date);
-                                setSelectedDate(dateOptions[index]);
+                                setSelectedDate(DAYS[index]);
                             }}
                         >
                             <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{date}</Text>
@@ -72,7 +66,7 @@ const Home = () =>
                 </View>
                 <Text style={{ fontSize: 20, paddingHorizontal: '3%', paddingTop: '3%' }}>{selectedDateAbbr === dateOptionsAbbr[(new Date()).getDay()] ? "Today's Plans" : `${selectedDate}'s Plans`}</Text>
                 <View style={{ marginBottom: '5%' }}>
-                    <Planner date={dateRange} reload={reloadData} setReload={setReloadData}/>
+                    <Planner dayOfWeek={selectedDay} practicing={false}/>
                 </View>
             </ScrollView>
             <StatusBar/>

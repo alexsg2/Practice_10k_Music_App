@@ -6,7 +6,7 @@ import { StyleProp, ViewStyle, Alert, View, Image, Text, TouchableOpacity } from
 
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 import { colorPallete } from '../../assets/design_library';
 
@@ -23,7 +23,7 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, picture
 {
     const dispatch = useDispatch();
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
-
+    
     async function changeProfilePicture() {
         const status = await ImagePicker.getMediaLibraryPermissionsAsync();
         if (status.granted) {

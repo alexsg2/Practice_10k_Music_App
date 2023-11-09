@@ -6,7 +6,7 @@ import { Alert, SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacit
 
 
 import { RootState } from '../../redux/store';
-import { AuthenticationAPI } from '../../services/authentication_api';
+import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
 import { colorPallete } from '../../assets/design_library';

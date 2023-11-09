@@ -1,29 +1,14 @@
+import { db } from '../configs/firebase';
 import { getAuth } from 'firebase/auth';
-import { db } from '../config/firebase';
 import { doc, setDoc, getDocs, collection, deleteDoc, query, where } from 'firebase/firestore';
 
 
-import { STATUS } from '../assets/constants';
-import { IProfileProps } from '../redux/reducers';
-interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
-// TODO : Bailey --> Implement the following in redux to avoid reloading multiple times
-//                      Practice Data Prop {
-//                          - array of practice plans for each day of the week (i.e., from Sunday to Saturday)
-//                              * use getWeeklyDateRanges() in helpers/utils, if necessary.
-//                          - total hours and pieces for each day in the array
-//                              * use getPracticeHoursAndPiecesByDate() in this file, when necessary.
-//                          - total hours and pieces for the entire week (i.e., from Sunday to Saturday)
-//                              * should be the sum of above.
-//
-//                          - !! Need to be able to add, edit and/or remove a plan from the prop !!
-//                      }
-//                      Music Pieces Prop {
-//                          - array of all saved music pieces
-//                              * use getAllMusicPieces() in this file, if necessary.
-//
-//                          - !! Need to be able to add a piece to the prop's array !!
-//                      }
+import { STATUS } from '../../assets/constants';
+import { IProfileProps } from '../../redux/reducers';
+interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
 
 const auth = getAuth();
 
@@ -66,7 +51,7 @@ export const DataManagementAPI =
         }
     },
 
-    async deleteUserProfile()
+    async deleteUserData()
     {
         const currentUser = auth.currentUser;
         if (currentUser) {
@@ -104,8 +89,6 @@ export const DataManagementAPI =
         }
     },
 
-    // TODO : Rahul --> Figure out a way to update a music piece without the musicID – if possible
-
     async getAllMusicPieces()
     {
         const currentUser = auth.currentUser;
@@ -124,13 +107,15 @@ export const DataManagementAPI =
 
 
     async addPracticeData(title: string, piece: string, composer: string, instrument: string, practiceDate: Date, notes: string)
-    {
+    {        
         const currentUser = auth.currentUser;
         if (currentUser) {
             const userDocRef = doc(db, 'users', currentUser.uid);
             const practiceCol = collection(userDocRef, 'practiceData');
-            await setDoc(doc(practiceCol), { title, piece, composer, instrument, practiceDate, duration: 0, status: STATUS[0], notes });
-            return await this.saveMusicPiece(title, piece, composer, instrument, notes);
+            const practiceDocRef = doc(practiceCol);
+            await setDoc(practiceDocRef, { title, piece, composer, instrument, practiceDate, duration: 0, status: STATUS[0], notes });
+            await this.saveMusicPiece(title, piece, composer, instrument, notes);
+            return practiceDocRef.id;
         }
         else {
             throw new Error('User is undefined. Cannot add practice data.');
@@ -190,7 +175,7 @@ export const DataManagementAPI =
         }
     },
 
-    async getStartedPracticeDataByDate(dateStart: Date, dateEnd: Date)
+    async getCompletedPracticeDataByDate(dateStart: Date, dateEnd: Date)
     {
         const currentUser = auth.currentUser;
         if (currentUser) {
@@ -200,12 +185,15 @@ export const DataManagementAPI =
                                                      where('practiceDate', '<=', dateEnd));
             const querySnap = await getDocs(practiceQuery);
             const practiceData: any[] = [];
+            const practiceDataDates: { [date: string]: any } = {};
             querySnap.forEach((doc) => { const practiceDoc = doc.data();
-                                         if (practiceDoc.status !== STATUS[0]) {
+                                         if (practiceDoc.status === STATUS[2]) {
                                              practiceData.push({ id: doc.id, ...doc.data() });
+                                             const date = practiceDoc.practiceDate.toDate().toISOString().split('T')[0];
+                                             practiceDataDates[date] = { marked: true, dotColor: 'red' };
                                          }
                                        });
-            return practiceData;
+            return [practiceData, practiceDataDates];
         }
         else {
             throw new Error('User is undefined. Cannot get practice data.');
@@ -246,12 +234,14 @@ export const DataManagementAPI =
             const querySnap = await getDocs(practiceQuery);
             const composersMap = new Map<string, number>();
             querySnap.forEach((doc) => { const practiceDoc = doc.data();
-                                         const composer = practiceDoc.composer;
-                                         if (composersMap.has(composer)) {
-                                             composersMap.set(composer, composersMap.get(composer) + practiceDoc.duration);
-                                         }
-                                         else {
-                                             composersMap.set(composer, practiceDoc.duration);
+                                         if (practiceDoc.duration > 0) {
+                                             const composer = practiceDoc.composer;
+                                             if (composersMap.has(composer)) {
+                                                 composersMap.set(composer, composersMap.get(composer) + practiceDoc.duration);
+                                             }
+                                             else {
+                                                 composersMap.set(composer, practiceDoc.duration);
+                                             }
                                          }
                                        });
             const sortedComposers = Array.from(composersMap, ([composer, hour]) => ({ composer, hour })).sort((a, b) => b.hour - a.hour);

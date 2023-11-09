@@ -1,3 +1,5 @@
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 const INSTRUMENTS = ['Accordion', 'Banjo', 'Bass Guitar', 'Cello',
                      'Clarinet', 'Drums/Percussion', 'Flute',
                      'French Horn', 'Guitar (Acoustic and Electric)',
@@ -8,5 +10,6 @@ const INSTRUMENTS = ['Accordion', 'Banjo', 'Bass Guitar', 'Cello',
 const LEVELS = ['Beginner/Amateur', 'Intermediate', 'Pre-collegiate',
                 'University/Conservatory', 'Professional'];
 
+const STATUS = ['Not Started', 'In Progress', 'Completed'];
 
-export { INSTRUMENTS, LEVELS };
+export { DAYS, INSTRUMENTS, LEVELS, STATUS };

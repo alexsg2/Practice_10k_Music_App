@@ -1,4 +1,4 @@
-import { SET_PROFILE } from './actions';
+import { SET_PROFILE, SET_MUSIC_PIECES, SET_PRACTICE_DATE_BY_WEEK } from './actions';
 
 
 export interface IProfileProps {
@@ -19,15 +19,66 @@ const initialState: IProfileProps = {
   level: '',
 };
 
-/*
-This is where the store (global object) gets updated
-When an action is dispatched it ends up here at the reducer.
-The reducer checks the type of the action and does the updating to the store.
-*/
 export const profileReducer = (state = initialState, action: any) => {
   switch (action.type) {
     case SET_PROFILE:
       return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
+
+export interface IMusicPiecesProps {
+  title: string,
+  piece: string,
+  composer: string;
+  instrument: string;
+  notes: string,
+}
+
+export interface IMusicProps {
+  musicPieces: IMusicPiecesProps[]
+}
+
+const initialMusicPieceState: IMusicProps = {
+  musicPieces: []
+};
+
+export const musicPieceReducer = (state = initialMusicPieceState, action: any) => {
+  switch (action.type) {
+    case SET_MUSIC_PIECES:
+      return { ...state, musicPieces: [...action.payload] };
+    default:
+      return state;
+  }
+};
+
+
+export interface IPracticeDataProps {
+  id: string;
+  title: string;
+  piece: string,
+  composer: string;
+  instrument: string;
+  notes: string;
+  practiceDate: number;
+  duration: number;
+  status: string;
+}
+
+export interface IPracticeProps {
+  weeklyPracticeData: IPracticeDataProps[]
+}
+
+const initialPracticeDataState: IPracticeProps = {
+  weeklyPracticeData: []
+};
+
+export const practiceReducer = (state = initialPracticeDataState, action: any) => {
+  switch (action.type) {
+    case SET_PRACTICE_DATE_BY_WEEK:
+      return { ...state, weeklyPracticeData: [...action.payload] };
     default:
       return state;
   }

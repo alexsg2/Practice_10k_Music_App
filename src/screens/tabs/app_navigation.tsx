@@ -7,11 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
+import { IPracticeDataProps } from '../../redux/reducers';
+
 import { AppHeader, PracticeTimerHeader, JournalDetailsHeader, EditHeader } from '../../components';
 // Import our custom screens here
 import Home from './Home';
 import Practice from './Practice';
-// import PracticeTimer from './PracticeTimer';
+import PracticeTimer from './PracticeTimer';
 import Progress from './Progress';
 import Journal from './Journal';
 import JournalDetail from './JournalDetail';
@@ -22,7 +24,7 @@ const Tab = createBottomTabNavigator();
 
 export type PracticeStackParamList = {
     Practice: undefined;
-    PracticeTimer: undefined;
+    PracticeTimer: { item: IPracticeDataProps[] };
 };
 const PracticeStack = createNativeStackNavigator();
 
@@ -44,7 +46,7 @@ function AppNavigation()
     const PracticeNavigationStack = () => (
         <PracticeStack.Navigator screenOptions={{ headerShown: false }}>
             <PracticeStack.Screen name="PracticeScreen" component={Practice}/>
-            {/* <PracticeStack.Screen name="PracticeTimer" component={PracticeTimer}/> */}
+            <PracticeStack.Screen name="PracticeTimer" component={PracticeTimer}/>
         </PracticeStack.Navigator>
     )
     
@@ -88,23 +90,18 @@ function AppNavigation()
                               headerTitle: () => <AppHeader name="Progress"/>, 
                               headerStyle: styles.header,
                             }}/>
-                <Tab.Screen name="JournalPage" component={JournalNavigationStack}
-                    options={{tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
-                              headerTitle: () => <AppHeader name="Journal"/>, 
-                              headerStyle: styles.header,
-                            }}/>
-                {/* <Tab.Screen name="Journal" component={JournalNavigationStack}
+                <Tab.Screen name="Journal" component={JournalNavigationStack}
                     options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                                               headerTitle: () => {
                                                     const routeName = getFocusedRouteNameFromRoute(route);
-                                                    if (routeName === 'JournalDetails') {
+                                                    if (routeName === 'JournalDetail') {
                                                         return <JournalDetailsHeader/>;
                                                     } else {
                                                         return <AppHeader name="Journal"/>;
                                                     }
                                              },
                                              headerStyle: styles.header,
-                                            })}/> */}
+                                            })}/>
                 <Tab.Screen name="Profile" component={ProfileNavigationStack}
                     options={({ route }) => ({tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
                                               headerTitle: () => {

@@ -6,9 +6,9 @@ import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithout
 
 
 import { RootState } from '../../redux/store';
-import { validateProfileEdits } from '../../helpers';
 import { setProfile } from '../../redux/actions';
-import { AuthenticationAPI } from '../../services/authentication_api';
+import { validateProfileEdits } from '../../helpers';
+import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { INSTRUMENTS, LEVELS } from '../../assets/constants';
 import { DropdownSelector, DropdownCalendar } from '../../components';

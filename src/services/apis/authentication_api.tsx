@@ -1,4 +1,4 @@
-import { getAuth, onAuthStateChanged,
+import { getAuth,
          createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut,
          EmailAuthProvider, reauthenticateWithCredential, updatePassword, deleteUser } from 'firebase/auth';
 
@@ -10,24 +10,6 @@ const auth = getAuth();
 
 export const AuthenticationAPI =
 {
-    async getCurrentUser()
-    { 
-        return new Promise((resolve, reject) =>
-        {
-            const unsubscribe = onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    resolve(user);
-                }
-                else {
-                    reject('User not authenticated.');
-                }
-            });
-
-            return unsubscribe;
-        });
-    },
-
-
     async register(profilePicture: string, name: string, dateOfBirth: string, instruments: string[], level: string, email: string, password: string)
     {
         await createUserWithEmailAndPassword(auth, email, password);
@@ -83,7 +65,7 @@ export const AuthenticationAPI =
         if (currentUser) {
             const cred = EmailAuthProvider.credential(email, password);
             await reauthenticateWithCredential(currentUser, cred);
-            await DataManagementAPI.deleteUserProfile();
+            await DataManagementAPI.deleteUserData();
             await deleteUser(currentUser);
             return await signOut(auth);
         }

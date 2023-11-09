@@ -9,9 +9,10 @@ export function convertToHoursAndMinutes(hours: number): [number, number]
     return [hoursInt, minutes];
 }
 
-export function convertToHours(hours: number, minutes: number): number
+export function convertToHours(time: number): number
 {
-    return hours + (minutes / 60);
+    const hours = time / 3600;
+    return Number(hours.toFixed(2));
 }
 
 
@@ -63,6 +64,18 @@ export function getMonthlyDateRanges(): [Date, Date]
     start.setDate(1);
     start.setUTCHours(0, 0, 0, 0);
     const end = new Date(today);
+    end.setMonth(end.getMonth() + 1, 1);
+    end.setDate(end.getDate() - 1);
+    end.setUTCHours(23, 59, 59, 999);
+    return [start, end];
+}
+
+export function getMonthlyDateRangeFromDate(date: Date): [Date, Date]
+{
+    const start= new Date(date);
+    start.setDate(1);
+    start.setUTCHours(0, 0, 0, 0);
+    const end = new Date(date);
     end.setMonth(end.getMonth() + 1, 1);
     end.setDate(end.getDate() - 1);
     end.setUTCHours(23, 59, 59, 999);

@@ -8,7 +8,7 @@ import { Alert, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableWithout
 import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
 import { validateRegistrationFormat } from '../../helpers';
-import { AuthenticationAPI } from '../../services/authentication_api';
+import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { INSTRUMENTS, LEVELS } from '../../assets/constants';
 import { DropdownSelector, DropdownCalendar, ProfileLogoSection } from '../../components';

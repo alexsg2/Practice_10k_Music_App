@@ -4,35 +4,37 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, ActivityIndicator, View, Text, StyleSheet } from 'react-native';
 
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { STATUS } from '../../assets/constants';
+
 import { GoalTracker, MusicDistribution } from '../../components';
 import { getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
          formatWeeklyDateRange } from '../../helpers';
 
-import { DataManagementAPI } from '../../services/data_management_api';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 
 const Progress = () =>
 {
-    const [dailyPieces, setDailyPieces] = useState<number>(0);
-    const [dailyHours, setDailyHours] = useState<number>(0);
-    const [weeklyHours, setWeeklyHours] = useState<number>(0);
-    const [weeklyPieces, setWeeklyPieces] = useState<number>(0);
+    const currentPracticeData = useSelector((state: RootState) => state?.practice);
+    
+    const dFilteredData = currentPracticeData.weeklyPracticeData.filter((plan) => plan.practiceDate === new Date().getDay());                                        
+    const dailyHours = dFilteredData.reduce((sum, plan) => sum + plan.duration, 0);
+    console.log(dailyHours);
+    const dailyPieces = dFilteredData.filter((plan) => plan.status === STATUS[2]).length;
+
+    const weeklyHours = currentPracticeData.weeklyPracticeData.reduce((sum, plan) => sum + plan.duration, 0);
+    const weeklyPieces = currentPracticeData.weeklyPracticeData.filter((plan) => plan.status === STATUS[2]).length;
+
     const [monthlyHours, setMonthlyHours] = useState<number>(0);
     const [monthlyPieces, setMonthlyPieces] = useState<number>(0);
     const [totalHours, setTotalHours] = useState<number>(0);
     const [totalPieces, setTotalPieces] = useState<number>(0);
-    const [goalLoading, setGoalLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(true);
     async function fetchGoalData() {
-        setGoalLoading(true);
+        setLoading(true);
         try {
-            const dailyDates = getDailyDateRanges();
-            const [dPieces, dHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dailyDates[0], dailyDates[1]);
-            setDailyPieces(dPieces);
-            setDailyHours(dHours);
-            const weeklyDates = getWeeklyDateRanges();
-            const [wPieces, wHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(weeklyDates[0], weeklyDates[1]);
-            setWeeklyPieces(wPieces);
-            setWeeklyHours(wHours);
             const monthlyDates = getMonthlyDateRanges();
             const [mPieces, mHours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(monthlyDates[0], monthlyDates[1]);
             setMonthlyPieces(mPieces);
@@ -45,36 +47,33 @@ const Progress = () =>
         catch (e) {
             // Handle in any way
         }
-        setGoalLoading(false);
+        setLoading(false);
     };
+    useFocusEffect(React.useCallback(() => { fetchGoalData();}, []));
 
-    const [weeklyRange, setWeeklyRange] = useState<string>('');
-    const [composersData, setComposersData] = useState<{ composer: string; hour: number }[]>([]);
-    const [distributionLoading, setDistributionLoading] = useState<boolean>(true);
-    async function fetchDistributionData() {
-        setDistributionLoading(true);
-        try {
-            const weeklyDates = getWeeklyDateRanges();
-            setWeeklyRange(formatWeeklyDateRange(weeklyDates[0], weeklyDates[1]));
-            const weeklyComposersInfo = await DataManagementAPI.getMostPracticedComposersByDate(weeklyDates[0], weeklyDates[1]);
-            setComposersData(weeklyComposersInfo);
-        }
-        catch (e) {
-            // Handle in any way
-        }
-        setDistributionLoading(false);
-    }
-
-    useFocusEffect(React.useCallback(() => { fetchGoalData(); fetchDistributionData();}, []));
+    const weeklyDates = getWeeklyDateRanges();
+    const weeklyRange = formatWeeklyDateRange(weeklyDates[0], weeklyDates[1]);
+    const composersMap = new Map<string, number>();
+    const filteredPlans = currentPracticeData.weeklyPracticeData.filter((plan) => plan.duration !== 0);
+    filteredPlans.forEach((plan) => { const composer = plan.composer;
+                                      if (composersMap.has(composer)) {
+                                          composersMap.set(composer, composersMap.get(composer) + plan.duration);
+                                      }
+                                      else {
+                                          composersMap.set(composer, plan.duration);
+                                      }
+    });
+    const sortedComposers = Array.from(composersMap || [], ([composer, hour]) => ({ composer, hour })).sort((a, b) => b.hour - a.hour);
+    const composersData = sortedComposers.slice(0, 5);
 
 
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#ECF1F7' }} showsVerticalScrollIndicator={false}>
-            {goalLoading || distributionLoading ? (
-                <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
-            ) : (
-                <View style={{ width: '100%' }}>
-                    <Text style={{ fontSize: 20, marginVertical: '5%', marginLeft: '5%' }}>Activity</Text>
+            <View style={{ width: '100%' }}>
+                <Text style={{ fontSize: 20, marginVertical: '5%', marginLeft: '5%' }}>Activity</Text>
+                {loading ? (
+                        <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
+                ) : (
                     <Swiper showsButtons={false} showsPagination={true} style={{ height: 260 }}>
                         <View style={styles.goalContainer}>
                             <GoalTracker title="Daily Hours" goal_amount={'2'} hours_amount={dailyHours} pieces_amount={dailyPieces} />
@@ -89,21 +88,21 @@ const Progress = () =>
                             <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
                         </View>
                     </Swiper>
-                    <View style={{ width: '100%' }}>
-                        <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Distribution</Text>
-                        <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
-                            {composersData.length > 0 ? (
-                                <MusicDistribution
-                                    date={weeklyRange}
-                                    composers={composersData}
-                                />
-                            ) : (
-                                <Text style={{ fontSize: 16, marginBottom: '7%', fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
-                            )}
-                        </View>
-                    </View>
+                )}
+            </View>
+            <View style={{ width: '100%' }}>
+                <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Distribution</Text>
+                <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
+                    {composersData.length > 0 ? (
+                        <MusicDistribution
+                            date={weeklyRange}
+                            composers={composersData}
+                        />
+                    ) : (
+                        <Text style={{ fontSize: 16, marginBottom: '7%', fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
+                    )}
                 </View>
-            )}
+            </View>
         </ScrollView>
     );
 }

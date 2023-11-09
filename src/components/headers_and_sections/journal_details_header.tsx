@@ -1,32 +1,32 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 
 import { colorPallete, fontSizes } from '../../assets/design_library';
 
-export type JournalDetailsHeaderStackParamList = {
+export type JournalHeaderStackParamList = {
     JournalScreen: undefined;
-    JournalDetails: undefined;
+    JournalDetail: undefined;
 };
-type JournalDetailsHeaderNavigationProp = NavigationProp<JournalDetailsHeaderStackParamList, 'JournalScreen' | 'JournalDetails'>;
+type JournalHeaderNavigationProp = NavigationProp<JournalHeaderStackParamList, 'JournalScreen' | 'JournalDetail'>;
 
 
 const JournalDetailsHeader: React.FC = () =>
 {
-    const navigation = useNavigation<JournalDetailsHeaderNavigationProp>();
+    const navigation = useNavigation<JournalHeaderNavigationProp>();
 
     
     return (
         <View style={styles.container}>
             <View style={styles.backContainer}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
+                <TouchableOpacity onPress={() => navigation.navigate('JournalScreen')}>
                     <Ionicons name="arrow-back" size={40} color='black' left="5%"/>
                 </TouchableOpacity>
             </View>
             <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>Plan Details</Text>
+                <Text style={styles.nameText}>Practice Details</Text>
             </View>
         </View>
     );
@@ -49,8 +49,8 @@ const styles = StyleSheet.create(
         alignItems: 'flex-start',
     },
     nameContainer: {
-        flex: 1,
-        left: '-175%',
+        flex: 2,
+        left: '-135%',
         alignItems: 'center',
     },
     nameText: {
