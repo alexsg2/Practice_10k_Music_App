@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-import { PlanProp } from '../../components/practice_planner/planner';
+import { IPracticeDataProps } from '../../redux/reducers';
 
 import { AppHeader, PracticeTimerHeader, JournalDetailsHeader, EditHeader } from '../../components';
 // Import our custom screens here
@@ -24,7 +24,7 @@ const Tab = createBottomTabNavigator();
 
 export type PracticeStackParamList = {
     Practice: undefined;
-    PracticeTimer: { item: PlanProp[] };
+    PracticeTimer: { item: IPracticeDataProps[] };
 };
 const PracticeStack = createNativeStackNavigator();
 

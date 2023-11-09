@@ -5,13 +5,13 @@ import { Alert, SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleShe
 
 
 import { STATUS } from '../../assets/constants';
-import { PlanProp } from '../../components/practice_planner/planner';
+import { IPracticeDataProps } from '../../redux/reducers';
 
 import { convertToHours } from '../../helpers';
 import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 type PracticeTimerParamList = {
-    PracticeTimer: { item: PlanProp[] };
+    PracticeTimer: { item: IPracticeDataProps[] };
 };
 type PracticeTimerRouteProp = RouteProp<PracticeTimerParamList, 'PracticeTimer'>;
 
@@ -49,8 +49,10 @@ const PracticeTimer = () =>
             setTimerOn(false);
             const totalHours = convertToHours(time);
             if (totalHours !== 0) {
-                const updates = { duration: totalHours };
+                const updates = { status: STATUS[1], duration: totalHours };
                 await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
+                // TODO : is this valid ?? --> does it actually change redux
+                { currPlan.status = STATUS[1], currPlan.duration = totalHours }
             }
             navigation.goBack();
         }
@@ -63,16 +65,16 @@ const PracticeTimer = () =>
         try {
             setTimerOn(false);
             const updates = { status: STATUS[2], duration: convertToHours(time) };
+            console.log(currPlan);
+            console.log('-->' + currPlan.id);
             await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
+            // TODO : is this valid ?? --> does it actually change redux
+            { currPlan.status = STATUS[2], currPlan.duration = convertToHours(time) }
             setTime(0);
 
             const nextIndex = (currPlanIndex + 1) % toPractice.length;
-            console.log(nextIndex);
-            if (nextIndex !== 0) {
-                useEffect(() => { setCurrPlanIndex(nextIndex); }, [nextIndex]);
-                await DataManagementAPI.updatePracticeDataByField(currPlan.id, { status: STATUS[1] });
-            }
-            else {
+            setCurrPlanIndex(nextIndex);
+            if (nextIndex === 0) {
                 handleStopSession();
             }
         }

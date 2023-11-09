@@ -5,27 +5,25 @@ import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TextInput, Touchabl
 
 
 import { RootState } from '../../redux/store';
+import { IPracticeDataProps } from '../../redux/reducers';
 import { validatePracticePlanDetails } from '../../helpers';
 import { DataManagementAPI } from '../../services/apis/data_management_api';
 
 import DropdownSelector from '../dropdowns/dropdown_selector';
 import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
+import { DAYS } from '../../assets/constants';
 
-import { PlanProp } from './planner';
 interface ViewPlanDetailsProp {
-    date: Date;
-    plan: PlanProp;
+    plan: IPracticeDataProps;
     view: boolean;
     setView: (selected: boolean) => void;
-    isEditable: boolean;
-    setReloadData: (selected: boolean) => void;
 }
 
 
-const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setView, isEditable, setReloadData }) =>
+const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ plan, view, setView }) =>
 {
     const currentUserProfile = useSelector((state: RootState) => state?.profile);
-    const instruments = currentUserProfile.instruments;
+    const currentPracticeData = useSelector((state: RootState) => state?.practice);
 
     const [title, setTitle] = useState<string>(plan.title);
     const [piece, setPiece] = useState<string>(plan.piece);
@@ -34,6 +32,8 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
     const [notes, setNotes] = useState<string>(plan.notes);
     const duration = plan.duration;
     const status = plan.status;
+
+    const instruments = currentUserProfile.instruments;
 
     async function handleSave() {
         const detailsError = validatePracticePlanDetails(title, piece, instrument[0], composer);
@@ -44,8 +44,9 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
             try {
                 const updates = { title, piece, composer, instrument: instrument[0], notes};
                 await DataManagementAPI.updatePracticeDataByField(plan.id, updates);
+                // TODO : is this valid ?? --> does it actually change redux
+                { plan.title = title; plan.piece = piece; plan.composer = composer; plan.instrument = instrument[0]; plan.notes = notes; }
                 setView(false);
-                setReloadData(true);
             }
             catch (e: any) {
                 Alert.alert('Practice Plan Update Failed', 'Please try again later: ' + e.code, [{ text: 'OK' }]);
@@ -56,8 +57,12 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
     async function handleDelete() {
         Alert.alert('Practice Plan Deletion','Are you sure you want to delete this plan?',
                    [{ text: 'Yes', onPress: async () => { await DataManagementAPI.deletePracticeData(plan.id); 
+                                                          // TODO : is this valid ?? --> does it actually change redux
+                                                          const index = currentPracticeData.weeklyPracticeData.findIndex((item) => item.id === plan.id);
+                                                          if (index !== -1) {
+                                                              currentPracticeData.weeklyPracticeData.splice(index, 1);
+                                                          }
                                                           setView(false);
-                                                          setReloadData(true);
                                                         }},
                     { text: 'No' }]
         );
@@ -76,7 +81,7 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
                                 </TouchableOpacity>
                                 <Text style={{ fontSize: 25, fontWeight: 'bold', left: '-95%', alignItems: 'center', }}>Plan Details</Text>
                             </View>
-                            {isEditable ? (
+                            {plan.practiceDate >= (new Date()).getDay() ? (
                                 <View>
                                     <Text style={inputStyles.profileLabelText}>Title</Text>
                                     <TextInput
@@ -107,10 +112,10 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
                                                     multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
                                                     altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Practice Date - Not Editable</Text>
+                                    <Text style={inputStyles.profileLabelText}>Practice Date</Text>
                                     <TextInput
                                         style={inputStyles.profileInputBox}
-                                        value={date.toDateString()}
+                                        value={DAYS[plan.practiceDate]}
                                         editable={false}
                                     />
                                     <Text style={inputStyles.profileLabelText}>Notes</Text>
@@ -159,7 +164,7 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ date, plan, view, setV
                                     <Text style={inputStyles.profileLabelText}>Practice Date</Text>
                                     <TextInput
                                         style={inputStyles.profileInputBox}
-                                        value={date.toDateString()}
+                                        value={DAYS[plan.practiceDate]}
                                         editable={false}
                                     />
                                     <Text style={inputStyles.profileLabelText}>Duration (in hours)</Text>

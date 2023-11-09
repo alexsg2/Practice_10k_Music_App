@@ -3,27 +3,12 @@ import { getAuth } from 'firebase/auth';
 import { doc, setDoc, getDocs, collection, deleteDoc, query, where } from 'firebase/firestore';
 
 
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+
 import { STATUS } from '../../assets/constants';
 import { IProfileProps } from '../../redux/reducers';
 interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
-
-// TODO : Bailey --> Implement the following in redux to avoid reloading multiple times
-//                      Practice Data Prop {
-//                          - array of practice plans for each day of the week (i.e., from Sunday to Saturday)
-//                              * use getWeeklyDateRanges() in helpers/utils, if necessary.
-//                          - total hours and pieces for each day in the array
-//                              * use getPracticeHoursAndPiecesByDate() in this file, when necessary.
-//                          - total hours and pieces for the entire week (i.e., from Sunday to Saturday)
-//                              * should be the sum of above.
-//
-//                          - !! Need to be able to add, edit and/or remove a plan from the prop !!
-//                      }
-//                      Music Pieces Prop {
-//                          - array of all saved music pieces
-//                              * use getAllMusicPieces() in this file, if necessary.
-//
-//                          - !! Need to be able to add a piece to the prop's array !!
-//                      }
 
 const auth = getAuth();
 
@@ -122,13 +107,15 @@ export const DataManagementAPI =
 
 
     async addPracticeData(title: string, piece: string, composer: string, instrument: string, practiceDate: Date, notes: string)
-    {
+    {        
         const currentUser = auth.currentUser;
         if (currentUser) {
             const userDocRef = doc(db, 'users', currentUser.uid);
             const practiceCol = collection(userDocRef, 'practiceData');
-            await setDoc(doc(practiceCol), { title, piece, composer, instrument, practiceDate, duration: 0, status: STATUS[0], notes });
-            return await this.saveMusicPiece(title, piece, composer, instrument, notes);
+            const practiceDocRef = doc(practiceCol);
+            await setDoc(practiceDocRef, { title, piece, composer, instrument, practiceDate, duration: 0, status: STATUS[0], notes });
+            await this.saveMusicPiece(title, piece, composer, instrument, notes);
+            return practiceDocRef.id;
         }
         else {
             throw new Error('User is undefined. Cannot add practice data.');

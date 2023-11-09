@@ -6,6 +6,7 @@ import { ActivityIndicator, View, Text } from 'react-native';
 import { getWeeklyDateRanges } from '../helpers';
 import { DataManagementAPI } from '../services/apis/data_management_api';
 import { setProfile, setMusicPieces, setPracticeData } from '../redux/actions';
+
 const initialSet = async (dispatch: any) =>
 {
     try {
@@ -42,6 +43,7 @@ export default function RootNavigation()
     }, [userData, dispatch]);
 
 
+    // TODO : add a loading effect until redux is initilized.
     return (
         <>
         {loading ? (
