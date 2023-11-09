@@ -2,10 +2,12 @@ import { validateLoginFormat, validateRegistrationFormat, validateProfileEdits, 
 
 
 import { convertToHours, convertToHoursAndMinutes, totalDurationInHoursAndMinutes, formatWeeklyDateRange,
-         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges } from './utils';
+         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges,
+         getMonthlyDateRangeFromDate, getOverallDateRanges } from './utils';
 
 
 export { validateLoginFormat, validateRegistrationFormat, validateProfileEdits, validatePracticePlanDetails,
          convertToHours, convertToHoursAndMinutes, totalDurationInHoursAndMinutes, formatWeeklyDateRange,
-         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges };
+         getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges,
+         getMonthlyDateRangeFromDate, getOverallDateRanges };
          
