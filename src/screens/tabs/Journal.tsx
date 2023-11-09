@@ -8,7 +8,7 @@ import { collection, getDocs, onSnapshot, query, where } from 'firebase/firestor
 import { JournalStackParamList } from './app_navigation';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { getCompletedPracticeLogs, getMarkedDates } from '../../helpers/touch_firestore_data';
+import { DataManagementAPI } from '../../services/data_management_api';
 
 type journalScreenProp = StackNavigationProp<JournalStackParamList, 'Journal'>;
 
@@ -32,12 +32,12 @@ const Journal: React.FC = () => {
     }
     
     // Get the logs for the current month only
-    const practiceData = await getCompletedPracticeLogs(user.uid, new Date(currYear, currMonth, 1), 
+    const practiceData = await DataManagementAPI.getCompletedPracticeLogs(user.uid, new Date(currYear, currMonth, 1), 
     currMonth == 12 ? new Date(currYear + 1, 1, 1) : new Date(currYear, currMonth + 1, 1));
 
     setPlans(practiceData.sort((a: any, b: any) => a.practiceDate - b.practiceDate) || []);
 
-    const tempDates = await getMarkedDates(user.uid);
+    const tempDates = await DataManagementAPI.getMarkedDates(user.uid);
     setMarkedDates(tempDates);    
   }
 
@@ -55,7 +55,7 @@ const Journal: React.FC = () => {
         onMonthChange={async (date) => {
           currMonth = date.month;
           currYear = date.year;
-          const practiceData = await getCompletedPracticeLogs(userId, new Date(currYear, currMonth - 1, 1), 
+          const practiceData = await DataManagementAPI.getCompletedPracticeLogs(userId, new Date(currYear, currMonth - 1, 1), 
             currMonth == 12 ? new Date(currYear + 1, 0, 1) : new Date(currYear, currMonth, 1));
 
           setPlans(practiceData.sort((a: any, b: any) => a.practiceDate - b.practiceDate) || []);

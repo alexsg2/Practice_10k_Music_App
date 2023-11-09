@@ -261,5 +261,41 @@ export const DataManagementAPI =
             throw new Error('User is undefined. Cannot get practice data.');
         }
     },
+
+    async getCompletedPracticeLogs (userId: string, dateStart: Date, dateEnd: Date) {
+        try {
+            const practiceData: any[] = [];
+            const practiceCollection = collection(db, "users/" + userId + "/practiceData");
+            const practiceQuery = query(practiceCollection, where("status", "==", "Completed"), 
+                where('practiceDate', ">=", dateStart), where('practiceDate', '<=', dateEnd));
+            const querySnap = await getDocs(practiceQuery);
+            querySnap.forEach((doc) =>{ practiceData.push({ id: doc.id, ...doc.data() }); }); 
+    
+            return practiceData;
+        }
+        catch (e) {
+            console.log("not getting completed practice logs (by date), because of: " + e);
+            // Handle rest in main code
+            return [];
+        }
+    },
+    
+    async getMarkedDates (userId: string) {
+        try {
+            const dates: { [date: string]: any } = {};
+            const practiceCollection = collection(db, "users/" + userId + "/practiceData");
+            const practiceQuery = query(practiceCollection, where("status", "==", "Completed"));
+            const querySnap = await getDocs(practiceQuery);
+            querySnap.forEach((doc) => {
+                const date = doc.data().practiceDate.toDate().toISOString().split('T')[0]; // Adjust this to your data structure
+                dates[date] = { marked: true, dotColor: "red" };
+            });
+            return dates;
+        } catch (e) {
+            console.log("Could not get marked dates because: " + e);
+            // Handle rest in main code
+            return [];
+        }
+    },
 };
 
