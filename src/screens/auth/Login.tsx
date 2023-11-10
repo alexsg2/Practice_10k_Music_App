@@ -8,7 +8,7 @@ import { validateLoginFormat } from '../../helpers';
 import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
+import { color_pallete, font_sizes, onDarkBackground, containers, buttons, texts } from '../../assets/common_styles';
 
 import { AuthStackParamList } from './auth_navigation';
 type loginScreenProp = StackNavigationProp<AuthStackParamList, 'Login'>;
@@ -39,24 +39,24 @@ const Login = () =>
     
     
     return (
-        <SafeAreaView style={containerStyles.safeContainer}>
+        <SafeAreaView style={onDarkBackground.safeArea}>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                        <View style={containerStyles.innerContainer}>
-                            <ProfileLogoSection title={'Hello.'} profile={false} altStyle={[componentStyles.authTitleText]}/>
-                            <View style={containerStyles.inputContainer}>
-                                <Text style={inputStyles.authLabelText}>Email</Text>
+                        <View style={containers.innerView}>
+                            <ProfileLogoSection title={'Hello.'} profile={false} altStyle={[onDarkBackground.titleText]}/>
+                            <View style={containers.input}>
+                                <Text style={onDarkBackground.sectionText}>Email</Text>
                                 <TextInput
-                                    style={inputStyles.authInputBox}
+                                    style={onDarkBackground.inputBox}
                                     placeholder='Enter email address'
                                     placeholderTextColor='#CCCCCC'
                                     onChangeText={(text) => setEmail(text)}
                                     value={email}
                                 />
-                                <Text style={inputStyles.authLabelText}>Password</Text>
+                                <Text style={onDarkBackground.sectionText}>Password</Text>
                                 <TextInput
-                                    style={inputStyles.authInputBox}
+                                    style={onDarkBackground.inputBox}
                                     placeholder='Enter password'
                                     placeholderTextColor='#CCCCCC'
                                     secureTextEntry
@@ -64,19 +64,21 @@ const Login = () =>
                                     value={password}
                                 />
                                 <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}>
-                                    <Text style={{ fontStyle: 'italic', fontSize: 13, marginTop: '-4%', marginBottom: '5%',
-                                                   paddingRight: '2%', textAlign: 'right', color: 'white'
-                                                }}>
+                                    <Text style={{ fontStyle: 'italic', fontSize: font_sizes.inputs, textAlign: 'right',
+                                                   marginTop: '-4%', marginBottom: '5%', paddingRight: '2%',
+                                                   color: color_pallete.white_gradiant['default']
+                                                }}
+                                    >
                                         Forgot Password? Click here.
                                     </Text>
                                 </TouchableOpacity>
                             </View>
-                            <View style={containerStyles.buttonContainer}>
-                                <TouchableOpacity onPress={handleLogin} style={bottomStyles.blackButton}>
-                                    <Text style={bottomStyles.buttonText}>Login</Text>
+                            <View style={containers.singleButton}>
+                                <TouchableOpacity onPress={handleLogin} style={buttons.largeBlack}>
+                                    <Text style={texts.button}>Login</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                                    <Text style={bottomStyles.footerText}>Not registered? Click here.</Text>
+                                    <Text style={onDarkBackground.footer}>Not registered? Click here.</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>

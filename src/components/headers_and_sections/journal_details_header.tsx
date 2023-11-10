@@ -1,10 +1,10 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 
-import { colorPallete, fontSizes } from '../../assets/design_library';
+import { containers, texts } from '../../assets/common_styles';
 
 export type JournalHeaderStackParamList = {
     JournalScreen: undefined;
@@ -19,42 +19,17 @@ const JournalDetailsHeader: React.FC = () =>
 
     
     return (
-        <View style={styles.container}>
-            <View style={styles.backContainer}>
+        <View style={containers.header}>
+            <View style={containers.back}>
                 <TouchableOpacity onPress={() => navigation.navigate('JournalScreen')}>
-                    <Ionicons name="arrow-back" size={40} color='black' left="5%"/>
+                    <Ionicons name='arrow-back' size={40} color='black' left='5%'/>
                 </TouchableOpacity>
             </View>
-            <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>Practice Details</Text>
+            <View style={{ left: '-175%' }}>
+                <Text style={texts.header}>Practice Details</Text>
             </View>
         </View>
     );
 };
 
 export default JournalDetailsHeader;
-
-const styles = StyleSheet.create(
-{
-    container: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottomColor: colorPallete.black_gradiant["default"],
-    },
-    backContainer: {
-        flex: 1,
-        left: '-35%',
-        alignItems: 'flex-start',
-    },
-    nameContainer: {
-        flex: 2,
-        left: '-135%',
-        alignItems: 'center',
-    },
-    nameText: {
-        fontWeight: 'bold',
-        fontSize: fontSizes.name,
-    },
-});

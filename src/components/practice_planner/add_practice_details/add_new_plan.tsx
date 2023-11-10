@@ -6,7 +6,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { RootState } from '../../../redux/store';
 
 import DropdownSelector from '../../dropdowns/dropdown_selector';
-import { bottomStyles, componentStyles, inputStyles } from '../../../assets/styles/auth_and_profile_styles';
+import { containers, onLightBackground, buttons, texts } from '../../../assets/common_styles';
 
 interface AddNewPlanProp {
     date: Date;
@@ -27,56 +27,56 @@ const AddNewPlan: React.FC<AddNewPlanProp> = ({ date, handleSave }) =>
 
 
     return (
-        <View style={{ flex: 1, paddingHorizontal: '5%' }}>
+        <View style={{ flex: 1 }}>
             <View>
-                <Text style={inputStyles.profileLabelText}>Title</Text>
+                <Text style={onLightBackground.sectionText}>Title</Text>
                 <TextInput
-                    style={inputStyles.profileInputBox}
+                    style={onLightBackground.inputBox}
                     placeholder={'Enter practice title'}
                     placeholderTextColor='#CCCCCC'
                     onChangeText={(text) => setTitle(text)}
                     value={title}
                 />
-                <Text style={inputStyles.profileLabelText}>Piece</Text>
+                <Text style={onLightBackground.sectionText}>Piece</Text>
                 <TextInput
-                    style={inputStyles.profileInputBox}
+                    style={onLightBackground.inputBox}
                     placeholder={'Enter piece name'}
                     placeholderTextColor='#CCCCCC'
                     onChangeText={(text) => setPiece(text)}
                     value={piece}
                 />
-                <Text style={inputStyles.profileLabelText}>Composer</Text>
+                <Text style={onLightBackground.sectionText}>Composer</Text>
                 <TextInput
-                    style={inputStyles.profileInputBox}
+                    style={onLightBackground.inputBox}
                     placeholder={'Enter composer name'}
                     placeholderTextColor='#CCCCCC'
                     onChangeText={(text) => setComposer(text)}
                     value={composer}
                 />
-                <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                <Text style={onLightBackground.sectionText}>Instrument</Text>
                 <DropdownSelector input={'Select an instrument'} dataList={instruments}
-                                    multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
-                                    altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
+                                  multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
+                                  altStyle={onLightBackground.dropdown}
                 />
-                <Text style={inputStyles.profileLabelText}>Practice Date - Not Editable</Text>
+                <Text style={onLightBackground.sectionText}>Practice Date - Not Editable</Text>
                 <TextInput
-                    style={inputStyles.profileInputBox}
+                    style={onLightBackground.inputBox}
                     value={date.toDateString()}
                     editable={false}
                 />
-                <Text style={inputStyles.profileLabelText}>Notes</Text>
+                <Text style={onLightBackground.sectionText}>Notes</Text>
                 <TextInput
-                    style={inputStyles.profileInputBox}
+                    style={onLightBackground.inputBox}
                     placeholder={'(Optional) Enter any notes'}
                     placeholderTextColor='#CCCCCC'
                     onChangeText={(text) => setNotes(text)}
                     value={notes}
                 />
             </View>
-            <View style={{ width: '70%', marginBottom: '5%', alignSelf: 'center' }}>
+            <View style={containers.doubleButton}>
                 <TouchableOpacity onPress={() => handleSave({ title, piece, notes, composer, instrument })}
-                                  style={bottomStyles.redButton}>
-                    <Text style={bottomStyles.buttonText}>Save</Text>
+                                  style={buttons.smallRed}>
+                    <Text style={texts.button}>Save</Text>
                 </TouchableOpacity>
             </View>
         </View>

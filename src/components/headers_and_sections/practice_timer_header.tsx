@@ -2,15 +2,15 @@ import React from 'react';
 import { View, Text } from 'react-native';
 
 
-import { colorPallete, fontSizes } from '../../assets/design_library';
+import { containers, texts } from '../../assets/common_styles';
 
 
 const PracticeTimerHeader: React.FC = () =>
 {
     return (
-        <View style={{ width: '100%', alignItems: 'center', justifyContent: 'center', borderBottomColor: colorPallete.black_gradiant["default"] }}>
+        <View style={containers.header}>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontWeight: 'bold', fontSize: fontSizes.name }}>Practicing</Text>
+                <Text style={texts.header}>Practicing</Text>
             </View>
         </View>
     );

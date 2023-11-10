@@ -1,10 +1,10 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { Alert, View, Text, TouchableOpacity } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { Alert, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-import { colorPallete, fontSizes } from '../../assets/design_library';
+import { containers, texts } from '../../assets/common_styles';
 
 export type EditHeaderStackParamList = {
     ProfileScreen: undefined;
@@ -25,42 +25,17 @@ const EditHeader: React.FC = () =>
     
 
     return (
-        <View style={styles.container}>
-            <View style={styles.backContainer}>
+        <View style={containers.header}>
+            <View style={containers.back}>
                 <TouchableOpacity onPress={handleBackToProfile}>
-                    <Ionicons name="arrow-back" size={40} color='black' left="5%"/>
+                    <Ionicons name='arrow-back' size={40} color='black' left="5%"/>
                 </TouchableOpacity>
             </View>
-            <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>Edit Profile</Text>
+            <View style={containers.headerTitle}>
+                <Text style={texts.header}>Edit Profile</Text>
             </View>
         </View>
     );
 };
 
 export default EditHeader;
-
-const styles = StyleSheet.create(
-{
-    container: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottomColor: colorPallete.black_gradiant["default"],
-    },
-    backContainer: {
-        flex: 1,
-        left: '-35%',
-        alignItems: 'flex-start',
-    },
-    nameContainer: {
-        flex: 1,
-        left: '-175%',
-        alignItems: 'center',
-    },
-    nameText: {
-        fontWeight: 'bold',
-        fontSize: fontSizes.name,
-    },
-});

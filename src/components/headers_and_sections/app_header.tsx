@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 
 import { RootState } from '../../redux/store';
-import { colorPallete, fontSizes } from '../../assets/design_library';
+import { color_pallete, containers, texts } from '../../assets/common_styles';
 
 export type AppHeaderStackParamList = {
     Home: undefined;
@@ -26,19 +26,19 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
     const navigation = useNavigation<AppHeaderNavigationProp>();
 
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
+        <View style={containers.header}>
+            <View style={{ flex: 1, alignItems: 'flex-start' }}>
                 <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-                    <Image source={require('../../assets/images/small-black-logo.png')} style={styles.logo} />
+                    <Image source={require('../../assets/images/small-black-logo.png')} style={{ width: 45, height: 45 }} />
                 </TouchableOpacity>
             </View>
-            <View style={styles.nameContainer}>
-                <Text style={styles.nameText}>{name}</Text>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={texts.header}>{name}</Text>
             </View>
-            <View style={styles.profileContainer}>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                     <Image source={ picture ? { uri: picture } : require('../../assets/images/blank-profile-picture.png') }
-                           style={styles.profile}
+                           style={{ width: 45, height: 45, borderRadius: 35, borderWidth: 0.5, borderColor: color_pallete.black_gradiant['40%'] }}
                     />
                 </TouchableOpacity>
             </View>
@@ -47,41 +47,3 @@ const AppHeader: React.FC<HeaderProp> = ({ name }) =>
 };
 
 export default AppHeader;
-
-const styles = StyleSheet.create(
-{
-    container: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderBottomColor: colorPallete.black_gradiant["default"],
-    },
-    logoContainer: {
-        flex: 1,
-        alignItems: 'flex-start',
-    },
-    logo: {
-        width: 45,
-        height: 45,
-    },
-    nameContainer: {
-        flex: 1,
-        alignItems: 'center',
-    },
-    nameText: {
-        fontWeight: 'bold',
-        fontSize: fontSizes.name,
-    },
-    profileContainer: {
-        flex: 1,
-        alignItems: 'flex-end',
-    },
-    profile: {
-        width: 45,
-        height: 45,
-        borderRadius: 35,
-        borderWidth: 0.5,
-        borderColor: colorPallete.black_gradiant["40%"],
-    },
-});

@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import Swiper from 'react-native-swiper';
 import { useFocusEffect } from '@react-navigation/native';
-import { ScrollView, ActivityIndicator, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, Text, ActivityIndicator, View } from 'react-native';
 
 
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { DataManagementAPI } from '../../services/apis/data_management_api';
+
 import { STATUS } from '../../assets/constants';
+import { containers, onLightBackground, texts } from '../../assets/common_styles';
 
 import { GoalTracker, MusicDistribution } from '../../components';
-import { getDailyDateRanges, getWeeklyDateRanges, getMonthlyDateRanges, getOverallDateRanges,
-         formatWeeklyDateRange } from '../../helpers';
-
-import { DataManagementAPI } from '../../services/apis/data_management_api';
+import { getWeeklyDateRanges, formatWeeklyDateRange, getMonthlyDateRanges, getOverallDateRanges } from '../../helpers';
 
 
 const Progress = () =>
@@ -21,7 +21,6 @@ const Progress = () =>
     
     const dFilteredData = currentPracticeData.weeklyPracticeData.filter((plan) => plan.practiceDate === new Date().getDay());                                        
     const dailyHours = dFilteredData.reduce((sum, plan) => sum + plan.duration, 0);
-    console.log(dailyHours);
     const dailyPieces = dFilteredData.filter((plan) => plan.status === STATUS[2]).length;
 
     const weeklyHours = currentPracticeData.weeklyPracticeData.reduce((sum, plan) => sum + plan.duration, 0);
@@ -68,50 +67,36 @@ const Progress = () =>
 
 
     return (
-        <ScrollView style={{ flex: 1, backgroundColor: '#ECF1F7' }} showsVerticalScrollIndicator={false}>
-            <View style={{ width: '100%' }}>
-                <Text style={{ fontSize: 20, marginVertical: '5%', marginLeft: '5%' }}>Activity</Text>
-                {loading ? (
-                        <ActivityIndicator size="large" color='black' style={{ marginVertical: '20%'}}/>
+        <ScrollView style={onLightBackground.safeArea} showsVerticalScrollIndicator={false}>
+            <Text style={onLightBackground.sectionText}>Activity</Text>
+            {loading ? (
+                    <ActivityIndicator size='large' color='black' style={{ marginVertical: '20%'}}/>
+            ) : (
+                <Swiper showsButtons={false} showsPagination={true} style={{ height: 260 }}>
+                    <View style={containers.goal}>
+                        <GoalTracker title="Daily Hours" goal_amount={'2'} hours_amount={dailyHours} pieces_amount={dailyPieces} />
+                    </View>
+                    <View style={containers.goal}>
+                        <GoalTracker title="Weekly Hours" goal_amount={'14'} hours_amount={weeklyHours} pieces_amount={weeklyPieces} />
+                    </View>
+                    <View style={containers.goal}>
+                        <GoalTracker title="Monthly Hours" goal_amount={'56'} hours_amount={monthlyHours} pieces_amount={monthlyPieces} />
+                    </View>
+                    <View style={containers.goal}>
+                        <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
+                    </View>
+                </Swiper>
+            )}
+            <Text style={onLightBackground.sectionText}>Distribution</Text>
+            <View style={containers.innerView}>
+                {composersData.length > 0 ? (
+                    <MusicDistribution date={weeklyRange} composers={composersData}/>
                 ) : (
-                    <Swiper showsButtons={false} showsPagination={true} style={{ height: 260 }}>
-                        <View style={styles.goalContainer}>
-                            <GoalTracker title="Daily Hours" goal_amount={'2'} hours_amount={dailyHours} pieces_amount={dailyPieces} />
-                        </View>
-                        <View style={styles.goalContainer}>
-                            <GoalTracker title="Weekly Hours" goal_amount={'14'} hours_amount={weeklyHours} pieces_amount={weeklyPieces} />
-                        </View>
-                        <View style={styles.goalContainer}>
-                            <GoalTracker title="Monthly Hours" goal_amount={'56'} hours_amount={monthlyHours} pieces_amount={monthlyPieces} />
-                        </View>
-                        <View style={styles.goalContainer}>
-                            <GoalTracker title="Overall Hours" goal_amount={'10,000'} hours_amount={totalHours} pieces_amount={totalPieces} />
-                        </View>
-                    </Swiper>
+                    <Text style={texts.empty}>No distrbution available.</Text>
                 )}
-            </View>
-            <View style={{ width: '100%' }}>
-                <Text style={{ fontSize: 20, marginBottom: '7%', marginLeft: '5%' }}>Distribution</Text>
-                <View style={{ flex: 1, width: '100%', alignItems: 'center', alignSelf: 'center' }}>
-                    {composersData.length > 0 ? (
-                        <MusicDistribution
-                            date={weeklyRange}
-                            composers={composersData}
-                        />
-                    ) : (
-                        <Text style={{ fontSize: 16, marginBottom: '7%', fontStyle: 'italic', alignSelf: 'center' }}>No distrbution available.</Text>
-                    )}
-                </View>
             </View>
         </ScrollView>
     );
 }
 
 export default Progress;
-
-const styles = StyleSheet.create({
-    goalContainer: {
-        width: '100%',
-        alignItems: 'center',
-    },
-});
