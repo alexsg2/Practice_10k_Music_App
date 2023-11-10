@@ -2,7 +2,7 @@
 (For the full documentation, please visit the corresponding page at https://vtechworks.lib.vt.edu)
 
 ## For testing purposes
-- email = johndoe@gmail.com
+- email : johndoe@gmail.com
 - password : 123456789
                               
 ## Professor & Teaching Assisstance
