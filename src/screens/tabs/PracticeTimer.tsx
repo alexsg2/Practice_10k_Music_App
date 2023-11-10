@@ -49,11 +49,12 @@ const PracticeTimer = () =>
         try {
             setTimerOn(false);
             const totalHours = convertToHours(time);
-            if (totalHours !== 0) {
+            if (totalHours !== 0.00) {
                 const updates = { status: STATUS[1], duration: totalHours };
                 await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
                 { currPlan.status = STATUS[1], currPlan.duration = totalHours };
             }
+            setTime(0);
             navigation.goBack();
         }
         catch (e: any) {
@@ -64,14 +65,15 @@ const PracticeTimer = () =>
     async function handleNextPiece() {
         try {
             setTimerOn(false);
-            const updates = { status: STATUS[2], duration: convertToHours(time) };
+            const totalHours = convertToHours(time);
+            const updates = { status: STATUS[2], duration: totalHours };
             await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
-            { currPlan.status = STATUS[2], currPlan.duration = convertToHours(time) };
-            toPractice.splice(0, 1);
+            { currPlan.status = STATUS[2], currPlan.duration = totalHours };
             setTime(0);
             
-            if (toPractice.length === 0) {
+            if (toPractice.length === 1) {
                 navigation.goBack();
+                toPractice.splice(0, 1);
             }
         }
         catch (e: any) {
