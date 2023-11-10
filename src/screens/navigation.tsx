@@ -22,7 +22,7 @@ const initialSet = async (dispatch: any) =>
         dispatch(setPracticeData(modPracticeData));
     }
     catch (e) {
-        // TODO : Handle in some way ???
+        // Handle in any way
     }
 }
 

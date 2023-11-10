@@ -53,7 +53,6 @@ const PracticeTimer = () =>
                 const updates = { status: STATUS[1], duration: totalHours };
                 await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
                 { currPlan.status = STATUS[1], currPlan.duration = totalHours };
-                console.log(currPlan);
             }
             navigation.goBack();
         }
