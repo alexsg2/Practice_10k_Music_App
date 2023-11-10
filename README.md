@@ -1,6 +1,10 @@
 # Practice 10k Music App – Multimedia/Hypertext Capstone Project (Fall 2023)
 (For the full documentation, please visit the corresponding page at https://vtechworks.lib.vt.edu)
 
+## For testing purposes
+- email = johndoe@gmail.com
+- password : 123456789
+                              
 ## Professor & Teaching Assisstance
 - Dr. Mohamed Farag (mmagdy@vt.edu)
 - Cesar Smokowski (cesar8800@vt.edu)
