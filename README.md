@@ -1,7 +1,7 @@
 # Practice 10k Music App – Multimedia/Hypertext Capstone Project (Fall 2023)
 (For the full documentation, please visit the corresponding page at https://vtechworks.lib.vt.edu)
 
-## For testing purposes
+## For Testing Purposes
 - email : johndoe@gmail.com
 - password : 123456789
                               
