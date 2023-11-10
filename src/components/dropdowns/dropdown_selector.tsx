@@ -3,7 +3,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { StyleProp, ViewStyle, ScrollView, View, Text, TouchableOpacity } from 'react-native';
 
 
-import { colorPallete, fontSizes } from '../../assets/design_library';
+import { color_pallete, font_sizes, texts } from '../../assets/common_styles';
 
 interface DropDownProp {
     input: string,
@@ -11,7 +11,7 @@ interface DropDownProp {
     multiselect: boolean,
     selectedItems: string[];
     setSelectedItems: (items: string[]) => void;
-    altStyle: StyleProp<ViewStyle>[];
+    altStyle: StyleProp<ViewStyle>;
 }
   
 
@@ -37,8 +37,8 @@ const DropdownSelector: React.FC<DropDownProp> = ({ input, dataList, multiselect
 
     return (
         <View>
-            <TouchableOpacity onPress={() => setDropdownIsOpen(!dropdownIsOpen)} style={[altStyle[0]]}>
-                <Text style={selectedItems.length > 0 ? altStyle[1] : altStyle[2]}>
+            <TouchableOpacity onPress={() => setDropdownIsOpen(!dropdownIsOpen)} style={altStyle}>
+                <Text style={selectedItems.length > 0 ? texts.selected : texts.default}>
                     {selectedItems.length > 0 ? selectedItems.join(', ') : input}
                 </Text>
                 {dropdownIsOpen ? (
@@ -48,20 +48,25 @@ const DropdownSelector: React.FC<DropDownProp> = ({ input, dataList, multiselect
                 )}
             </TouchableOpacity>
             {dropdownIsOpen ? (
-                <ScrollView style={{ width: '100%', alignSelf: 'center', maxHeight: 250, marginTop: '-7%', marginBottom: '5%', borderRadius: 10, alignContent: 'center', backgroundColor: '#333333' }} >
-                    <Text style={{ flex: 1, alignSelf: 'center', marginVertical: '5%', fontWeight: 'bold', fontSize: fontSizes.button, color: colorPallete.white_gradiant["60%"] }}>
+                <ScrollView style={{ width: '100%', alignSelf: 'center', maxHeight: 250, marginTop: '-7%', marginBottom: '5%',
+                                     borderRadius: 10, alignContent: 'center', backgroundColor: color_pallete.darkGrey
+                                   }}
+                >
+                    <Text style={{ flex: 1, alignSelf: 'center', marginVertical: '5%', fontWeight: 'bold',
+                                   fontSize: font_sizes.sections, color: color_pallete.white_gradiant['60%']
+                                }}
+                    >
                         Options:
                     </Text>
                     {dataList.map((item, index) => (
                         <TouchableOpacity
                             key={index}
                             onPress={() => handleItemSelect(item)}
-                            style={[
-                                { padding: '7%', borderBottomWidth: 1, borderBottomColor: colorPallete.white_gradiant["60%"] },
-                                selectedItems.includes(item) ? { backgroundColor: colorPallete.white_gradiant["60%"] } : null
-                            ]}
+                            style={[{ padding: '7%', borderBottomWidth: 1, borderBottomColor: color_pallete.white_gradiant['60%'] },
+                                      selectedItems.includes(item) ? { backgroundColor: color_pallete.white_gradiant['60%'] } : null
+                                   ]}
                         >
-                            <Text style={{ flex: 1, alignSelf: 'center', fontSize: fontSizes.normal, color: colorPallete.white_gradiant["default"] }}>
+                            <Text style={{ flex: 1, alignSelf: 'center', fontSize: font_sizes.inputs, color: color_pallete.white_gradiant['default'] }}>
                                 {item}
                             </Text>
                         </TouchableOpacity>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { Ionicons, AntDesign } from '@expo/vector-icons'
 import { NavigationContainer } from '@react-navigation/native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -8,9 +7,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
 import { IPracticeDataProps } from '../../redux/reducers';
-
 import { AppHeader, PracticeTimerHeader, JournalDetailsHeader, EditHeader } from '../../components';
-// Import our custom screens here
+
 import Home from './Home';
 import Practice from './Practice';
 import PracticeTimer from './PracticeTimer';
@@ -69,12 +67,12 @@ function AppNavigation()
         <NavigationContainer>
             <Tab.Navigator>
                 <Tab.Screen name="Home" component={Home} 
-                    options={{tabBarIcon: (tabInfo) => (<Ionicons name="home-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
+                    options={{tabBarIcon: (tabInfo) => (<Ionicons name='home-outline' size={24} color={tabInfo.focused ? '#5982C2' : '#000000'}/>), 
                               headerTitle: () => <AppHeader name="Home"/>, 
-                              headerStyle: styles.header,
+                              headerStyle: { height: 115 },
                             }}/>
                 <Tab.Screen name="Practice" component={PracticeNavigationStack} 
-                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name="play" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
+                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name='play' size={24} color={tabInfo.focused ? '#5982C2' : '#000000'}/>), 
                                               headerTitle: () => {
                                                     const routeName = getFocusedRouteNameFromRoute(route);
                                                     if (routeName === 'PracticeTimer') {
@@ -83,15 +81,15 @@ function AppNavigation()
                                                         return <AppHeader name="Practice"/>;
                                                     }
                                              },
-                                             headerStyle: styles.header,
+                                             headerStyle: { height: 115 },
                                             })}/>
                 <Tab.Screen name="Progress" component={Progress} 
-                    options={{tabBarIcon: (tabInfo) => (<AntDesign name="barschart" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>), 
+                    options={{tabBarIcon: (tabInfo) => (<AntDesign name='barschart' size={24} color={tabInfo.focused ? '#5982C2' : '#000000'}/>), 
                               headerTitle: () => <AppHeader name="Progress"/>, 
-                              headerStyle: styles.header,
+                              headerStyle: { height: 115 },
                             }}/>
                 <Tab.Screen name="Journal" component={JournalNavigationStack}
-                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name="journal-outline" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
+                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<Ionicons name='journal-outline' size={24} color={tabInfo.focused ? '#5982C2' : '#000000'}/>), 
                                               headerTitle: () => {
                                                     const routeName = getFocusedRouteNameFromRoute(route);
                                                     if (routeName === 'JournalDetail') {
@@ -100,10 +98,10 @@ function AppNavigation()
                                                         return <AppHeader name="Journal"/>;
                                                     }
                                              },
-                                             headerStyle: styles.header,
+                                             headerStyle: { height: 115 },
                                             })}/>
                 <Tab.Screen name="Profile" component={ProfileNavigationStack}
-                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<AntDesign name="user" size={24} color={tabInfo.focused ? "#5982C2" : "#000000"}/>),
+                    options={({ route }) => ({tabBarIcon: (tabInfo) => (<AntDesign name='user' size={24} color={tabInfo.focused ? '#5982C2' : '#000000'}/>), 
                                               headerTitle: () => {
                                                     const routeName = getFocusedRouteNameFromRoute(route);
                                                     if (routeName === 'EditProfile') {
@@ -112,7 +110,7 @@ function AppNavigation()
                                                         return <AppHeader name="Profile"/>;
                                                     }
                                              },
-                                             headerStyle: styles.header,
+                                             headerStyle: { height: 115 },
                                             })}/>
               </Tab.Navigator>
           </NavigationContainer>
@@ -120,10 +118,3 @@ function AppNavigation()
 }
 
 export default AppNavigation;
-
-const styles = StyleSheet.create(
-{
-    header: {
-        height: 115,
-    },
-});

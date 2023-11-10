@@ -5,15 +5,16 @@ import { Alert, Modal, View, SafeAreaView, ScrollView, Text, TouchableOpacity } 
 
 
 import { RootState } from '../../../redux/store';
-import { STATUS } from '../../../assets/constants';
+import { validatePracticePlanDetails } from '../../../helpers';
+import { DataManagementAPI } from '../../../services/apis/data_management_api';
 import { IMusicPiecesProps, IPracticeDataProps } from '../../../redux/reducers';
+
+import { STATUS } from '../../../assets/constants';
+import { font_sizes, containers } from '../../../assets/common_styles';
 
 import AddNewPlan from './add_new_plan';
 import AddPrevPlan from './add_prev_plan';
 import AddPlanButtons from './add_plan_buttons';
-
-import { validatePracticePlanDetails } from '../../../helpers';
-import { DataManagementAPI } from '../../../services/apis/data_management_api';
 
 interface AddPlanContainerProps {
     weekDay: number;
@@ -48,17 +49,16 @@ const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ weekDay, view, setV
     selectedDate.setUTCHours(23, 59, 58, 0);
 
     async function handleSave(plan: any) {
-        const detailsError = validatePracticePlanDetails(plan.title, plan.piece, plan.composer, plan.instrument);
+        const detailsError = validatePracticePlanDetails(plan.title, plan.piece, plan.composer, plan.instrument[0]);
         if (detailsError) {
             Alert.alert('Invalid Details', detailsError, [{ text: 'OK' }]);
         }
         else {
             try {
-                const practiceId = await DataManagementAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument, selectedDate, plan.notes);
-                // TODO : is this valid ?? --> does it actually change redux
-                currentPracticeData.weeklyPracticeData.push({ id: practiceId, title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument,
+                const practiceId = await DataManagementAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument[0], selectedDate, plan.notes);
+                currentPracticeData.weeklyPracticeData.push({ id: practiceId, title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument[0],
                                                               practiceDate: weekDay, duration: 0, status: STATUS[0], notes: plan.notes } as IPracticeDataProps);
-                const musicPiece = { title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument, notes: plan.notes } as IMusicPiecesProps;
+                const musicPiece = { title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument[0], notes: plan.notes } as IMusicPiecesProps;
                 const existing = currentMusicPieces.musicPieces.find(item => item.title === musicPiece.title && item.piece === musicPiece.piece &&
                                                                      item.composer === musicPiece.composer && item.instrument === musicPiece.instrument &&
                                                                      item.notes === musicPiece.notes);                                              
@@ -76,20 +76,20 @@ const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ weekDay, view, setV
     
     return (
         <Modal animationType="fade" transparent={true} visible={view}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                <SafeAreaView style={{ flex: 0.70, width: '90%', backgroundColor: '#ECF1F7', borderRadius: 10 }}>
+            <View style={containers.backgroundModal}>
+                <SafeAreaView style={containers.safeModal}>
                     <ScrollView showsVerticalScrollIndicator={false}>
-                        <View style={{ width: '95%', padding: '5%', alignSelf: 'center', backgroundColor: '#ECF1F7' }}>
-                            <View style={{ width: '95%', marginBottom: '5%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <TouchableOpacity onPress={() => setView(false)} style={{ alignItems: 'flex-end', marginTop: 10 }}>
-                                    <Ionicons name="close" size={40} color='black'/>
+                        <View style={containers.innerModal}>
+                            <View style={containers.innerInnerModal}>
+                                <TouchableOpacity onPress={() => setView(false)} style={containers.closeModal}>
+                                    <Ionicons name='close' size={45} color='black'/>
                                 </TouchableOpacity>
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', left: '-120%', alignItems: 'center', }}>Add Piece</Text>
+                                <Text style={{ fontSize: font_sizes.headers, fontWeight: 'bold', left: '-120%', alignItems: 'center', }}>Add Piece</Text>
                             </View>
+                            {showInitialView && <AddPlanButtons openAddNewView={openAddNewView} openAddPrevView={openAddPrevView}/>}
+                            {showAddNewView && <AddNewPlan date={selectedDate} handleSave={handleSave}/>}
+                            {showAddPrevView && <AddPrevPlan handleSave={handleSave}/>}
                         </View>
-                        {showInitialView && <AddPlanButtons openAddNewView={openAddNewView} openAddPrevView={openAddPrevView}/>}
-                        {showAddNewView && <AddNewPlan date={selectedDate} handleSave={handleSave}/>}
-                        {showAddPrevView && <AddPrevPlan handleSave={handleSave}/>}
                     </ScrollView>
                 </SafeAreaView>
             </View>

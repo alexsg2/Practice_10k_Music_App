@@ -9,9 +9,9 @@ import { IPracticeDataProps } from '../../redux/reducers';
 import { validatePracticePlanDetails } from '../../helpers';
 import { DataManagementAPI } from '../../services/apis/data_management_api';
 
-import DropdownSelector from '../dropdowns/dropdown_selector';
-import { bottomStyles, componentStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
 import { DAYS } from '../../assets/constants';
+import DropdownSelector from '../dropdowns/dropdown_selector';
+import { font_sizes, containers, onLightBackground, buttons, texts } from '../../assets/common_styles';
 
 interface ViewPlanDetailsProp {
     plan: IPracticeDataProps;
@@ -44,7 +44,6 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ plan, view, setView })
             try {
                 const updates = { title, piece, composer, instrument: instrument[0], notes};
                 await DataManagementAPI.updatePracticeDataByField(plan.id, updates);
-                // TODO : is this valid ?? --> does it actually change redux
                 { plan.title = title; plan.piece = piece; plan.composer = composer; plan.instrument = instrument[0]; plan.notes = notes; }
                 setView(false);
             }
@@ -57,7 +56,6 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ plan, view, setView })
     async function handleDelete() {
         Alert.alert('Practice Plan Deletion','Are you sure you want to delete this plan?',
                    [{ text: 'Yes', onPress: async () => { await DataManagementAPI.deletePracticeData(plan.id); 
-                                                          // TODO : is this valid ?? --> does it actually change redux
                                                           const index = currentPracticeData.weeklyPracticeData.findIndex((item) => item.id === plan.id);
                                                           if (index !== -1) {
                                                               currentPracticeData.weeklyPracticeData.splice(index, 1);
@@ -71,123 +69,123 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ plan, view, setView })
 
     return (
         <Modal animationType="fade" transparent={true} visible={view}>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                <SafeAreaView style={{ flex: 0.70, width: '90%', backgroundColor: '#ECF1F7', borderRadius: 10 }}>
+            <View style={containers.backgroundModal}>
+                <SafeAreaView style={containers.safeModal}>
                     <ScrollView showsVerticalScrollIndicator={false}>
-                        <View style={{ width: '95%', padding: '5%', alignSelf: 'center', backgroundColor: '#ECF1F7' }}>
-                            <View style={{ width: '95%', marginBottom: '5%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <TouchableOpacity onPress={() => setView(false)} style={{ alignItems: 'flex-end', marginTop: 10 }}>
-                                    <Ionicons name="close" size={40} color='black'/>
+                        <View style={containers.innerModal}>
+                            <View style={containers.innerInnerModal}>
+                                <TouchableOpacity onPress={() => setView(false)} style={containers.closeModal}>
+                                    <Ionicons name='close' size={45} color='black'/>
                                 </TouchableOpacity>
-                                <Text style={{ fontSize: 25, fontWeight: 'bold', left: '-95%', alignItems: 'center', }}>Plan Details</Text>
+                                <Text style={{ fontSize: font_sizes.headers, fontWeight: 'bold', left: '-105%', alignItems: 'center', }}>Plan Details</Text>
                             </View>
                             {plan.practiceDate >= (new Date()).getDay() ? (
                                 <View>
-                                    <Text style={inputStyles.profileLabelText}>Title</Text>
+                                    <Text style={onLightBackground.sectionText}>Title</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         placeholder={title}
                                         placeholderTextColor='#CCCCCC'
                                         onChangeText={(text) => setTitle(text)}
                                         value={title}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Piece</Text>
+                                    <Text style={onLightBackground.sectionText}>Piece</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         placeholder={piece}
                                         placeholderTextColor='#CCCCCC'
                                         onChangeText={(text) => setPiece(text)}
                                         value={piece}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Composer</Text>
+                                    <Text style={onLightBackground.sectionText}>Composer</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         placeholder={composer}
                                         placeholderTextColor='#CCCCCC'
                                         onChangeText={(text) => setComposer(text)}
                                         value={composer}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                                    <Text style={onLightBackground.sectionText}>Instrument</Text>
                                     <DropdownSelector input={'Select an instrument'} dataList={instruments}
-                                                    multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
-                                                    altStyle={[componentStyles.profileComponentButton, componentStyles.selectedText, componentStyles.defaultText]}
+                                                      multiselect={false} selectedItems={instrument} setSelectedItems={setInstrument}
+                                                      altStyle={onLightBackground.dropdown}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Practice Date</Text>
+                                    <Text style={onLightBackground.sectionText}>Practice Date</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={DAYS[plan.practiceDate]}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Notes</Text>
+                                    <Text style={onLightBackground.sectionText}>Notes</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         placeholder={notes}
                                         placeholderTextColor='#CCCCCC'
                                         onChangeText={(text) => setNotes(text)}
                                         value={notes}
                                     />
-                                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                                        <TouchableOpacity onPress={handleSave} style={bottomStyles.smallBlackButton}>
-                                            <Text style={bottomStyles.buttonText}>Save</Text>
+                                    <View style={containers.doubleButton}>
+                                        <TouchableOpacity onPress={handleSave} style={buttons.smallBlack}>
+                                            <Text style={texts.button}>Save</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={handleDelete} style={bottomStyles.smallRedButton}>
-                                            <Text style={bottomStyles.buttonText}>Delete</Text>
+                                        <TouchableOpacity onPress={handleDelete} style={buttons.smallRed}>
+                                            <Text style={texts.button}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             ) : (
                                 <View>
-                                    <Text style={inputStyles.profileLabelText}>Title</Text>
+                                    <Text style={onLightBackground.sectionText}>Title</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={title}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Piece</Text>
+                                    <Text style={onLightBackground.sectionText}>Piece</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={piece}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Composer</Text>
+                                    <Text style={onLightBackground.sectionText}>Composer</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={composer}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                                    <Text style={onLightBackground.sectionText}>Instrument</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={instrument[0]}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Practice Date</Text>
+                                    <Text style={onLightBackground.sectionText}>Practice Date</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={DAYS[plan.practiceDate]}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Duration (in hours)</Text>
+                                    <Text style={onLightBackground.sectionText}>Duration (in hours)</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={duration.toString()}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Status</Text>
+                                    <Text style={onLightBackground.sectionText}>Status</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={status}
                                         editable={false}
                                     />
-                                    <Text style={inputStyles.profileLabelText}>Notes</Text>
+                                    <Text style={onLightBackground.sectionText}>Notes</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         value={notes}
                                         editable={false}
                                     />
-                                    <View style={{ width: '70%', alignSelf: 'center' }}>
-                                        <TouchableOpacity onPress={handleDelete} style={bottomStyles.redButton}>
-                                            <Text style={bottomStyles.buttonText}>Delete</Text>
+                                    <View style={containers.doubleButton}>
+                                        <TouchableOpacity onPress={handleDelete} style={buttons.smallRed}>
+                                            <Text style={texts.button}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>

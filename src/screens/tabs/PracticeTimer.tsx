@@ -6,6 +6,7 @@ import { Alert, SafeAreaView, ScrollView, View, Text, TouchableOpacity, StyleShe
 
 import { STATUS } from '../../assets/constants';
 import { IPracticeDataProps } from '../../redux/reducers';
+import { color_pallete, font_sizes, containers, onLightBackground, texts, buttons, } from '../../assets/common_styles';
 
 import { convertToHours } from '../../helpers';
 import { DataManagementAPI } from '../../services/apis/data_management_api';
@@ -47,15 +48,11 @@ const PracticeTimer = () =>
     async function handleStopSession() {
         try {
             setTimerOn(false);
-            console.log(time);
             const totalHours = convertToHours(time);
-            console.log(totalHours);
             if (totalHours !== 0) {
                 const updates = { status: STATUS[1], duration: totalHours };
                 await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
-                // TODO : is this valid ?? --> does it actually change redux
                 { currPlan.status = STATUS[1], currPlan.duration = totalHours };
-                console.log(currPlan);
             }
             navigation.goBack();
         }
@@ -67,9 +64,7 @@ const PracticeTimer = () =>
     async function handleNextPiece() {
         try {
             setTimerOn(false);
-            console.log(time);
             const updates = { status: STATUS[2], duration: convertToHours(time) };
-            console.log(convertToHours(time));
             await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
             { currPlan.status = STATUS[2], currPlan.duration = convertToHours(time) };
             toPractice.splice(0, 1);
@@ -86,66 +81,73 @@ const PracticeTimer = () =>
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
+        <SafeAreaView style={onLightBackground.safeArea}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: '2.5%', paddingHorizontal: '5%' }}>
-                    <View style={{ flex: 1, alignItems: 'flex-start' }}>
-                        <Text style={{ fontSize: 12 }}>Now Playing:</Text>
-                        <Text style={{ fontSize: 10, marginTop: 5 }}>{currPlan.composer} - {currPlan.piece}</Text>
+                    <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: '2%' }}>
+                        <Text style={{ fontSize: font_sizes.inputs }}>Now Playing:</Text>
+                        <Text style={{ fontSize: font_sizes.footers, marginTop: '5%' }}>{currPlan.composer} - {currPlan.piece}</Text>
                     </View>
                     {timerVisible && (
                         <View style={{ flex: 1, alignItems: 'center' }}>
-                            <Text style={{ fontSize: 20 }}>
+                            <Text style={{ fontSize: font_sizes.sections }}>
                                 { Math.floor(time / 3600).toString().padStart(2, '0') }:
                                 { Math.floor((time % 3600) / 60).toString().padStart(2, '0') }:
                                 { (time % 60).toString().padStart(2, '0') }
                             </Text>
                         </View>
                     )}
-                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                    <View style={{ flex: 1, alignItems: 'flex-end', marginRight: '2%' }}>
                         <TouchableOpacity onPress={() => setTimerVisible(!timerVisible)}
-                                            style={{ padding: '7%', borderRadius: 5, backgroundColor: '#7BC3E9' }}
+                                            style={{ padding: '7%', borderRadius: 5, backgroundColor: color_pallete.blue_gradiant['60%'] }}
                         >
-                            <Text style={{ fontSize: 14 }}>{ timerVisible ? ' Hide\nTimer' : 'Show\nTimer' }</Text>
+                            <Text style={{ fontSize: font_sizes.touchables }}>{ timerVisible ? ' Hide\nTimer' : 'Show\nTimer' }</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
                 {!currPlan ? (
                     <Text>No More Plans</Text>
                 ) : (
-                    <View style={{ width: '90%', minHeight: '55%', flexDirection: 'column', alignSelf: 'center', alignItems: 'center', borderRadius: 10, padding: '5%', backgroundColor: '#5982C2' }}>
-                        <Text style={{ fontSize: 36, fontWeight: 'bold', textAlign: 'center', paddingBottom: '7%' }}>{currPlan.title}</Text>
-                        <View style={styles.planDetailsContainer}>
-                            <Text style={styles.planTitleText}>Piece: </Text>
-                            <Text style={styles.planValueText}>{currPlan.piece}</Text>
+                    <View style={{ width: '90%', minHeight: '55%', padding: '5%', borderRadius: 10, flexDirection: 'column',
+                                   alignSelf: 'center', alignItems: 'center', backgroundColor: '#5982C2'
+                                }}
+                    >
+                        <Text style={texts.cardTitle}>{currPlan.title}</Text>
+                        <View style={containers.list}>
+                            <Text style={texts.cardField}>Piece: </Text>
+                            <Text style={texts.cardValue}>{currPlan.piece}</Text>
                         </View>
-                        <View style={styles.planDetailsContainer}>
-                            <Text style={styles.planTitleText}>Composer: </Text>
-                            <Text style={styles.planValueText}>{currPlan.composer}</Text>
+                        <View style={containers.list}>
+                            <Text style={texts.cardField}>Composer: </Text>
+                            <Text style={texts.cardValue}>{currPlan.composer}</Text>
                         </View>
-                        <View style={styles.planDetailsContainer}>
-                            <Text style={styles.planTitleText}>Instrument: </Text>
-                            <Text style={styles.planValueText}>{currPlan.instrument}</Text>
+                        <View style={containers.list}>
+                            <Text style={texts.cardField}>Instrument: </Text>
+                            <Text style={texts.cardValue}>{currPlan.instrument}</Text>
                         </View>
-                        <Text style={{ fontSize: 26, fontWeight: 'bold', alignSelf: 'flex-start', padding: '2%' }}>Notes: </Text>
-                        <Text style={{ fontStyle: 'italic', fontSize: 24, paddingHorizontal: '7%' }}>{currPlan.notes}</Text>
+                        <View style={containers.list}>
+                            <Text style={texts.cardField}>Notes: </Text>
+                            <Text style={texts.cardValue}>{currPlan.notes}</Text>
+                        </View>
                     </View>
                 )}
                 <View style={{ width: '100%', alignItems: 'center', marginVertical: '5%' }}>
                     <TouchableOpacity onPress={() => setTimerOn(prevState => !prevState)}
-                                        style={{ width: '90%', borderRadius: 10, padding: '6%', marginVertical: '3%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#7BC3E9' }}
+                                        style={{ width: '90%', padding: '5%', marginBottom: '5%', borderRadius: 10, alignSelf: 'center', alignItems: 'center',
+                                                 flexDirection: 'row', justifyContent: 'center', backgroundColor: color_pallete.blue_gradiant['60%']
+                                               }}
                     >
                         <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{ timerOn ? 'Pause Timer  ' : 'Start Timer  '}</Text>
-                        <Ionicons name={ timerOn ? "pause" : "play" } size={25} color="black" />
+                        <Ionicons name={ timerOn ? 'pause' : 'play' } size={25} color='black' />
                     </TouchableOpacity>
-                    <View style={{ width: '90%', flexDirection: 'row', justifyContent: 'space-between', marginVertical: '3%' }}>
-                        <TouchableOpacity onPress={handleStopSession} style={styles.buttonContainer}>
-                            <Text style={styles.buttonText}>Stop Session  </Text>
-                            <Ionicons name="square" size={25} color="black" />
+                    <View style={containers.doubleButton}>
+                        <TouchableOpacity onPress={handleStopSession} style={buttons.smallBlue}>
+                            <Text style={onLightBackground.buttonText}>Stop Session  </Text>
+                            <Ionicons name='square' size={25} color='black' />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handleNextPiece} style={styles.buttonContainer}>
-                            <Text style={styles.buttonText}>Next Piece  </Text>
-                            <Ionicons name="arrow-redo" size={25} color="black" />
+                        <TouchableOpacity onPress={handleNextPiece} style={buttons.smallBlue}>
+                            <Text style={onLightBackground.buttonText}>Next Piece  </Text>
+                            <Ionicons name='arrow-redo' size={25} color='black' />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -155,33 +157,3 @@ const PracticeTimer = () =>
 }
 
 export default PracticeTimer;
-
-const styles = StyleSheet.create(
-{
-    planDetailsContainer: {
-        width: '100%',
-        padding: '2%',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    planTitleText: {
-        fontSize: 26,
-        fontWeight: 'bold',
-    },
-    planValueText: {
-        fontSize: 24,
-    },
-    buttonContainer: {
-        width: '48%',
-        padding: '5%',
-        borderRadius: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#7BC3E9',
-    },
-    buttonText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-});

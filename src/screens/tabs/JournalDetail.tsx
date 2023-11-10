@@ -1,17 +1,16 @@
 import React from 'react';
 import { RouteProp, useRoute } from '@react-navigation/native';
-import { SafeAreaView, ScrollView, Text, View, TextInput, StyleSheet } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View, TextInput } from 'react-native';
 
 
-// TODO : encapsulate Timestamp in APIs
-import { Timestamp } from 'firebase/firestore';
-import { containerStyles, inputStyles } from '../../assets/styles/auth_and_profile_styles';
+import { color_pallete, containers, font_sizes, onLightBackground, texts } from '../../assets/common_styles';
 
 type JournalParamList = {
     JournalDetail: { item: { title: string; piece: string; composer: string; instrument: string;
-                             duration: number; practiceDate: Timestamp; status: string; notes: string } };
-  };
-
+                             duration: number; practiceDate: any; status: string; notes: string;
+                           }
+                   };
+};
 type JournalDetailRouteProp = RouteProp<JournalParamList, 'JournalDetail'>;
 
 
@@ -21,54 +20,51 @@ const JournalDetail = () =>
     const item = route.params.item
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
+        <SafeAreaView style={onLightBackground.safeArea}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={containerStyles.innerContainer}>
-                    <Text style={{ fontSize: 30, fontWeight: 'bold', padding: '5%', textAlign: 'center' }}>{item.title}</Text>
-                    <View style={containerStyles.inputContainer}>
-                        <Text style={inputStyles.profileLabelText}>Piece</Text>
+                <View style={containers.innerView}>
+                    <Text style={texts.cardTitle}>{item.title}</Text>
+                    <View style={containers.input}>
+                        <Text style={onLightBackground.sectionText}>Piece</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={item.piece}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Composer</Text>
+                        <Text style={onLightBackground.sectionText}>Composer</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={item.composer}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Instrument</Text>
+                        <Text style={onLightBackground.sectionText}>Instrument</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={item.instrument}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Date</Text>
+                        <Text style={onLightBackground.sectionText}>Date</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={item.practiceDate.toDate().toDateString()}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Duration (in hrs)</Text>
+                        <Text style={onLightBackground.sectionText}>Duration (in hrs)</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={item.duration.toString()}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Status</Text>
+                        <Text style={onLightBackground.sectionText}>Status</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={item.status}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Notes</Text>
-                        {/* TODO : make the space for notes bigger */}
-                        <TextInput
-                            style={inputStyles.profileInputBox}
-                            value={item.notes}
-                            editable={false}
-                        />
+                        <Text style={onLightBackground.sectionText}>Notes:</Text>
+                        <Text style={onLightBackground.notesInputBox}>
+                            {item.notes}
+                        </Text>
                     </View>
                 </View>
             </ScrollView>

@@ -7,7 +7,7 @@ import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, Aler
 import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
-import { containerStyles, componentStyles, inputStyles, bottomStyles } from "../../assets/styles/auth_and_profile_styles";
+import { onDarkBackground, containers, buttons, texts } from '../../assets/common_styles';
 
 import { AuthStackParamList} from './auth_navigation';
 type resetPasswordScreenProp = StackNavigationProp<AuthStackParamList, 'ResetPassword'>;
@@ -39,23 +39,23 @@ const ResetPassword = () =>
 
     
     return (
-        <SafeAreaView style={containerStyles.safeContainer}>
+        <SafeAreaView style={onDarkBackground.safeArea}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={containerStyles.innerContainer}>
-                    <ProfileLogoSection title={'Reset Password.'} profile={false} altStyle={[componentStyles.authTitleText]}/>
-                    <View style={containerStyles.inputContainer}>
-                        <Text style={inputStyles.authLabelText}>Email</Text>
+                <View style={containers.innerView}>
+                    <ProfileLogoSection title={'Reset Password.'} profile={false} altStyle={[onDarkBackground.titleText]}/>
+                    <View style={containers.input}>
+                        <Text style={onDarkBackground.sectionText}>Email</Text>
                         <TextInput
-                            style={inputStyles.authInputBox}
+                            style={onDarkBackground.inputBox}
                             placeholder='Enter email address'
                             placeholderTextColor='#CCCCCC'
                             onChangeText={(text) => setEmail(text)}
                             value={email}
                         />
                     </View>
-                    <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity onPress={handleReset} style={bottomStyles.blackButton}>
-                            <Text style={bottomStyles.buttonText}>Reset Password</Text>
+                    <View style={containers.singleButton}>
+                        <TouchableOpacity onPress={handleReset} style={buttons.largeBlack}>
+                            <Text style={texts.button}>Reset Password</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

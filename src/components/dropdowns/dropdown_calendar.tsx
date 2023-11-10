@@ -4,13 +4,13 @@ import DatePicker from 'react-native-modern-datepicker';
 import { StyleProp, ViewStyle, View, Text, TouchableOpacity } from 'react-native';
 
 
-import { colorPallete } from '../../assets/design_library';
+import { color_pallete, texts } from '../../assets/common_styles';
 
 interface DropDownProp {
     input: string,
     selectedDate: string,
     setDate: (selectedDate: string) => void;
-    altStyle: StyleProp<ViewStyle>[];
+    altStyle: StyleProp<ViewStyle>;
 }
 
 
@@ -28,25 +28,27 @@ const DropdownCalendar: React.FC<DropDownProp> = ({ input, selectedDate, setDate
     return (
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             <TouchableOpacity onPress={() => setShowDatePicker(!showDatePicker)}
-                              style={altStyle[0]}
+                              style={altStyle}
             >
-                <Text style={selectedDate !== '' ? altStyle[1] : altStyle[2]}>
+                <Text style={selectedDate !== '' ? texts.selected : texts.default}>
                     {selectedDate !== '' ? selectedDate : input}
                 </Text>
-                <Ionicons name="calendar-sharp" size={30} color="white" onPress={() => setShowDatePicker(!showDatePicker)}/>
+                <Ionicons name='calendar-sharp' size={30} color='white' onPress={() => setShowDatePicker(!showDatePicker)}/>
             </TouchableOpacity>
             {showDatePicker && (
                 <DatePicker
-                    style={{borderRadius: 10, marginTop: '-5%', marginBottom: '5%', borderWidth: 1, borderColor: colorPallete.black_gradiant["20%"]}}
+                    style={{ marginTop: '-5%', marginBottom: '5%', borderRadius: 10, borderWidth: 1,
+                             borderColor: color_pallete.black_gradiant['20%']
+                          }}
                     mode="calendar"
                     selectorEndingYear={(new Date()).getFullYear()}
-                    options={{ backgroundColor: '#333333',
-                               textHeaderColor: colorPallete.white_gradiant["default"],
-                               textDefaultColor: colorPallete.white_gradiant["default"],
-                               selectedTextColor: colorPallete.blue_gradiant["default"],
-                               mainColor: colorPallete.white_gradiant["default"],
-                               textSecondaryColor: colorPallete.white_gradiant["default"],
-                               borderColor: colorPallete.white_gradiant["20%"],
+                    options={{ backgroundColor: color_pallete.darkGrey,
+                               textHeaderColor: color_pallete.white_gradiant['default'],
+                               textDefaultColor: color_pallete.white_gradiant['default'],
+                               selectedTextColor: color_pallete.blue_gradiant['default'],
+                               mainColor: color_pallete.white_gradiant['default'],
+                               textSecondaryColor: color_pallete.white_gradiant['default'],
+                               borderColor: color_pallete.white_gradiant['20%'],
                             }}
                     onSelectedChange={handleDateChange}
                 />

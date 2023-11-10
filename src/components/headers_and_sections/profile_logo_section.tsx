@@ -8,7 +8,7 @@ import { RootState } from '../../redux/store';
 import { setProfile } from '../../redux/actions';
 import { DataManagementAPI } from '../../services/apis/data_management_api';
 
-import { colorPallete } from '../../assets/design_library';
+import { color_pallete, buttons, texts } from '../../assets/common_styles';
 
 
 interface ProfileLogoProp {
@@ -16,7 +16,7 @@ interface ProfileLogoProp {
     profile: boolean,
     picture?: string,
     setPicture?: (newPicture: string) => void;
-    altStyle: StyleProp<ViewStyle>[];
+    altStyle: StyleProp<ViewStyle>;
 }
   
 const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, picture, setPicture, altStyle }) =>
@@ -54,17 +54,17 @@ const ProfileLogoSection: React.FC<ProfileLogoProp> = ({ title, profile, picture
         <View style={{ flex: 1, width: '80%', alignItems: 'center', justifyContent: 'center' }}>
             {profile ? (
                 <Image source={ picture ? { uri: picture } : require('../../assets/images/blank-profile-picture.png') }
-                       style={{ width: 150, height: 150, marginTop: '10%', borderWidth: 1, borderRadius: 75, borderColor: colorPallete.black_gradiant["40%"] }}
+                       style={{ width: 150, height: 150, marginTop: '10%', borderWidth: 1, borderRadius: 75, borderColor: color_pallete.black_gradiant['40%'] }}
                 />
             ) : (
                 <Image source={ require('../../assets/images/med-white-logo.png')} style={{ aspectRatio: 1, marginTop: '10%' }}/>
             )}
             {title !== '' ? (
-                <Text style={altStyle[0]}>{title}</Text>
+                <Text style={altStyle}>{title}</Text>
             ) : null}
             {profile ? (
-                <TouchableOpacity onPress={changeProfilePicture} style={altStyle[1]}>
-                    <Text style={altStyle[2]}>Change Profile Picture</Text>
+                <TouchableOpacity onPress={changeProfilePicture} style={buttons.changePicture}>
+                    <Text style={texts.changePicture}>Change Profile Picture</Text>
                 </TouchableOpacity>
             ) : null}
         </View>

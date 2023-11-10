@@ -9,8 +9,7 @@ import { RootState } from '../../redux/store';
 import { AuthenticationAPI } from '../../services/apis/authentication_api';
 
 import { ProfileLogoSection } from '../../components';
-import { colorPallete } from '../../assets/design_library';
-import { containerStyles, componentStyles, inputStyles, bottomStyles } from '../../assets/styles/auth_and_profile_styles';
+import { color_pallete, font_sizes, onLightBackground, containers, buttons, texts } from '../../assets/common_styles';
 
 
 import { ProfileStackParamList } from './app_navigation';
@@ -57,50 +56,50 @@ const Profile = () =>
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#ECF1F7' }}>
+        <SafeAreaView style={onLightBackground.safeArea}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={containerStyles.innerContainer}>
+                <View style={containers.innerView}>
                     <ProfileLogoSection title={name} profile={true} picture={profilePicture}
-                                        altStyle={[componentStyles.profileTitleText, componentStyles.profileChangePictureButton, componentStyles.profileChangeText]}
+                                        altStyle={onLightBackground.titleText}
                     />
                     <View style={{ flex: 1, width: '90%', marginBottom: '2%', borderRadius: 10, alignItems: 'flex-end', justifyContent: 'flex-end' }}>
                         <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}
-                                          style={{ paddingVertical: '3%', paddingHorizontal: '5%', borderRadius: 10,
-                                                   alignItems: 'flex-end', justifyContent: 'flex-end', backgroundColor: colorPallete.black_gradiant["60%"]
+                                          style={{ paddingVertical: '3%', paddingHorizontal: '5%', borderRadius: 10, alignItems: 'flex-end',
+                                                   justifyContent: 'flex-end', backgroundColor: color_pallete.black_gradiant['60%']
                                                 }}
                         >
-                            <Text style={{ fontWeight: 'bold', fontSize: 14, color: 'white' }}>Edit</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 14, color: color_pallete.white_gradiant['default'] }}>Edit</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={containerStyles.inputContainer}>
-                        <Text style={inputStyles.profileLabelText}>Email</Text>
+                    <View style={containers.input}>
+                        <Text style={onLightBackground.sectionText}>Email</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={email}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Date of Birth</Text>
+                        <Text style={onLightBackground.sectionText}>Date of Birth</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={dateOfBirth}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Level</Text>
+                        <Text style={onLightBackground.sectionText}>Level</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={level}
                             editable={false}
                         />
-                        <Text style={inputStyles.profileLabelText}>Instrument(s)</Text>
+                        <Text style={onLightBackground.sectionText}>Instrument(s)</Text>
                         <TextInput
-                            style={inputStyles.profileInputBox}
+                            style={onLightBackground.inputBox}
                             value={instruments.length > 0 ? instruments.join(', ') : instruments[0]}
                             editable={false}
                         />
                     </View>
-                    <View style={containerStyles.buttonContainer}>
-                        <TouchableOpacity onPress={handleLogout} style={bottomStyles.blackButton}>
-                            <Text style={bottomStyles.buttonText}>Logout</Text>
+                    <View style={containers.singleButton}>
+                        <TouchableOpacity onPress={handleLogout} style={buttons.largeBlack}>
+                            <Text style={texts.button}>Logout</Text>
                         </TouchableOpacity>
                         <Modal
                             animationType="fade"
@@ -108,30 +107,31 @@ const Profile = () =>
                             visible={modalVisible}
                             onRequestClose={() => {setModalVisible(!modalVisible);
                             }}>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                                <View style={{ flex: 0.25, width: '90%', padding: '5%', alignSelf: 'center', justifyContent: 'center', backgroundColor: 'white', borderRadius: 10 }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: '5%', alignSelf: 'center' }}>Confirm Account Deletion</Text>
+                            <View style={containers.backgroundModal}>
+                                <View style={{ flex: 0.25, width: '90%', padding: '5%', borderRadius: 10, alignSelf: 'center',
+                                               justifyContent: 'center', backgroundColor: color_pallete.white_gradiant['default'] }}>
+                                    <Text style={{ fontSize: font_sizes.sections, fontWeight: 'bold', marginVertical: '5%', alignSelf: 'center' }}>Confirm Deletion</Text>
                                     <TextInput
-                                        style={inputStyles.profileInputBox}
+                                        style={onLightBackground.inputBox}
                                         placeholder='Enter your password'
                                         placeholderTextColor='#CCCCCC'
                                         secureTextEntry
                                         onChangeText={(text) => setPassword(text)}
                                         value={password}
                                     />
-                                    <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-                                        <TouchableOpacity onPress={handleDeletion} style={bottomStyles.smallRedButton}>
-                                            <Text style={bottomStyles.buttonText}>Confirm</Text>
+                                    <View style={containers.doubleButton}>
+                                        <TouchableOpacity onPress={handleDeletion} style={buttons.smallRed}>
+                                            <Text style={texts.button}>Confirm</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => setModalVisible(false)} style={bottomStyles.smallBlackButton}>
-                                            <Text style={bottomStyles.buttonText}>Cancel</Text>
+                                        <TouchableOpacity onPress={() => setModalVisible(false)} style={buttons.smallBlack}>
+                                            <Text style={texts.button}>Cancel</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             </View>
                         </Modal>
-                        <TouchableOpacity onPress={() => setModalVisible(true)} style={bottomStyles.redButton}>
-                            <Text style={bottomStyles.buttonText}>Delete Account</Text>
+                        <TouchableOpacity onPress={() => setModalVisible(true)} style={buttons.largeRed}>
+                            <Text style={texts.button}>Delete Account</Text>
                         </TouchableOpacity>
                     </View> 
                 </View>   
