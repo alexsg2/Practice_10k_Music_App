@@ -74,7 +74,7 @@ const AddNewPlan: React.FC<AddNewPlanProp> = ({ date, handleSave }) =>
                 />
             </View>
             <View style={containers.doubleButton}>
-                <TouchableOpacity onPress={() => handleSave({ title, piece, notes, composer, instrument })}
+                <TouchableOpacity onPress={() => handleSave({ title, piece, notes, composer, instrument: instrument[0] })}
                                   style={buttons.smallRed}>
                     <Text style={texts.button}>Save</Text>
                 </TouchableOpacity>

@@ -45,20 +45,20 @@ const AddPlanContainer: React.FC<AddPlanContainerProps> = ({ weekDay, view, setV
     const selectedDate = new Date();
     const currDay = selectedDate.getDay();
     const difference = weekDay - currDay;
-    const date = selectedDate.setDate(selectedDate.getDate() + difference);
+    selectedDate.setDate(selectedDate.getDate() + difference);
     selectedDate.setUTCHours(23, 59, 58, 0);
 
     async function handleSave(plan: any) {
-        const detailsError = validatePracticePlanDetails(plan.title, plan.piece, plan.composer, plan.instrument[0]);
+        const detailsError = validatePracticePlanDetails(plan.title, plan.piece, plan.composer, plan.instrument);
         if (detailsError) {
             Alert.alert('Invalid Details', detailsError, [{ text: 'OK' }]);
         }
         else {
             try {
-                const practiceId = await DataManagementAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument[0], selectedDate, plan.notes);
+                const practiceId = await DataManagementAPI.addPracticeData(plan.title, plan.piece, plan.composer, plan.instrument, selectedDate, plan.notes);
                 currentPracticeData.weeklyPracticeData.push({ id: practiceId, title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument[0],
                                                               practiceDate: weekDay, duration: 0, status: STATUS[0], notes: plan.notes } as IPracticeDataProps);
-                const musicPiece = { title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument[0], notes: plan.notes } as IMusicPiecesProps;
+                const musicPiece = { title: plan.title, piece: plan.piece, composer: plan.composer, instrument: plan.instrument, notes: plan.notes } as IMusicPiecesProps;
                 const existing = currentMusicPieces.musicPieces.find(item => item.title === musicPiece.title && item.piece === musicPiece.piece &&
                                                                      item.composer === musicPiece.composer && item.instrument === musicPiece.instrument &&
                                                                      item.notes === musicPiece.notes);                                              
