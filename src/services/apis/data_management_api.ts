@@ -216,7 +216,7 @@ export const DataManagementAPI =
                                              pieces++;
                                          }
                                        });
-            return [hours, pieces];
+            return [pieces, hours];
         }
         else {
             throw new Error('User is undefined. Cannot get practice data.');

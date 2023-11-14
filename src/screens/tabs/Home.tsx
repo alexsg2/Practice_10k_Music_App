@@ -20,7 +20,7 @@ const Home = () =>
         setLoading(true);
         try {
             const dates = getOverallDateRanges();
-            const [hours, pieces] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dates[0], dates[1]);
+            const [pieces, hours] = await DataManagementAPI.getPracticeHoursAndPiecesByDate(dates[0], dates[1]);
             setTotalHours(hours);
             setTotalPieces(pieces);
         }
