@@ -212,7 +212,7 @@ export const DataManagementAPI =
             let [hours, pieces] = [0, 0];
             querySnap.forEach((doc) => { const practiceDoc = doc.data();
                                          if (practiceDoc.status !== STATUS[0]) {
-                                             hours++;
+                                             hours += practiceDoc.duration;
                                              pieces++;
                                          }
                                        });
