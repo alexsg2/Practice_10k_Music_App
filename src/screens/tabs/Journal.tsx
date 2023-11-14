@@ -6,7 +6,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
 
 
-import { buttons, onLightBackground } from '../../assets/common_styles';
+import { buttons, onLightBackground, texts } from '../../assets/common_styles';
 
 import { getMonthlyDateRangeFromDate } from '../../helpers';
 import { DataManagementAPI } from '../../services/apis/data_management_api';
@@ -49,18 +49,24 @@ const Journal = () =>
         </View>
       ) : (
         <ScrollView style={{ width: '95%', alignSelf: 'center'}}>
-          {plans.map((item: any, index: any) => (
-            <TouchableOpacity style={buttons.blueList} key={index} onPress={() => navigation.navigate('JournalDetail', { item })}>
-                <View style={{ flex: 1, paddingRight: '5%', alignItems: 'center', flexDirection: 'row' }}>
-                  <Ionicons name='musical-note' size={25}/>
-                  <Text>{item.practiceDate.toDate().toDateString()}</Text>
-                  <Text numberOfLines={1} ellipsizeMode='tail' style={{ flex: 1 }}> - {item.title}</Text>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
-                  <AntDesign name='right' size={24} color='black'/>
-                </View>
-          </TouchableOpacity>
-          ))}
+          {plans.length > 0 ? (
+            <>
+            {plans.map((item: any, index: any) => (
+              <TouchableOpacity style={buttons.blueList} key={index} onPress={() => navigation.navigate('JournalDetail', { item })}>
+                  <View style={{ flex: 1, paddingRight: '5%', alignItems: 'center', flexDirection: 'row' }}>
+                    <Ionicons name='musical-note' size={25}/>
+                    <Text>{item.practiceDate.toDate().toDateString()}</Text>
+                    <Text numberOfLines={1} ellipsizeMode='tail' style={{ flex: 1 }}> - {item.title}</Text>
+                  </View>
+                  <View style={{ alignItems: 'flex-end' }}>
+                    <AntDesign name='right' size={24} color='black'/>
+                  </View>
+              </TouchableOpacity>
+            ))}
+            </>
+          ) : (
+            <Text style={texts.empty}>No plans available for the month.</Text>
+          )}
         </ScrollView>
       )}
     </View>

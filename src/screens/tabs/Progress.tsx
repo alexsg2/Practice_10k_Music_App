@@ -92,7 +92,7 @@ const Progress = () =>
                 {composersData.length > 0 ? (
                     <MusicDistribution date={weeklyRange} composers={composersData}/>
                 ) : (
-                    <Text style={texts.empty}>No distrbution available.</Text>
+                    <Text style={texts.empty}>No distribution available.</Text>
                 )}
             </View>
         </ScrollView>
