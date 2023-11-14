@@ -21,9 +21,7 @@ const PracticeTimer = () =>
 {
     const route = useRoute<PracticeTimerRouteProp>();
     const toPractice = route.params.item;
-
-    const [currPlanIndex, setCurrPlanIndex] = useState(0);
-    const currPlan = toPractice[currPlanIndex];
+    const [currPlan, setCurrPlan] = useState(toPractice[0]);
 
     const [time, setTime] = useState(0);
     let interval: NodeJS.Timeout | null = null;
@@ -50,9 +48,9 @@ const PracticeTimer = () =>
             setTimerOn(false);
             const totalHours = convertToHours(time);
             if (totalHours !== 0.00) {
-                const updates = { status: STATUS[1], duration: totalHours };
+                const updates = { status: STATUS[1], duration: currPlan.duration + totalHours };
                 await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
-                { currPlan.status = STATUS[1], currPlan.duration = totalHours };
+                { currPlan.status = STATUS[1], currPlan.duration = currPlan.duration + totalHours };
             }
             setTime(0);
             navigation.goBack();
@@ -66,14 +64,18 @@ const PracticeTimer = () =>
         try {
             setTimerOn(false);
             const totalHours = convertToHours(time);
-            const updates = { status: STATUS[2], duration: totalHours };
+            const updates = { status: STATUS[2], duration: currPlan.duration + totalHours };
             await DataManagementAPI.updatePracticeDataByField(currPlan.id, updates);
-            { currPlan.status = STATUS[2], currPlan.duration = totalHours };
+            { currPlan.status = STATUS[2], currPlan.duration = currPlan.duration + totalHours };
             setTime(0);
             
             if (toPractice.length === 1) {
                 navigation.goBack();
                 toPractice.splice(0, 1);
+            }
+            else {
+                toPractice.splice(0, 1);
+                setCurrPlan(toPractice[0]);
             }
         }
         catch (e: any) {
