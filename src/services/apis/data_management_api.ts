@@ -3,9 +3,6 @@ import { getAuth } from 'firebase/auth';
 import { doc, setDoc, getDocs, collection, deleteDoc, query, where } from 'firebase/firestore';
 
 
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-
 import { STATUS } from '../../assets/constants';
 import { IProfileProps } from '../../redux/reducers';
 interface IUserDataProps extends Omit<IProfileProps, 'profilePicture'> {}
