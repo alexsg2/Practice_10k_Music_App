@@ -183,11 +183,6 @@ const ViewPlanDetails: React.FC<ViewPlanDetailsProp> = ({ plan, view, setView })
                                         value={notes}
                                         editable={false}
                                     />
-                                    <View style={containers.doubleButton}>
-                                        <TouchableOpacity onPress={handleDelete} style={buttons.smallRed}>
-                                            <Text style={texts.button}>Delete</Text>
-                                        </TouchableOpacity>
-                                    </View>
                                 </View>
                             )}
                         </View>
